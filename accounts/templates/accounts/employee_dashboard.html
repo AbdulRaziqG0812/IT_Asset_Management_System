@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ITARMS - Employee Dashboard</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+
+            <span class="navbar-brand fw-bold">
+                ITARMS
+            </span>
+
+            <div class="d-flex align-items-center gap-3">
+
+                <span class="text-white">
+                    Welcome, {{ request.user.get_full_name|default:request.user.username }}
+                </span>
+
+                <a
+                    href="{% url 'logout' %}"
+                    class="btn btn-outline-light btn-sm"
+                >
+                    Logout
+                </a>
+
+            </div>
+
+        </div>
+    </nav>
+
+
+    <main class="container py-5">
+
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-body">
+
+                <h5 class="fw-bold mb-3">
+                    My Profile
+                </h5>
+
+                {% if profile %}
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <strong>Employee ID</strong>
+                            <div class="text-muted">
+                                {{ profile.employee_id }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>Job Title</strong>
+                            <div class="text-muted">
+                                {{ profile.job_title|default:"—" }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>Phone</strong>
+                            <div class="text-muted">
+                                {{ profile.phone|default:"—" }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <p class="text-muted mb-0">
+                        Employee profile information is not available.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <div class="mb-4">
+
+            <h2 class="fw-bold">
+                Employee Dashboard
+            </h2>
+
+            <p class="text-muted mb-0">
+                Manage your IT assets, requests and maintenance activities.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="fw-bold">
+                            My Assigned Assets
+                        </h5>
+
+                        <p class="text-muted">
+                            View the IT assets currently assigned to you.
+                        </p>
+
+                        <button
+                            class="btn btn-primary"
+                            disabled
+                        >
+                            View Assets
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="fw-bold">
+                            Asset Requests
+                        </h5>
+
+                        <p class="text-muted">
+                            Submit and track your IT asset requests.
+                        </p>
+
+                        <button
+                            class="btn btn-primary"
+                            disabled
+                        >
+                            Request Asset
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="fw-bold">
+                            Maintenance & Repair
+                        </h5>
+
+                        <p class="text-muted">
+                            Report damaged assets and request maintenance.
+                        </p>
+
+                        <button
+                            class="btn btn-primary"
+                            disabled
+                        >
+                            Create Request
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="fw-bold">
+                            Request Status
+                        </h5>
+
+                        <p class="text-muted">
+                            Check the status of your submitted requests.
+                        </p>
+
+                        <button
+                            class="btn btn-primary"
+                            disabled
+                        >
+                            View Status
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="fw-bold">
+                            Damaged / Lost Asset
+                        </h5>
+
+                        <p class="text-muted">
+                            Report an asset that has been damaged or lost.
+                        </p>
+
+                        <button
+                            class="btn btn-primary"
+                            disabled
+                        >
+                            Report Asset
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="fw-bold">
+                            Assignment History
+                        </h5>
+
+                        <p class="text-muted">
+                            View your previous asset assignment history.
+                        </p>
+
+                        <button
+                            class="btn btn-primary"
+                            disabled
+                        >
+                            View History
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+</body>
+
+</html>
