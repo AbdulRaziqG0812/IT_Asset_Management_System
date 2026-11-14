@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'accounts',
     'assets',
     'departments',
+    'assignments',
+    'asset_requests',
 ]
 
 MIDDLEWARE = [

@@ -24,4 +24,5 @@ urlpatterns = [
         "users/",
         include("accounts.urls"),
     ),
+    path("asset-requests/", include("asset_requests.urls")),
 ]

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,7 +30,8 @@
             <div class="d-flex align-items-center gap-3">
 
                 <span class="text-white">
-                    Welcome, {{ request.user.get_full_name|default:request.user.username }}
+                    Welcome,
+                    {{ request.user.get_full_name|default:request.user.username }}
                 </span>
 
                 <a
@@ -47,6 +49,8 @@
 
     <main class="container py-5">
 
+        <!-- Employee Profile -->
+
         <div class="card shadow-sm border-0 mb-4">
 
             <div class="card-body">
@@ -61,6 +65,7 @@
 
                         <div class="col-md-4">
                             <strong>Employee ID</strong>
+
                             <div class="text-muted">
                                 {{ profile.employee_id }}
                             </div>
@@ -68,6 +73,7 @@
 
                         <div class="col-md-4">
                             <strong>Job Title</strong>
+
                             <div class="text-muted">
                                 {{ profile.job_title|default:"—" }}
                             </div>
@@ -75,6 +81,7 @@
 
                         <div class="col-md-4">
                             <strong>Phone</strong>
+
                             <div class="text-muted">
                                 {{ profile.phone|default:"—" }}
                             </div>
@@ -94,6 +101,9 @@
 
         </div>
 
+
+        <!-- Dashboard Heading -->
+
         <div class="mb-4">
 
             <h2 class="fw-bold">
@@ -107,7 +117,12 @@
         </div>
 
 
+        <!-- Dashboard Cards -->
+
         <div class="row g-4">
+
+
+            <!-- My Assigned Assets -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -124,10 +139,11 @@
                         </p>
 
                         <button
-                            class="btn btn-primary"
+                            type="button"
+                            class="btn btn-secondary"
                             disabled
                         >
-                            View Assets
+                            Coming Soon
                         </button>
 
                     </div>
@@ -136,6 +152,8 @@
 
             </div>
 
+
+            <!-- Asset Requests -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -151,12 +169,23 @@
                             Submit and track your IT asset requests.
                         </p>
 
-                        <button
-                            class="btn btn-primary"
-                            disabled
-                        >
-                            Request Asset
-                        </button>
+                        <div class="d-flex gap-2 flex-wrap">
+
+                            <a
+                                href="{% url 'employee_asset_requests' %}"
+                                class="btn btn-primary"
+                            >
+                                View Requests
+                            </a>
+
+                            <a
+                                href="{% url 'create_asset_request' %}"
+                                class="btn btn-outline-primary"
+                            >
+                                Request Asset
+                            </a>
+
+                        </div>
 
                     </div>
 
@@ -164,6 +193,8 @@
 
             </div>
 
+
+            <!-- Maintenance & Repair -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -180,10 +211,11 @@
                         </p>
 
                         <button
-                            class="btn btn-primary"
+                            type="button"
+                            class="btn btn-secondary"
                             disabled
                         >
-                            Create Request
+                            Coming Soon
                         </button>
 
                     </div>
@@ -192,6 +224,8 @@
 
             </div>
 
+
+            <!-- Request Status -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -207,12 +241,12 @@
                             Check the status of your submitted requests.
                         </p>
 
-                        <button
+                        <a
+                            href="{% url 'employee_asset_requests' %}"
                             class="btn btn-primary"
-                            disabled
                         >
                             View Status
-                        </button>
+                        </a>
 
                     </div>
 
@@ -220,6 +254,8 @@
 
             </div>
 
+
+            <!-- Damaged / Lost Asset -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -236,10 +272,11 @@
                         </p>
 
                         <button
-                            class="btn btn-primary"
+                            type="button"
+                            class="btn btn-secondary"
                             disabled
                         >
-                            Report Asset
+                            Coming Soon
                         </button>
 
                     </div>
@@ -248,6 +285,8 @@
 
             </div>
 
+
+            <!-- Assignment History -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -264,10 +303,11 @@
                         </p>
 
                         <button
-                            class="btn btn-primary"
+                            type="button"
+                            class="btn btn-secondary"
                             disabled
                         >
-                            View History
+                            Coming Soon
                         </button>
 
                     </div>
@@ -275,6 +315,7 @@
                 </div>
 
             </div>
+
 
         </div>
 

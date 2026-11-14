@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Asset Request - ITARMS</title>
+</head>
+<body>
+
+    <h1>Create Asset Request</h1>
+
+    <p>
+        Employee:
+        {{ request.user.get_full_name|default:request.user.username }}
+    </p>
+
+    <p>
+        Department:
+        {{ request.user.employee_profile.department.name }}
+    </p>
+
+    <hr>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Submit Asset Request
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'employee_asset_requests' %}">
+        Back to My Asset Requests
+    </a>
+
+</body>
+</html>

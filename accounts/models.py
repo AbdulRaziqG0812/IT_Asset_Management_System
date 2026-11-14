@@ -25,6 +25,14 @@ class User(AbstractUser):
         default=True
     )
 
+    department = models.ForeignKey(
+        "departments.Department",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="department_managers",
+    )
+
     def __str__(self):
         return f"{self.get_full_name() or self.username} ({self.get_role_display()})"
     
@@ -34,6 +42,14 @@ class EmployeeProfile(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name="employee_profile",
+    )
+
+    department = models.ForeignKey(
+        "departments.Department",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="employees",
     )
 
     employee_id = models.CharField(

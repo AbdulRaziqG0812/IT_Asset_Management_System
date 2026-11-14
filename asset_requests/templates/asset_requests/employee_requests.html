@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Asset Requests - ITARMS</title>
+</head>
+<body>
+
+    <h1>My Asset Requests</h1>
+
+    <p>
+        Welcome,
+        {{ request.user.get_full_name|default:request.user.username }}
+    </p>
+
+    <a href="{% url 'create_asset_request' %}">
+        Create New Asset Request
+    </a>
+
+    <hr>
+
+    {% if asset_requests %}
+
+        {% for asset_request in asset_requests %}
+
+            <div>
+                <h3>Request #{{ asset_request.id }}</h3>
+
+                <p>
+                    <strong>Asset Category:</strong>
+                    {{ asset_request.asset_category }}
+                </p>
+
+                <p>
+                    <strong>Asset Name:</strong>
+                    {{ asset_request.asset_name|default:"Not specified" }}
+                </p>
+
+                <p>
+                    <strong>Quantity:</strong>
+                    {{ asset_request.quantity }}
+                </p>
+
+                <p>
+                    <strong>Priority:</strong>
+                    {{ asset_request.get_priority_display }}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    {{ asset_request.get_status_display }}
+                </p>
+
+                <p>
+                    <strong>Reason:</strong>
+                    {{ asset_request.reason }}
+                </p>
+
+                <p>
+                    <strong>Department:</strong>
+                    {{ asset_request.department.name }}
+                </p>
+
+                <p>
+                    <strong>Requested:</strong>
+                    {{ asset_request.requested_at }}
+                </p>
+            </div>
+
+            <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>You have not submitted any asset requests yet.</p>
+
+    {% endif %}
+
+</body>
+</html>

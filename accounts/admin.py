@@ -13,6 +13,7 @@ class CustomUserAdmin(UserAdmin):
         "first_name",
         "last_name",
         "role",
+        "department",
         "is_active",
         "is_staff",
     )
@@ -56,7 +57,7 @@ class CustomUserAdmin(UserAdmin):
             "ITARMS Role",
             {
                 "fields": (
-                    "role",
+                    "role", "department",
                 ),
             },
         ),

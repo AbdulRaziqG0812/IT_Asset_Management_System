@@ -78,17 +78,12 @@ class Asset(models.Model):
         blank=True,
     )
 
-    department = models.CharField(
-        max_length=150,
-        blank=True,
-    )
-
-    department_relation = models.ForeignKey(
+    department = models.ForeignKey(
         Department,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="asset_records",
+        related_name="assets",
     )
 
     asset_location = models.CharField(
