@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'departments',
     'assignments',
     'asset_requests',
+    "maintenance",
+    "software_licenses",
+    "vendors",
 ]
 
 MIDDLEWARE = [
