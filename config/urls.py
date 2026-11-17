@@ -25,4 +25,9 @@ urlpatterns = [
         "maintenance/",
         include("maintenance.urls"),
     ),
+
+    path(
+        "reports/",
+        include("reports.urls"),
+    ),
 ]

@@ -1,6 +1,9 @@
 from django.contrib import admin
 
 from accounts.models import User
+from audit_logs.models import AuditLog
+from audit_logs.services import create_audit_log
+
 from .models import (
     SoftwareLicense,
     SoftwareLicenseAssignment,
@@ -137,6 +140,46 @@ class SoftwareLicenseAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return request.user.role == User.Role.SUPER_ADMIN
 
+    def save_model(self, request, obj, form, change):
+        is_update = change
+
+        super().save_model(request, obj, form, change)
+
+        create_audit_log(
+            user=request.user,
+            action=(
+                AuditLog.Action.UPDATE
+                if is_update
+                else AuditLog.Action.CREATE
+            ),
+            module="Software License",
+            description=(
+                f"Software license '{obj.software_name}' "
+                f"was {'updated' if is_update else 'created'}."
+            ),
+            object_type="SoftwareLicense",
+            object_id=obj.id,
+            ip_address=request.META.get("REMOTE_ADDR"),
+        )
+
+    def delete_model(self, request, obj):
+        license_name = obj.software_name
+        license_id = obj.id
+
+        super().delete_model(request, obj)
+
+        create_audit_log(
+            user=request.user,
+            action=AuditLog.Action.DELETE,
+            module="Software License",
+            description=(
+                f"Software license '{license_name}' was deleted."
+            ),
+            object_type="SoftwareLicense",
+            object_id=license_id,
+            ip_address=request.META.get("REMOTE_ADDR"),
+        )
+
 
 @admin.register(SoftwareLicenseAssignment)
 class SoftwareLicenseAssignmentAdmin(admin.ModelAdmin):
@@ -202,3 +245,61 @@ class SoftwareLicenseAssignmentAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return request.user.role == User.Role.SUPER_ADMIN
+
+    def save_model(self, request, obj, form, change):
+        is_update = change
+
+        super().save_model(request, obj, form, change)
+
+        if not change:
+            action = AuditLog.Action.ASSIGN
+            description = (
+                f"Software license '{obj.license.software_name}' "
+                f"was assigned to employee "
+                f"'{obj.employee.employee_id}'."
+            )
+        elif not obj.is_active:
+            action = AuditLog.Action.RETURN
+            description = (
+                f"Software license '{obj.license.software_name}' "
+                f"was returned from employee "
+                f"'{obj.employee.employee_id}'."
+            )
+        else:
+            action = AuditLog.Action.UPDATE
+            description = (
+                f"Software license assignment #{obj.id} "
+                f"for employee '{obj.employee.employee_id}' "
+                "was updated."
+            )
+
+        create_audit_log(
+            user=request.user,
+            action=action,
+            module="Software License",
+            description=description,
+            object_type="SoftwareLicenseAssignment",
+            object_id=obj.id,
+            ip_address=request.META.get("REMOTE_ADDR"),
+        )
+
+    def delete_model(self, request, obj):
+        assignment_id = obj.id
+        license_name = obj.license.software_name
+        employee_id = obj.employee.employee_id
+
+        super().delete_model(request, obj)
+
+        create_audit_log(
+            user=request.user,
+            action=AuditLog.Action.DELETE,
+            module="Software License",
+            description=(
+                f"Software license assignment #{assignment_id} "
+                f"for license '{license_name}' and employee "
+                f"'{employee_id}' was deleted."
+            ),
+            object_type="SoftwareLicenseAssignment",
+            object_id=assignment_id,
+            ip_address=request.META.get("REMOTE_ADDR"),
+        )

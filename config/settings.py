@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     "maintenance",
     "software_licenses",
     "vendors",
+    'audit_logs',
+    "reports",
 ]
 
 MIDDLEWARE = [

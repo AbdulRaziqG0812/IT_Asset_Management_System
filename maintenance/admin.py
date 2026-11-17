@@ -3,6 +3,9 @@ from django.db import transaction
 from django.utils import timezone
 
 from accounts.models import User
+from audit_logs.models import AuditLog
+from audit_logs.services import create_audit_log
+
 from .models import MaintenanceRequest
 
 
@@ -59,10 +62,10 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         return False
 
     def has_change_permission(self, request, obj=None):
-        if request.user.role == User.Role.SUPER_ADMIN:
-            return True
-
-        if request.user.role == User.Role.IT_ADMIN:
+        if request.user.role in (
+            User.Role.SUPER_ADMIN,
+            User.Role.IT_ADMIN,
+        ):
             return True
 
         return False
@@ -127,6 +130,20 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
 
                 maintenance_request.save()
 
+                create_audit_log(
+                    user=request.user,
+                    action=AuditLog.Action.UPDATE,
+                    module="Maintenance",
+                    description=(
+                        f"Maintenance request #{maintenance_request.id} "
+                        f"for asset '{maintenance_request.asset.asset_id}' "
+                        "was started."
+                    ),
+                    object_type="MaintenanceRequest",
+                    object_id=maintenance_request.id,
+                    ip_address=request.META.get("REMOTE_ADDR"),
+                )
+
                 updated_count += 1
 
         if updated_count:
@@ -182,6 +199,20 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
 
                 maintenance_request.save()
 
+                create_audit_log(
+                    user=request.user,
+                    action=AuditLog.Action.UPDATE,
+                    module="Maintenance",
+                    description=(
+                        f"Maintenance request #{maintenance_request.id} "
+                        f"for asset '{maintenance_request.asset.asset_id}' "
+                        "was completed."
+                    ),
+                    object_type="MaintenanceRequest",
+                    object_id=maintenance_request.id,
+                    ip_address=request.META.get("REMOTE_ADDR"),
+                )
+
                 updated_count += 1
 
         if updated_count:
@@ -235,6 +266,20 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
                 )
 
                 maintenance_request.save()
+
+                create_audit_log(
+                    user=request.user,
+                    action=AuditLog.Action.REJECT,
+                    module="Maintenance",
+                    description=(
+                        f"Maintenance request #{maintenance_request.id} "
+                        f"for asset '{maintenance_request.asset.asset_id}' "
+                        "was rejected."
+                    ),
+                    object_type="MaintenanceRequest",
+                    object_id=maintenance_request.id,
+                    ip_address=request.META.get("REMOTE_ADDR"),
+                )
 
                 updated_count += 1
 

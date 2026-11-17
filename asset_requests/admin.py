@@ -2,8 +2,11 @@ from django.contrib import admin, messages
 from django.db import transaction
 from django.utils import timezone
 
-from .models import AssetRequest
 from accounts.models import User
+from audit_logs.models import AuditLog
+from audit_logs.services import create_audit_log
+
+from .models import AssetRequest
 
 
 @admin.register(AssetRequest)
@@ -33,10 +36,7 @@ class AssetRequestAdmin(admin.ModelAdmin):
             if obj is None:
                 return True
 
-            return (
-                obj.department_id
-                == request.user.department_id
-            )
+            return obj.department_id == request.user.department_id
 
         # All other roles are denied.
         return False
@@ -73,6 +73,11 @@ class AssetRequestAdmin(admin.ModelAdmin):
 
     ordering = ("-requested_at",)
 
+    actions = (
+        "approve_requests",
+        "reject_requests",
+    )
+
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
 
@@ -93,11 +98,6 @@ class AssetRequestAdmin(admin.ModelAdmin):
 
         # All other roles get no records.
         return queryset.none()
-
-    actions = (
-        "approve_requests",
-        "reject_requests",
-    )
 
     def get_readonly_fields(self, request, obj=None):
         """
@@ -209,28 +209,35 @@ class AssetRequestAdmin(admin.ModelAdmin):
 
         with transaction.atomic():
 
-            for asset_request in (
-                authorized_requests.select_for_update()
-            ):
+            for asset_request in authorized_requests.select_for_update():
 
                 # Re-check the status while the record is locked.
                 if asset_request.status != AssetRequest.Status.PENDING:
                     continue
 
-                asset_request.status = (
-                    AssetRequest.Status.APPROVED
-                )
-
+                asset_request.status = AssetRequest.Status.APPROVED
                 asset_request.approved_by = request.user
                 asset_request.processed_at = timezone.now()
 
                 asset_request.save()
 
+                create_audit_log(
+                    user=request.user,
+                    action=AuditLog.Action.APPROVE,
+                    module="Asset Request",
+                    description=(
+                        f"Asset request #{asset_request.id} "
+                        f"for employee '{asset_request.employee.employee_id}' "
+                        f"was approved."
+                    ),
+                    object_type="AssetRequest",
+                    object_id=asset_request.id,
+                    ip_address=request.META.get("REMOTE_ADDR"),
+                )
+
                 updated_count += 1
 
-        unauthorized_count = (
-            queryset.count() - updated_count
-        )
+        unauthorized_count = queryset.count() - updated_count
 
         if updated_count:
             self.message_user(
@@ -277,28 +284,35 @@ class AssetRequestAdmin(admin.ModelAdmin):
 
         with transaction.atomic():
 
-            for asset_request in (
-                authorized_requests.select_for_update()
-            ):
+            for asset_request in authorized_requests.select_for_update():
 
                 # Re-check the status while the record is locked.
                 if asset_request.status != AssetRequest.Status.PENDING:
                     continue
 
-                asset_request.status = (
-                    AssetRequest.Status.REJECTED
-                )
-
+                asset_request.status = AssetRequest.Status.REJECTED
                 asset_request.approved_by = request.user
                 asset_request.processed_at = timezone.now()
 
                 asset_request.save()
 
+                create_audit_log(
+                    user=request.user,
+                    action=AuditLog.Action.REJECT,
+                    module="Asset Request",
+                    description=(
+                        f"Asset request #{asset_request.id} "
+                        f"for employee '{asset_request.employee.employee_id}' "
+                        f"was rejected."
+                    ),
+                    object_type="AssetRequest",
+                    object_id=asset_request.id,
+                    ip_address=request.META.get("REMOTE_ADDR"),
+                )
+
                 updated_count += 1
 
-        unauthorized_count = (
-            queryset.count() - updated_count
-        )
+        unauthorized_count = queryset.count() - updated_count
 
         if updated_count:
             self.message_user(

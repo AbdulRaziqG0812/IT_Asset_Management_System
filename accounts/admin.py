@@ -1,12 +1,15 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User
+from audit_logs.models import AuditLog
+from audit_logs.services import create_audit_log
+
 from .models import EmployeeProfile, User
 
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
+
     list_display = (
         "username",
         "email",
@@ -31,7 +34,9 @@ class CustomUserAdmin(UserAdmin):
         "last_name",
     )
 
-    ordering = ("username",)
+    ordering = (
+        "username",
+    )
 
     fieldsets = (
         (
@@ -57,7 +62,8 @@ class CustomUserAdmin(UserAdmin):
             "ITARMS Role",
             {
                 "fields": (
-                    "role", "department",
+                    "role",
+                    "department",
                 ),
             },
         ),
@@ -113,12 +119,14 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
+
 @admin.register(EmployeeProfile)
 class EmployeeProfileAdmin(admin.ModelAdmin):
 
     list_display = (
         "employee_id",
         "user",
+        "department",
         "phone",
         "job_title",
         "date_of_joining",
@@ -133,6 +141,97 @@ class EmployeeProfileAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
+        "department",
         "job_title",
         "date_of_joining",
     )
+
+    ordering = (
+        "-id",
+    )
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+
+        if request.user.role in (
+            User.Role.SUPER_ADMIN,
+            User.Role.HR_MANAGER,
+        ):
+            return queryset
+
+        return queryset.none()
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.role in (
+            User.Role.SUPER_ADMIN,
+            User.Role.HR_MANAGER,
+        )
+
+    def has_add_permission(self, request):
+        return request.user.role in (
+            User.Role.SUPER_ADMIN,
+            User.Role.HR_MANAGER,
+        )
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.role in (
+            User.Role.SUPER_ADMIN,
+            User.Role.HR_MANAGER,
+        )
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.role == User.Role.SUPER_ADMIN
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        employee_name = (
+            obj.user.get_full_name()
+            or obj.user.username
+        )
+
+        if not change:
+            action = AuditLog.Action.CREATE
+            description = (
+                f"Employee '{obj.employee_id}' - "
+                f"'{employee_name}' was created."
+            )
+        else:
+            action = AuditLog.Action.UPDATE
+            description = (
+                f"Employee '{obj.employee_id}' - "
+                f"'{employee_name}' was updated."
+            )
+
+        create_audit_log(
+            user=request.user,
+            action=action,
+            module="Employee Management",
+            description=description,
+            object_type="EmployeeProfile",
+            object_id=obj.id,
+            ip_address=request.META.get("REMOTE_ADDR"),
+        )
+
+    def delete_model(self, request, obj):
+        employee_id = obj.employee_id
+        employee_name = (
+            obj.user.get_full_name()
+            or obj.user.username
+        )
+        employee_pk = obj.id
+
+        super().delete_model(request, obj)
+
+        create_audit_log(
+            user=request.user,
+            action=AuditLog.Action.DELETE,
+            module="Employee Management",
+            description=(
+                f"Employee '{employee_id}' - "
+                f"'{employee_name}' was deleted."
+            ),
+            object_type="EmployeeProfile",
+            object_id=employee_pk,
+            ip_address=request.META.get("REMOTE_ADDR"),
+        )
