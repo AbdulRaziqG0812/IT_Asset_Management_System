@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,12 +34,20 @@
                     {{ request.user.get_full_name|default:request.user.username }}
                 </span>
 
-                <a
-                    href="{% url 'logout' %}"
-                    class="btn btn-outline-light btn-sm"
+                <form
+                    method="post"
+                    action="{% url 'logout' %}"
+                    class="m-0"
                 >
-                    Logout
-                </a>
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="btn btn-outline-light btn-sm"
+                    >
+                        Logout
+                    </button>
+                </form>
 
             </div>
 

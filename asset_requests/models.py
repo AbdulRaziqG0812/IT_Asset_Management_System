@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+
 from accounts.models import EmployeeProfile
 from departments.models import Department
 
@@ -81,9 +83,6 @@ class AssetRequest(models.Model):
     )
 
     def clean(self):
-        from django.core.exceptions import ValidationError
-
-        # Quantity validation
         if self.quantity < 1:
             raise ValidationError(
                 {
@@ -91,8 +90,6 @@ class AssetRequest(models.Model):
                 }
             )
 
-        # Employee department and request department
-        # must always match.
         if self.employee_id and self.department_id:
             employee_department_id = (
                 self.employee.department_id
@@ -108,8 +105,6 @@ class AssetRequest(models.Model):
                     }
                 )
 
-        # Processed requests must have an approver
-        # and processing timestamp.
         if self.status in (
             self.Status.APPROVED,
             self.Status.REJECTED,
@@ -134,13 +129,6 @@ class AssetRequest(models.Model):
                     }
                 )
 
-        # Protect status transitions.
-        # A request can move only:
-        # Pending -> Approved
-        # Pending -> Rejected
-        #
-        # Once Approved or Rejected, it cannot be
-        # changed to another status.
         if self.pk:
             old_status = (
                 AssetRequest.objects
@@ -172,14 +160,9 @@ class AssetRequest(models.Model):
                         }
                     )
 
-
-def save(self, *args, **kwargs):
-    self.full_clean()
-    super().save(*args, **kwargs)
-
     def save(self, *args, **kwargs):
         self.full_clean()
-        super().save(*args, **kwargs)        
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return (
