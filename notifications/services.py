@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
@@ -26,7 +24,12 @@ def create_notification(
     """
     Creates one notification for one user.
 
-    A matching reference notification is not duplicated.
+    The same notification event is not duplicated while an existing
+    matching notification is still unread.
+
+    The notification title is included in the duplicate check so
+    different status events for the same object can each create
+    their own notification.
     """
 
     if not recipient or not recipient.is_active:
@@ -35,6 +38,7 @@ def create_notification(
     filters = {
         "recipient": recipient,
         "notification_type": notification_type,
+        "title": title,
         "reference_type": reference_type,
         "reference_id": str(reference_id or ""),
     }
@@ -171,7 +175,8 @@ def notify_pending_maintenance_request(maintenance_request):
             title="New Maintenance Request",
             message=(
                 f"Employee {maintenance_request.employee.employee_id} "
-                f"submitted a {maintenance_request.get_request_type_display().lower()} "
+                f"submitted a "
+                f"{maintenance_request.get_request_type_display().lower()} "
                 f"request for asset "
                 f"{maintenance_request.asset.asset_id}."
             ),

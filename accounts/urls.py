@@ -1,24 +1,37 @@
-
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from .views import (
     add_user,
+    complete_employee_exit,
+    edit_employee,
     edit_user,
+    employee_detail,
     employee_dashboard,
+    employee_management,
     login_view,
     logout_view,
+    start_employee_resignation,
     toggle_user_status,
+    update_employee_asset_return_status,
     user_management,
 )
 
 
 urlpatterns = [
+    # ------------------------------------------------------------------
+    # Employee
+    # ------------------------------------------------------------------
+
     path(
         "employee-dashboard/",
         employee_dashboard,
         name="employee_dashboard",
     ),
+
+    # ------------------------------------------------------------------
+    # Authentication
+    # ------------------------------------------------------------------
 
     path(
         "login/",
@@ -31,6 +44,10 @@ urlpatterns = [
         logout_view,
         name="logout",
     ),
+
+    # ------------------------------------------------------------------
+    # Super Admin - User Management
+    # ------------------------------------------------------------------
 
     path(
         "",
@@ -56,7 +73,54 @@ urlpatterns = [
         name="toggle_user_status",
     ),
 
+    # ------------------------------------------------------------------
+    # HR - Employee Management
+    # ------------------------------------------------------------------
+
+    path(
+        "hr/employees/",
+        employee_management,
+        name="hr_employee_management",
+    ),
+
+    path(
+        "hr/employees/<int:employee_id>/",
+        employee_detail,
+        name="hr_employee_detail",
+    ),
+
+    path(
+        "hr/employees/<int:employee_id>/edit/",
+        edit_employee,
+        name="hr_employee_edit",
+    ),
+
+    # ------------------------------------------------------------------
+    # HR - Resignation Workflow
+    # ------------------------------------------------------------------
+
+    path(
+        "hr/employees/<int:employee_id>/resignation/",
+        start_employee_resignation,
+        name="hr_employee_resignation",
+    ),
+
+    path(
+        "hr/employees/<int:employee_id>/exit/",
+        complete_employee_exit,
+        name="hr_employee_exit",
+    ),
+
+    path(
+        "hr/employees/<int:employee_id>/asset-return-status/",
+        update_employee_asset_return_status,
+        name="hr_employee_asset_return_status",
+    ),
+
+    # ------------------------------------------------------------------
     # Password Reset
+    # ------------------------------------------------------------------
+
     path(
         "password-reset/",
         auth_views.PasswordResetView.as_view(
@@ -93,7 +157,10 @@ urlpatterns = [
         name="password_reset_complete",
     ),
 
-    # Logged-in User Password Change
+    # ------------------------------------------------------------------
+    # Password Change
+    # ------------------------------------------------------------------
+
     path(
         "password-change/",
         auth_views.PasswordChangeView.as_view(

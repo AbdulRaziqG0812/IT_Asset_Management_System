@@ -12,7 +12,7 @@ class User(AbstractUser):
 
     email = models.EmailField(
         unique=True,
-        help_text="User's unique email address."
+        help_text="User's unique email address.",
     )
 
     role = models.CharField(
@@ -22,7 +22,7 @@ class User(AbstractUser):
     )
 
     is_active = models.BooleanField(
-        default=True
+        default=True,
     )
 
     department = models.ForeignKey(
@@ -34,10 +34,27 @@ class User(AbstractUser):
     )
 
     def __str__(self):
-        return f"{self.get_full_name() or self.username} ({self.get_role_display()})"
-    
+        return (
+            f"{self.get_full_name() or self.username} "
+            f"({self.get_role_display()})"
+        )
+
 
 class EmployeeProfile(models.Model):
+
+    class EmploymentStatus(models.TextChoices):
+        ACTIVE = "ACTIVE", "Active"
+        RESIGNATION_PENDING = (
+            "RESIGNATION_PENDING",
+            "Resignation Pending",
+        )
+        EXITED = "EXITED", "Exited"
+
+    class AssetReturnStatus(models.TextChoices):
+        NOT_REQUIRED = "NOT_REQUIRED", "Not Required"
+        PENDING = "PENDING", "Pending"
+        COMPLETED = "COMPLETED", "Completed"
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -76,6 +93,36 @@ class EmployeeProfile(models.Model):
         blank=True,
     )
 
+    employment_status = models.CharField(
+        max_length=30,
+        choices=EmploymentStatus.choices,
+        default=EmploymentStatus.ACTIVE,
+    )
+
+    resignation_date = models.DateField(
+        null=True,
+        blank=True,
+    )
+
+    exit_date = models.DateField(
+        null=True,
+        blank=True,
+    )
+
+    exit_reason = models.TextField(
+        blank=True,
+    )
+
+    exit_notes = models.TextField(
+        blank=True,
+    )
+
+    asset_return_status = models.CharField(
+        max_length=20,
+        choices=AssetReturnStatus.choices,
+        default=AssetReturnStatus.NOT_REQUIRED,
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True,
     )
@@ -85,4 +132,7 @@ class EmployeeProfile(models.Model):
     )
 
     def __str__(self):
-        return f"{self.user.get_full_name() or self.user.username} - {self.employee_id}"
+        return (
+            f"{self.user.get_full_name() or self.user.username} "
+            f"- {self.employee_id}"
+        )

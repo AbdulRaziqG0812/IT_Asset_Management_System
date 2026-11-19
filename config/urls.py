@@ -35,4 +35,19 @@ urlpatterns = [
         "notifications/",
         include("notifications.urls"),
     ),
+
+    path(
+        "departments/",
+        include("departments.urls"),
+    ),
+
+    path(
+        "assets/",
+        include("assets.urls"),
+    ),
+
+    path(
+        "assignments/",
+        include("assignments.urls"),
+    ),
 ]

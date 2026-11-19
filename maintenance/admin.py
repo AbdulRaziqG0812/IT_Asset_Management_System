@@ -39,9 +39,11 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         "employee__user__username",
         "employee__user__email",
         "issue_description",
+        "technician_notes",
+        "resolution_notes",
     )
 
-    ordering = ("-requested_at",)
+    ordering = ("-requested_at", "-id")
 
     readonly_fields = (
         "employee",
@@ -55,6 +57,48 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
+    fieldsets = (
+        (
+            "Request Information",
+            {
+                "fields": (
+                    "employee",
+                    "asset",
+                    "request_type",
+                    "issue_description",
+                    "priority",
+                    "status",
+                )
+            },
+        ),
+        (
+            "Maintenance Processing",
+            {
+                "fields": (
+                    "technician_notes",
+                    "resolution_notes",
+                    "started_at",
+                    "completed_at",
+                )
+            },
+        ),
+        (
+            "System Information",
+            {
+                "fields": (
+                    "requested_at",
+                    "updated_at",
+                )
+            },
+        ),
+    )
+
+    actions = (
+        "start_maintenance",
+        "complete_maintenance",
+        "reject_maintenance",
+    )
+
     def has_add_permission(self, request):
         return False
 
@@ -62,13 +106,10 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         return False
 
     def has_change_permission(self, request, obj=None):
-        if request.user.role in (
+        return request.user.role in (
             User.Role.SUPER_ADMIN,
             User.Role.IT_ADMIN,
-        ):
-            return True
-
-        return False
+        )
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
@@ -81,13 +122,13 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
 
         return queryset.none()
 
-    actions = (
-        "start_maintenance",
-        "complete_maintenance",
-        "reject_maintenance",
-    )
+    def _is_authorized(self, request):
+        return request.user.role in (
+            User.Role.SUPER_ADMIN,
+            User.Role.IT_ADMIN,
+        )
 
-    def _get_pending_requests(self, request, queryset):
+    def _get_pending_requests(self, queryset):
         return queryset.filter(
             status=MaintenanceRequest.Status.PENDING
         )
@@ -95,10 +136,7 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
     @admin.action(description="Start selected maintenance requests")
     def start_maintenance(self, request, queryset):
 
-        if request.user.role not in (
-            User.Role.SUPER_ADMIN,
-            User.Role.IT_ADMIN,
-        ):
+        if not self._is_authorized(request):
             self.message_user(
                 request,
                 "You are not authorized to start maintenance requests.",
@@ -106,10 +144,7 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
             )
             return
 
-        requests = self._get_pending_requests(
-            request,
-            queryset,
-        )
+        requests = self._get_pending_requests(queryset)
 
         updated_count = 0
 
@@ -125,7 +160,6 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
                 maintenance_request.status = (
                     MaintenanceRequest.Status.IN_PROGRESS
                 )
-
                 maintenance_request.started_at = timezone.now()
 
                 maintenance_request.save()
@@ -134,13 +168,13 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
                     user=request.user,
                     action=AuditLog.Action.UPDATE,
                     module="Maintenance",
+                    object_type="MaintenanceRequest",
+                    object_id=maintenance_request.id,
                     description=(
                         f"Maintenance request #{maintenance_request.id} "
                         f"for asset '{maintenance_request.asset.asset_id}' "
                         "was started."
                     ),
-                    object_type="MaintenanceRequest",
-                    object_id=maintenance_request.id,
                     ip_address=request.META.get("REMOTE_ADDR"),
                 )
 
@@ -149,7 +183,10 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         if updated_count:
             self.message_user(
                 request,
-                f"{updated_count} maintenance request(s) started successfully.",
+                (
+                    f"{updated_count} maintenance request(s) "
+                    "started successfully."
+                ),
                 level=messages.SUCCESS,
             )
 
@@ -158,17 +195,17 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         if skipped_count:
             self.message_user(
                 request,
-                f"{skipped_count} request(s) were skipped because they are not pending.",
+                (
+                    f"{skipped_count} request(s) were skipped because "
+                    "they are not pending."
+                ),
                 level=messages.WARNING,
             )
 
     @admin.action(description="Complete selected maintenance requests")
     def complete_maintenance(self, request, queryset):
 
-        if request.user.role not in (
-            User.Role.SUPER_ADMIN,
-            User.Role.IT_ADMIN,
-        ):
+        if not self._is_authorized(request):
             self.message_user(
                 request,
                 "You are not authorized to complete maintenance requests.",
@@ -194,7 +231,6 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
                 maintenance_request.status = (
                     MaintenanceRequest.Status.COMPLETED
                 )
-
                 maintenance_request.completed_at = timezone.now()
 
                 maintenance_request.save()
@@ -203,13 +239,13 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
                     user=request.user,
                     action=AuditLog.Action.UPDATE,
                     module="Maintenance",
+                    object_type="MaintenanceRequest",
+                    object_id=maintenance_request.id,
                     description=(
                         f"Maintenance request #{maintenance_request.id} "
                         f"for asset '{maintenance_request.asset.asset_id}' "
                         "was completed."
                     ),
-                    object_type="MaintenanceRequest",
-                    object_id=maintenance_request.id,
                     ip_address=request.META.get("REMOTE_ADDR"),
                 )
 
@@ -218,7 +254,10 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         if updated_count:
             self.message_user(
                 request,
-                f"{updated_count} maintenance request(s) completed successfully.",
+                (
+                    f"{updated_count} maintenance request(s) "
+                    "completed successfully."
+                ),
                 level=messages.SUCCESS,
             )
 
@@ -227,17 +266,17 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         if skipped_count:
             self.message_user(
                 request,
-                f"{skipped_count} request(s) were skipped because they are not in progress.",
+                (
+                    f"{skipped_count} request(s) were skipped because "
+                    "they are not in progress."
+                ),
                 level=messages.WARNING,
             )
 
     @admin.action(description="Reject selected maintenance requests")
     def reject_maintenance(self, request, queryset):
 
-        if request.user.role not in (
-            User.Role.SUPER_ADMIN,
-            User.Role.IT_ADMIN,
-        ):
+        if not self._is_authorized(request):
             self.message_user(
                 request,
                 "You are not authorized to reject maintenance requests.",
@@ -245,10 +284,7 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
             )
             return
 
-        requests = self._get_pending_requests(
-            request,
-            queryset,
-        )
+        requests = self._get_pending_requests(queryset)
 
         updated_count = 0
 
@@ -271,13 +307,13 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
                     user=request.user,
                     action=AuditLog.Action.REJECT,
                     module="Maintenance",
+                    object_type="MaintenanceRequest",
+                    object_id=maintenance_request.id,
                     description=(
                         f"Maintenance request #{maintenance_request.id} "
                         f"for asset '{maintenance_request.asset.asset_id}' "
                         "was rejected."
                     ),
-                    object_type="MaintenanceRequest",
-                    object_id=maintenance_request.id,
                     ip_address=request.META.get("REMOTE_ADDR"),
                 )
 
@@ -286,7 +322,10 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         if updated_count:
             self.message_user(
                 request,
-                f"{updated_count} maintenance request(s) rejected successfully.",
+                (
+                    f"{updated_count} maintenance request(s) "
+                    "rejected successfully."
+                ),
                 level=messages.SUCCESS,
             )
 
@@ -295,6 +334,9 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
         if skipped_count:
             self.message_user(
                 request,
-                f"{skipped_count} request(s) were skipped because they are not pending.",
+                (
+                    f"{skipped_count} request(s) were skipped because "
+                    "they are not pending."
+                ),
                 level=messages.WARNING,
             )

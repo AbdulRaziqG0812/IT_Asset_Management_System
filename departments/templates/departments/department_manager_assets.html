@@ -1,0 +1,179 @@
+\<!DOCTYPE html>
+
+\<html lang="en"> \<head>     \<meta charset="UTF-8">     \<meta name="viewport" content="width=device-width, initial-scale=1.0">     \<title>Department Assets | ITARMS\</title>
+
+```
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+>
+
+<style>
+    body {
+        background: #f4f6f9;
+    }
+
+    .card {
+        border: 0;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    }
+
+    .table td,
+    .table th {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+</style>
+```
+
+\</head>
+
+\<body>
+
+\<nav class="navbar navbar-dark bg-dark">
+&#x20;   \<div class="container">
+&#x20;       \<a class="navbar-brand fw-bold"
+&#x20;          href="{% url 'department_manager_dashboard' %}">
+&#x20;           ITARMS
+&#x20;       \</a>
+
+```
+    <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">
+        Logout
+    </a>
+</div>
+```
+
+\</nav>
+
+\<main class="container py-4">
+
+```
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+            <div>
+                <h2 class="mb-1">Department Assets</h2>
+                <p class="text-muted mb-0">
+                    {{ department.name }}
+                    {% if department.code %}
+                        ({{ department.code }})
+                    {% endif %}
+                </p>
+            </div>
+
+            <a href="{% url 'department_manager_dashboard' %}"
+               class="btn btn-outline-primary align-self-start">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-white py-3">
+        <strong>Assets Allocated to Department</strong>
+    </div>
+
+    <div class="card-body p-0">
+
+        {% if assets %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Asset ID</th>
+                            <th>Asset Name</th>
+                            <th>Category</th>
+                            <th>Brand / Model</th>
+                            <th>Serial Number</th>
+                            <th>Condition</th>
+                            <th>Status</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for asset in assets %}
+                            <tr>
+                                <td>
+                                    <strong>{{ asset.asset_id }}</strong>
+                                </td>
+
+                                <td>{{ asset.asset_name }}</td>
+
+                                <td>
+                                    {{ asset.get_category_display }}
+                                </td>
+
+                                <td>
+                                    {{ asset.brand_model }}
+                                </td>
+
+                                <td>
+                                    {{ asset.serial_number }}
+                                </td>
+
+                                <td>
+                                    {{ asset.get_condition_display }}
+                                </td>
+
+                                <td>
+                                    {% if asset.status == "AVAILABLE" %}
+                                        <span class="badge text-bg-success">
+                                            Available
+                                        </span>
+                                    {% elif asset.status == "ASSIGNED" %}
+                                        <span class="badge text-bg-primary">
+                                            Assigned
+                                        </span>
+                                    {% elif asset.status == "UNDER_MAINTENANCE" %}
+                                        <span class="badge text-bg-warning">
+                                            Under Maintenance
+                                        </span>
+                                    {% elif asset.status == "DAMAGED" %}
+                                        <span class="badge text-bg-danger">
+                                            Damaged
+                                        </span>
+                                    {% elif asset.status == "LOST" %}
+                                        <span class="badge text-bg-danger">
+                                            Lost
+                                        </span>
+                                    {% elif asset.status == "RETIRED" %}
+                                        <span class="badge text-bg-secondary">
+                                            Retired
+                                        </span>
+                                    {% elif asset.status == "DISPOSED" %}
+                                        <span class="badge text-bg-dark">
+                                            Disposed
+                                        </span>
+                                    {% else %}
+                                        <span class="badge text-bg-secondary">
+                                            {{ asset.get_status_display }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ asset.asset_location|default:"—" }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="p-5 text-center text-muted">
+                No assets are currently allocated to this department.
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+```
+
+\</main>
+
+\</body>
+\</html>

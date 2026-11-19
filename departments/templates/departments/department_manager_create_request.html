@@ -1,0 +1,311 @@
+\<!DOCTYPE html>
+
+\<html lang="en"> \<head>     \<meta charset="UTF-8">     \<meta name="viewport" content="width=device-width, initial-scale=1.0">     \<title>Create Asset Request | ITARMS\</title>
+
+```
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+>
+
+<style>
+    body {
+        background: #f4f6f9;
+    }
+
+    .card {
+        border: 0;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    }
+
+    .required::after {
+        content: " *";
+        color: #dc3545;
+    }
+
+    .form-text {
+        color: #6c757d;
+    }
+</style>
+```
+
+\</head>
+
+\<body>
+
+\<nav class="navbar navbar-dark bg-dark">
+&#x20;   \<div class="container">
+&#x20;       \<a class="navbar-brand fw-bold"
+&#x20;          href="{% url 'department_manager_dashboard' %}">
+&#x20;           ITARMS
+&#x20;       \</a>
+
+```
+    <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">
+        Logout
+    </a>
+</div>
+```
+
+\</nav>
+
+\<main class="container py-4">
+
+```
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+            <div>
+                <h2 class="mb-1">Create Asset Request</h2>
+                <p class="text-muted mb-0">
+                    Submit an asset request on behalf of an employee.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'department_manager_asset_requests' %}"
+                class="btn btn-outline-primary align-self-start"
+            >
+                Back to Requests
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if errors %}
+    <div class="alert alert-danger">
+        <strong>Please correct the following errors:</strong>
+
+        <ul class="mb-0 mt-2">
+            {% for field, message in errors.items %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header bg-white py-3">
+        <strong>Request Information</strong>
+    </div>
+
+    <div class="card-body">
+
+        <div class="alert alert-info">
+            <strong>Department:</strong>
+            {{ department.name }}
+            {% if department.code %}
+                ({{ department.code }})
+            {% endif %}
+
+            <br>
+
+            <small>
+                Only active employees belonging to this department can be selected.
+            </small>
+        </div>
+
+        <form method="post" novalidate>
+
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <label for="employee_id" class="form-label required">
+                        Employee
+                    </label>
+
+                    <select
+                        id="employee_id"
+                        name="employee_id"
+                        class="form-select"
+                        required
+                    >
+                        <option value="">Select employee</option>
+
+                        {% for employee in employees %}
+                            <option
+                                value="{{ employee.id }}"
+                                {% if form_data.employee_id == employee.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ employee.employee_id }} —
+                                {{ employee.user.get_full_name|default:employee.user.username }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <div class="form-text">
+                        The employee is restricted server-side to your department.
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label for="asset_category" class="form-label required">
+                        Asset Category
+                    </label>
+
+                    <input
+                        type="text"
+                        id="asset_category"
+                        name="asset_category"
+                        class="form-control"
+                        value="{{ form_data.asset_category|default:'' }}"
+                        maxlength="50"
+                        required
+                    >
+
+                    <div class="form-text">
+                        Example: Laptop, Monitor, Printer, Networking Equipment.
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label for="asset_name" class="form-label">
+                        Asset Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="asset_name"
+                        name="asset_name"
+                        class="form-control"
+                        value="{{ form_data.asset_name|default:'' }}"
+                        maxlength="150"
+                    >
+
+                    <div class="form-text">
+                        Optional specific asset/model requested.
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label for="quantity" class="form-label required">
+                        Quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        id="quantity"
+                        name="quantity"
+                        class="form-control"
+                        value="{{ form_data.quantity|default:'1' }}"
+                        min="1"
+                        required
+                    >
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label for="priority" class="form-label required">
+                        Priority
+                    </label>
+
+                    <select
+                        id="priority"
+                        name="priority"
+                        class="form-select"
+                        required
+                    >
+                        <option
+                            value="LOW"
+                            {% if form_data.priority == "LOW" %}
+                                selected
+                            {% endif %}
+                        >
+                            Low
+                        </option>
+
+                        <option
+                            value="MEDIUM"
+                            {% if not form_data.priority or form_data.priority == "MEDIUM" %}
+                                selected
+                            {% endif %}
+                        >
+                            Medium
+                        </option>
+
+                        <option
+                            value="HIGH"
+                            {% if form_data.priority == "HIGH" %}
+                                selected
+                            {% endif %}
+                        >
+                            High
+                        </option>
+
+                        <option
+                            value="URGENT"
+                            {% if form_data.priority == "URGENT" %}
+                                selected
+                            {% endif %}
+                        >
+                            Urgent
+                        </option>
+                    </select>
+
+                </div>
+
+                <div class="col-12">
+
+                    <label for="reason" class="form-label required">
+                        Request Reason
+                    </label>
+
+                    <textarea
+                        id="reason"
+                        name="reason"
+                        class="form-control"
+                        rows="5"
+                        required
+                    >{{ form_data.reason|default:'' }}</textarea>
+
+                    <div class="form-text">
+                        Explain why the employee requires this asset.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
+
+                <a
+                    href="{% url 'department_manager_asset_requests' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Submit Asset Request
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+```
+
+\</main>
+
+\</body>
+\</html>

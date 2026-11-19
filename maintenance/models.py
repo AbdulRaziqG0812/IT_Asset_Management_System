@@ -1,9 +1,9 @@
-from django.db import models, transaction
 from django.core.exceptions import ValidationError
+from django.db import models, transaction
 from django.utils import timezone
 
-from assets.models import Asset
 from accounts.models import EmployeeProfile
+from assets.models import Asset
 
 
 class MaintenanceRequest(models.Model):
@@ -82,16 +82,50 @@ class MaintenanceRequest(models.Model):
     )
 
     def clean(self):
-        if self._state.adding and self.asset_id and self.employee_id:
+        if self.asset_id and self.employee_id:
+
             active_assignment = self.asset.assignments.filter(
                 employee=self.employee,
                 is_active=True,
             ).exists()
 
-            if not active_assignment:
+            if self._state.adding and not active_assignment:
                 raise ValidationError(
-                    "Maintenance request can only be created for an asset currently assigned to this employee."
+                    "Maintenance request can only be created for an "
+                    "asset currently assigned to this employee."
                 )
+
+        if self._state.adding:
+            if self.status != self.Status.PENDING:
+                raise ValidationError(
+                    "A new maintenance request must start with Pending status."
+                )
+
+            if self.asset_id:
+
+                if self.asset.status != Asset.Status.ASSIGNED:
+                    raise ValidationError(
+                        "Maintenance request can only be created for "
+                        "an asset currently marked as Assigned."
+                    )
+
+                duplicate_request = (
+                    MaintenanceRequest.objects
+                    .filter(
+                        asset=self.asset,
+                        status__in=[
+                            self.Status.PENDING,
+                            self.Status.IN_PROGRESS,
+                        ],
+                    )
+                    .exists()
+                )
+
+                if duplicate_request:
+                    raise ValidationError(
+                        "This asset already has an active maintenance "
+                        "request."
+                    )
 
         if self.status == self.Status.IN_PROGRESS:
             if not self.started_at:
@@ -103,6 +137,20 @@ class MaintenanceRequest(models.Model):
             if not self.completed_at:
                 raise ValidationError(
                     "Completed time is required when maintenance is completed."
+                )
+
+        if self.status == self.Status.PENDING:
+            if self.started_at or self.completed_at:
+                raise ValidationError(
+                    "Pending maintenance requests cannot have "
+                    "started or completed time."
+                )
+
+        if self.status == self.Status.IN_PROGRESS:
+            if self.completed_at:
+                raise ValidationError(
+                    "An in-progress maintenance request cannot have "
+                    "a completed time."
                 )
 
         if self.pk:
@@ -143,6 +191,7 @@ class MaintenanceRequest(models.Model):
                 )
 
     def save(self, *args, **kwargs):
+
         if (
             self.status == self.Status.IN_PROGRESS
             and not self.started_at
@@ -161,6 +210,16 @@ class MaintenanceRequest(models.Model):
 
             super().save(*args, **kwargs)
 
+            active_maintenance_exists = (
+                MaintenanceRequest.objects
+                .filter(
+                    asset_id=self.asset_id,
+                    status=self.Status.IN_PROGRESS,
+                )
+                .exclude(pk=self.pk)
+                .exists()
+            )
+
             if self.status == self.Status.IN_PROGRESS:
 
                 Asset.objects.filter(
@@ -174,22 +233,32 @@ class MaintenanceRequest(models.Model):
                 self.Status.REJECTED,
             ):
 
-                active_assignment = self.asset.assignments.filter(
-                    is_active=True
-                ).exists()
+                if active_maintenance_exists:
 
-                if active_assignment:
                     Asset.objects.filter(
                         pk=self.asset_id
                     ).update(
-                        status=Asset.Status.ASSIGNED
+                        status=Asset.Status.UNDER_MAINTENANCE
                     )
+
                 else:
-                    Asset.objects.filter(
-                        pk=self.asset_id
-                    ).update(
-                        status=Asset.Status.AVAILABLE
-                    )
+
+                    active_assignment = self.asset.assignments.filter(
+                        is_active=True
+                    ).exists()
+
+                    if active_assignment:
+                        Asset.objects.filter(
+                            pk=self.asset_id
+                        ).update(
+                            status=Asset.Status.ASSIGNED
+                        )
+                    else:
+                        Asset.objects.filter(
+                            pk=self.asset_id
+                        ).update(
+                            status=Asset.Status.AVAILABLE
+                        )
 
     def __str__(self):
         return (
