@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,273 +12,1174 @@
 
     <title>Request Maintenance - ITARMS</title>
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-soft: #eff6ff;
+
+            --text: #172033;
+            --heading: #0f172a;
+            --muted: #64748b;
+
+            --border: #dbe3ef;
+            --border-light: #e8edf4;
+
+            --surface: #ffffff;
+            --background: #f4f7fb;
+
+            --danger: #b91c1c;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+
+            --info: #0369a1;
+            --info-bg: #f0f9ff;
+            --info-border: #bae6fd;
+
+            --shadow: 0 20px 50px rgba(15, 23, 42, 0.09);
+            --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06);
+
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(37, 99, 235, 0.09),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at bottom left,
+                    rgba(59, 130, 246, 0.05),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f8fafc 0%,
+                    #eef3f9 100%
+                );
+        }
+
+        /* =========================
+           PAGE SHELL
+        ========================= */
+
+        .page-shell {
+            min-height: 100vh;
+            padding: 22px 20px 45px;
+        }
+
+        .workspace {
+            width: min(1120px, 100%);
+            margin: 0 auto;
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================= */
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+
+            padding: 15px 19px;
+            margin-bottom: 28px;
+
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(219, 227, 239, 0.96);
+            border-radius: 15px;
+
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(14px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            min-width: 0;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #2563eb,
+                    #1e40af
+                );
+
+            color: #ffffff;
+
+            font-size: 15px;
+            font-weight: 850;
+            letter-spacing: 0.04em;
+
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                0 8px 18px rgba(37, 99, 235, 0.24);
+        }
+
+        .brand-content {
+            min-width: 0;
+        }
+
+        .brand-title {
+            margin: 0;
+
+            color: var(--heading);
+
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+        }
+
+        .brand-subtitle {
+            margin: 3px 0 0;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 550;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .welcome-user {
+            margin-right: 5px;
+
+            color: #475569;
+
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .nav-link,
+        .logout-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 34px;
+            padding: 7px 11px;
+
+            border-radius: 8px;
+
+            font: inherit;
+            font-size: 11px;
+            font-weight: 750;
+
+            text-decoration: none;
+            cursor: pointer;
+
+            transition:
+                transform 0.18s ease,
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .nav-link {
+            border: 1px solid #dbe3ef;
+
+            background: #ffffff;
+            color: #334155;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-1px);
+
+            border-color: #bfdbfe;
+            background: #eff6ff;
+            color: var(--primary-dark);
+
+            box-shadow: 0 5px 12px rgba(15, 23, 42, 0.05);
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .logout-button {
+            border: 1px solid #fecaca;
+
+            background: #fff7f7;
+            color: var(--danger);
+        }
+
+        .logout-button:hover {
+            transform: translateY(-1px);
+
+            background: var(--danger-bg);
+            border-color: #fca5a5;
+
+            box-shadow: 0 5px 12px rgba(185, 28, 28, 0.08);
+        }
+
+        /* =========================
+           PAGE HEADER
+        ========================= */
+
+        .page-header {
+            margin-bottom: 19px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            margin-bottom: 10px;
+            padding: 7px 11px;
+
+            color: var(--primary-dark);
+            background: var(--primary-soft);
+
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+
+            font-size: 10px;
+            font-weight: 850;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+            background: var(--primary);
+
+            box-shadow:
+                0 0 0 4px rgba(37, 99, 235, 0.10);
+        }
+
+        .page-header h1 {
+            margin: 0;
+
+            color: var(--heading);
+
+            font-size: clamp(27px, 4vw, 38px);
+            line-height: 1.15;
+            letter-spacing: -0.035em;
+            font-weight: 850;
+        }
+
+        .page-header p {
+            max-width: 720px;
+
+            margin: 9px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           MAIN FORM WORKSPACE
+        ========================= */
+
+        .form-panel {
+            overflow: hidden;
+
+            background: rgba(255, 255, 255, 0.97);
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+
+            box-shadow: var(--shadow);
+
+            position: relative;
+        }
+
+        .form-panel::before {
+            content: "";
+
+            display: block;
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #3b82f6,
+                    #60a5fa
+                );
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            padding: 22px 25px;
+
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .form-header-content {
+            min-width: 0;
+        }
+
+        .form-header h2 {
+            margin: 0;
+
+            color: #111827;
+
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.015em;
+        }
+
+        .form-header p {
+            margin: 5px 0 0;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            line-height: 1.65;
+        }
+
+        .form-label-badge {
+            flex: 0 0 auto;
+
+            padding: 7px 10px;
+
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+
+            background: #eff6ff;
+            color: var(--primary-dark);
+
+            font-size: 9px;
+            font-weight: 850;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .form-content {
+            padding: 25px;
+        }
+
+        /* =========================
+           ERROR AREA
+        ========================= */
+
+        .form-error-summary {
+            margin-bottom: 22px;
+            padding: 13px 15px;
+
+            border: 1px solid var(--danger-border);
+            border-radius: 10px;
+
+            background: var(--danger-bg);
+            color: var(--danger);
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .form-error-summary strong {
+            display: block;
+            margin-bottom: 4px;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           FORM FIELDS
+        ========================= */
+
+        .field-group {
+            margin-bottom: 22px;
+        }
+
+        .field-group:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #334155;
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .field-help {
+            margin: 0 0 9px;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .field-control {
+            width: 100%;
+
+            min-height: 43px;
+            padding: 10px 12px;
+
+            border: 1px solid #d6deea;
+            border-radius: 10px;
+
+            background: #ffffff;
+            color: #172033;
+
+            font: inherit;
+            font-size: 12px;
+            line-height: 1.5;
+
+            outline: none;
+
+            transition:
+                border-color 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.18s ease;
+        }
+
+        .field-control:hover {
+            border-color: #b9c7da;
+        }
+
+        .field-control:focus {
+            border-color: var(--primary);
+
+            background: #ffffff;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.10),
+                0 5px 14px rgba(15, 23, 42, 0.04);
+        }
+
+        select.field-control {
+            cursor: pointer;
+        }
+
+        textarea.field-control {
+            min-height: 125px;
+            resize: vertical;
+        }
+
+        /* Django may render native classes/attributes */
+        .form-content select,
+        .form-content input,
+        .form-content textarea {
+            width: 100%;
+
+            min-height: 43px;
+            padding: 10px 12px;
+
+            border: 1px solid #d6deea;
+            border-radius: 10px;
+
+            background: #ffffff;
+            color: #172033;
+
+            font: inherit;
+            font-size: 12px;
+            line-height: 1.5;
+
+            outline: none;
+
+            transition:
+                border-color 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.18s ease;
+        }
+
+        .form-content select:hover,
+        .form-content input:hover,
+        .form-content textarea:hover {
+            border-color: #b9c7da;
+        }
+
+        .form-content select:focus,
+        .form-content input:focus,
+        .form-content textarea:focus {
+            border-color: var(--primary);
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.10),
+                0 5px 14px rgba(15, 23, 42, 0.04);
+        }
+
+        .form-content textarea {
+            min-height: 125px;
+            resize: vertical;
+        }
+
+        .form-content input[type="checkbox"],
+        .form-content input[type="radio"] {
+            width: auto;
+            min-height: auto;
+            margin-right: 7px;
+            accent-color: var(--primary);
+        }
+
+        /* =========================
+           FIELD ERRORS
+        ========================= */
+
+        .field-errors {
+            margin-top: 7px;
+
+            color: var(--danger);
+
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .field-errors div + div {
+            margin-top: 2px;
+        }
+
+        /* =========================
+           IMPORTANT INFORMATION
+        ========================= */
+
+        .information-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+
+            margin-top: 23px;
+            padding: 14px 15px;
+
+            border: 1px solid var(--info-border);
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f0f9ff,
+                    #f8fcff
+                );
+
+            color: #334155;
+        }
+
+        .information-icon {
+            width: 29px;
+            height: 29px;
+            flex: 0 0 29px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background: #e0f2fe;
+            color: var(--info);
+
+            font-size: 13px;
+            font-weight: 850;
+        }
+
+        .information-content {
+            min-width: 0;
+
+            font-size: 11px;
+            line-height: 1.65;
+        }
+
+        .information-content strong {
+            color: #0f4c6e;
+        }
+
+        /* =========================
+           FORM ACTIONS
+        ========================= */
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+
+            margin-top: 25px;
+            padding-top: 20px;
+
+            border-top: 1px solid var(--border-light);
+        }
+
+        .cancel-button,
+        .submit-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 43px;
+            padding: 10px 16px;
+
+            border-radius: 9px;
+
+            font: inherit;
+            font-size: 11px;
+            font-weight: 800;
+
+            text-decoration: none;
+            cursor: pointer;
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.18s ease,
+                border-color 0.18s ease,
+                filter 0.18s ease;
+        }
+
+        .cancel-button {
+            border: 1px solid #d6deea;
+
+            background: #ffffff;
+            color: #475569;
+        }
+
+        .cancel-button:hover {
+            transform: translateY(-1px);
+
+            border-color: #cbd5e1;
+            background: #f8fafc;
+            color: #334155;
+
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.05);
+        }
+
+        .submit-button {
+            border: 0;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #2563eb,
+                    #1d4ed8
+                );
+
+            color: #ffffff;
+
+            box-shadow:
+                0 8px 18px rgba(37, 99, 235, 0.20),
+                inset 0 1px 0 rgba(255, 255, 255, 0.20);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.03);
+
+            box-shadow:
+                0 12px 24px rgba(37, 99, 235, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.20);
+        }
+
+        .submit-button:active,
+        .cancel-button:active,
+        .nav-link:active,
+        .logout-button:active {
+            transform: translateY(0);
+        }
+
+        .nav-link:focus-visible,
+        .logout-button:focus-visible,
+        .cancel-button:focus-visible,
+        .submit-button:focus-visible {
+            outline: 3px solid rgba(37, 99, 235, 0.18);
+            outline-offset: 3px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .nav-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .page-shell {
+                padding: 16px 13px 35px;
+            }
+
+            .topbar {
+                margin-bottom: 22px;
+                padding: 15px;
+            }
+
+            .nav-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .welcome-user {
+                margin: 0 0 3px;
+            }
+
+            .nav-link,
+            .logout-form,
+            .logout-button {
+                width: 100%;
+            }
+
+            .nav-link,
+            .logout-button {
+                min-height: 38px;
+            }
+
+            .form-header {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 19px;
+            }
+
+            .form-content {
+                padding: 19px;
+            }
+
+            .form-actions {
+                align-items: stretch;
+                flex-direction: column-reverse;
+            }
+
+            .cancel-button,
+            .submit-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-shell {
+                padding: 11px 9px 28px;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 26px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+            }
+
+            .form-panel {
+                border-radius: 14px;
+            }
+
+            .form-content {
+                padding: 16px;
+            }
+
+            .information-box {
+                padding: 12px;
+            }
+        }
+
+        /* =========================
+           REDUCED MOTION
+        ========================= */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition: none !important;
+            }
+        }
+    </style>
 
 </head>
 
-<body class="bg-light">
+<body>
+
+<div class="page-shell">
+
+    <main class="workspace">
+
+        <!-- =========================
+             TOP NAVIGATION
+        ========================= -->
+
+        <header class="topbar">
+
+            <div class="brand">
+
+                <div class="brand-mark">
+                    IT
+                </div>
+
+                <div class="brand-content">
+
+                    <p class="brand-title">
+                        IT Asset &amp; Resource Management
+                    </p>
+
+                    <p class="brand-subtitle">
+                        ITARMS · Employee Workspace
+                    </p>
+
+                </div>
+
+            </div>
 
 
-<nav class="navbar navbar-dark bg-dark">
+            <div class="nav-actions">
 
-    <div class="container">
+                <span class="welcome-user">
+                    Welcome,
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </span>
 
-        <a
-            class="navbar-brand fw-bold"
-            href="#"
-        >
-            ITARMS
-        </a>
-
-        <div class="d-flex align-items-center gap-3 flex-wrap">
-
-            <span class="text-white">
-                Welcome,
-                {{ request.user.get_full_name|default:request.user.username }}
-            </span>
-
-            <a
-                href="{% url 'employee_dashboard' %}"
-                class="btn btn-outline-light btn-sm"
-            >
-                Dashboard
-            </a>
-
-            <a
-                href="{% url 'employee_maintenance_requests' %}"
-                class="btn btn-outline-light btn-sm"
-            >
-                My Requests
-            </a>
-
-            <form
-                method="post"
-                action="{% url 'logout' %}"
-                class="m-0"
-            >
-                {% csrf_token %}
-
-                <button
-                    type="submit"
-                    class="btn btn-danger btn-sm"
+                <a
+                    href="{% url 'employee_dashboard' %}"
+                    class="nav-link"
                 >
-                    Logout
-                </button>
+                    Dashboard
+                </a>
 
-            </form>
+                <a
+                    href="{% url 'employee_maintenance_requests' %}"
+                    class="nav-link"
+                >
+                    My Requests
+                </a>
 
-        </div>
+                <form
+                    method="post"
+                    action="{% url 'logout' %}"
+                    class="logout-form"
+                >
 
-    </div>
+                    {% csrf_token %}
 
-</nav>
+                    <button
+                        type="submit"
+                        class="logout-button"
+                    >
+                        Logout
+                    </button>
+
+                </form>
+
+            </div>
+
+        </header>
 
 
-<div class="container py-5">
+        <!-- =========================
+             PAGE HEADER
+        ========================= -->
 
-    <div class="row justify-content-center">
+        <section class="page-header">
 
-        <div class="col-lg-8">
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                Maintenance &amp; Repair
+            </div>
 
-            <div class="card shadow-sm border-0">
+            <h1>
+                Request Maintenance
+            </h1>
 
-                <div class="card-body p-4 p-md-5">
+            <p>
+                Submit a maintenance or repair request for an IT asset
+                currently assigned to you. Provide clear information so
+                the responsible team can review and process the issue.
+            </p>
 
-                    <div class="mb-4">
+        </section>
 
-                        <h2 class="fw-bold mb-2">
-                            Request Maintenance / Repair
-                        </h2>
 
-                        <p class="text-muted mb-0">
-                            Submit a maintenance or repair request for an IT asset
-                            currently assigned to you.
+        <!-- =========================
+             FORM WORKSPACE
+        ========================= -->
+
+        <section class="form-panel">
+
+            <div class="form-header">
+
+                <div class="form-header-content">
+
+                    <h2>
+                        Maintenance Request Details
+                    </h2>
+
+                    <p>
+                        Complete each field below with accurate information
+                        about the assigned asset and the issue.
+                    </p>
+
+                </div>
+
+                <div class="form-label-badge">
+                    New Request
+                </div>
+
+            </div>
+
+
+            <div class="form-content">
+
+                {% if form.non_field_errors %}
+
+                    <div class="form-error-summary">
+
+                        <strong>
+                            Please review the request.
+                        </strong>
+
+                        {% for error in form.non_field_errors %}
+
+                            <div>
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+                <form
+                    method="post"
+                    novalidate
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- =========================
+                         ASSET
+                    ========================= -->
+
+                    <div class="field-group">
+
+                        <label
+                            for="{{ form.asset.id_for_label }}"
+                            class="field-label"
+                        >
+                            Assigned Asset
+                        </label>
+
+                        <p class="field-help">
+                            Select the IT asset that is currently assigned
+                            to you and requires maintenance or repair.
                         </p>
+
+                        {{ form.asset }}
+
+                        {% if form.asset.errors %}
+
+                            <div class="field-errors">
+
+                                {% for error in form.asset.errors %}
+
+                                    <div>
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
 
                     </div>
 
 
-                    {% if form.non_field_errors %}
+                    <!-- =========================
+                         REQUEST TYPE
+                    ========================= -->
 
-                        <div class="alert alert-danger">
+                    <div class="field-group">
 
-                            {% for error in form.non_field_errors %}
+                        <label
+                            for="{{ form.request_type.id_for_label }}"
+                            class="field-label"
+                        >
+                            Request Type
+                        </label>
 
-                                <div>
-                                    {{ error }}
-                                </div>
+                        <p class="field-help">
+                            Choose whether this is a routine maintenance
+                            request or a repair request.
+                        </p>
 
-                            {% endfor %}
+                        {{ form.request_type }}
 
-                        </div>
+                        {% if form.request_type.errors %}
 
-                    {% endif %}
+                            <div class="field-errors">
 
+                                {% for error in form.request_type.errors %}
 
-                    <form
-                        method="post"
-                        novalidate
-                    >
+                                    <div>
+                                        {{ error }}
+                                    </div>
 
-                        {% csrf_token %}
+                                {% endfor %}
 
-
-                        <!-- Asset -->
-
-                        <div class="mb-4">
-
-                            <label
-                                for="{{ form.asset.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
-                                Assigned Asset
-                            </label>
-
-                            <div class="form-text mb-2">
-                                Select the IT asset that is currently assigned to you
-                                and requires maintenance or repair.
                             </div>
 
-                            {{ form.asset }}
+                        {% endif %}
 
-                            {% if form.asset.errors %}
-
-                                <div class="text-danger small mt-1">
-
-                                    {% for error in form.asset.errors %}
-
-                                        <div>
-                                            {{ error }}
-                                        </div>
-
-                                    {% endfor %}
-
-                                </div>
-
-                            {% endif %}
-
-                        </div>
+                    </div>
 
 
-                        <!-- Request Type -->
+                    <!-- =========================
+                         ISSUE DESCRIPTION
+                    ========================= -->
 
-                        <div class="mb-4">
+                    <div class="field-group">
 
-                            <label
-                                for="{{ form.request_type.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
-                                Request Type
-                            </label>
+                        <label
+                            for="{{ form.issue_description.id_for_label }}"
+                            class="field-label"
+                        >
+                            Issue Description
+                        </label>
 
-                            <div class="form-text mb-2">
-                                Choose whether this is a routine maintenance
-                                request or a repair request.
+                        <p class="field-help">
+                            Clearly explain the problem, symptoms, or
+                            maintenance required for the selected asset.
+                        </p>
+
+                        {{ form.issue_description }}
+
+                        {% if form.issue_description.errors %}
+
+                            <div class="field-errors">
+
+                                {% for error in form.issue_description.errors %}
+
+                                    <div>
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
                             </div>
 
-                            {{ form.request_type }}
+                        {% endif %}
 
-                            {% if form.request_type.errors %}
-
-                                <div class="text-danger small mt-1">
-
-                                    {% for error in form.request_type.errors %}
-
-                                        <div>
-                                            {{ error }}
-                                        </div>
-
-                                    {% endfor %}
-
-                                </div>
-
-                            {% endif %}
-
-                        </div>
+                    </div>
 
 
-                        <!-- Issue Description -->
+                    <!-- =========================
+                         PRIORITY
+                    ========================= -->
 
-                        <div class="mb-4">
+                    <div class="field-group">
 
-                            <label
-                                for="{{ form.issue_description.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
-                                Issue Description
-                            </label>
+                        <label
+                            for="{{ form.priority.id_for_label }}"
+                            class="field-label"
+                        >
+                            Priority
+                        </label>
 
-                            <div class="form-text mb-2">
-                                Clearly explain the problem, symptoms, or
-                                maintenance required for the selected asset.
+                        <p class="field-help">
+                            Select the urgency level of this maintenance
+                            or repair request.
+                        </p>
+
+                        {{ form.priority }}
+
+                        {% if form.priority.errors %}
+
+                            <div class="field-errors">
+
+                                {% for error in form.priority.errors %}
+
+                                    <div>
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
                             </div>
 
-                            {{ form.issue_description }}
+                        {% endif %}
 
-                            {% if form.issue_description.errors %}
+                    </div>
 
-                                <div class="text-danger small mt-1">
 
-                                    {% for error in form.issue_description.errors %}
+                    <!-- =========================
+                         INFORMATION
+                    ========================= -->
 
-                                        <div>
-                                            {{ error }}
-                                        </div>
+                    <div class="information-box">
 
-                                    {% endfor %}
-
-                                </div>
-
-                            {% endif %}
-
+                        <div class="information-icon">
+                            i
                         </div>
 
+                        <div class="information-content">
 
-                        <!-- Priority -->
-
-                        <div class="mb-4">
-
-                            <label
-                                for="{{ form.priority.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
-                                Priority
-                            </label>
-
-                            <div class="form-text mb-2">
-                                Select the urgency level of this maintenance
-                                or repair request.
-                            </div>
-
-                            {{ form.priority }}
-
-                            {% if form.priority.errors %}
-
-                                <div class="text-danger small mt-1">
-
-                                    {% for error in form.priority.errors %}
-
-                                        <div>
-                                            {{ error }}
-                                        </div>
-
-                                    {% endfor %}
-
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <!-- Information -->
-
-                        <div class="alert alert-info">
-
-                            <strong>Important:</strong>
+                            <strong>
+                                Important:
+                            </strong>
 
                             Your request will initially be submitted with
                             <strong>Pending</strong> status.
@@ -289,45 +1189,40 @@
 
                         </div>
 
+                    </div>
 
-                        <!-- Buttons -->
 
-                        <div
-                            class="d-flex justify-content-between align-items-center flex-wrap gap-2"
+                    <!-- =========================
+                         ACTIONS
+                    ========================= -->
+
+                    <div class="form-actions">
+
+                        <a
+                            href="{% url 'employee_maintenance_requests' %}"
+                            class="cancel-button"
                         >
+                            Cancel
+                        </a>
 
-                            <a
-                                href="{% url 'employee_maintenance_requests' %}"
-                                class="btn btn-outline-secondary"
-                            >
-                                Cancel
-                            </a>
+                        <button
+                            type="submit"
+                            class="submit-button"
+                        >
+                            Submit Maintenance Request
+                        </button>
 
-                            <button
-                                type="submit"
-                                class="btn btn-primary"
-                            >
-                                Submit Maintenance Request
-                            </button>
+                    </div>
 
-                        </div>
-
-                    </form>
-
-                </div>
+                </form>
 
             </div>
 
-        </div>
+        </section>
 
-    </div>
+    </main>
 
 </div>
-
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
 
 </body>
 

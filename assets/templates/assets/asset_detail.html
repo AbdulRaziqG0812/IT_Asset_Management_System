@@ -1,0 +1,1775 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ asset.asset_id }} | ITARMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* =========================================================
+           ITARMS - ASSET DETAIL
+           Page-specific CSS
+        ========================================================= */
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-soft: #eff6ff;
+
+            --success: #16a34a;
+            --success-soft: #ecfdf3;
+
+            --warning: #d97706;
+            --warning-soft: #fff7ed;
+
+            --danger: #dc2626;
+            --danger-soft: #fef2f2;
+
+            --purple: #7c3aed;
+            --purple-soft: #f5f3ff;
+
+            --dark: #0f172a;
+            --text: #334155;
+            --muted: #64748b;
+            --light-muted: #94a3b8;
+
+            --border: #dce4ef;
+            --border-light: #e9eef5;
+
+            --background: #f4f7fb;
+            --white: #ffffff;
+
+            --shadow-sm:
+                0 4px 12px rgba(15, 23, 42, 0.05);
+
+            --shadow-md:
+                0 12px 30px rgba(15, 23, 42, 0.08);
+
+            --shadow-lg:
+                0 25px 65px rgba(15, 23, 42, 0.11);
+
+            --radius-sm: 9px;
+            --radius-md: 15px;
+            --radius-lg: 22px;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at 7% 5%,
+                    rgba(37, 99, 235, 0.08),
+                    transparent 27%
+                ),
+                radial-gradient(
+                    circle at 94% 7%,
+                    rgba(124, 58, 237, 0.07),
+                    transparent 25%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f8fafc 0%,
+                    #f1f5f9 100%
+                );
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+
+
+        button {
+            font-family: inherit;
+        }
+
+
+        /* =========================================================
+           PAGE WRAPPER
+        ========================================================= */
+
+        .asset-detail-page {
+            width: min(1180px, calc(100% - 36px));
+            margin: 0 auto;
+            padding: 30px 0 55px;
+        }
+
+
+        /* =========================================================
+           ALERTS
+        ========================================================= */
+
+        .asset-alert {
+            margin-bottom: 18px;
+            padding: 13px 16px;
+
+            border-radius: 11px;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            box-shadow: var(--shadow-sm);
+        }
+
+
+        .asset-alert-danger {
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            background: var(--danger-soft);
+        }
+
+
+        .asset-alert-success {
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            background: var(--success-soft);
+        }
+
+
+        .asset-alert-info {
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+            background: var(--primary-soft);
+        }
+
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+
+        .asset-detail-hero {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 25px;
+
+            margin-bottom: 20px;
+            padding: 28px 30px;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius-lg);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.99),
+                    rgba(248, 250, 252, 0.96)
+                );
+
+            box-shadow:
+                var(--shadow-lg),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+
+        .asset-detail-hero::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #7c3aed,
+                    #2563eb
+                );
+        }
+
+
+        .asset-detail-hero::after {
+            content: "";
+
+            position: absolute;
+
+            width: 280px;
+            height: 280px;
+
+            top: -175px;
+            right: -70px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(37, 99, 235, 0.12),
+                    transparent 68%
+                );
+
+            pointer-events: none;
+        }
+
+
+        .asset-detail-hero-content {
+            position: relative;
+            z-index: 2;
+
+            min-width: 0;
+        }
+
+
+        .asset-detail-id {
+            margin-bottom: 7px;
+
+            color: var(--primary);
+
+            font-size: 10px;
+            font-weight: 850;
+
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+        }
+
+
+        .asset-detail-title {
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: clamp(25px, 3vw, 34px);
+            font-weight: 850;
+
+            letter-spacing: -0.8px;
+
+            overflow-wrap: anywhere;
+        }
+
+
+        .asset-detail-model {
+            margin: 7px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           ACTIONS
+        ========================================================= */
+
+        .asset-detail-actions {
+            position: relative;
+            z-index: 3;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            flex-wrap: wrap;
+            gap: 8px;
+
+            flex-shrink: 0;
+        }
+
+
+        .asset-btn {
+            min-height: 41px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 7px;
+
+            padding: 9px 15px;
+
+            border-radius: 10px;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+        }
+
+
+        .asset-btn:hover {
+            transform: translateY(-2px);
+        }
+
+
+        .asset-btn-secondary {
+            color: #475569;
+
+            border: 1px solid var(--border);
+
+            background: #ffffff;
+
+            box-shadow:
+                0 3px 8px rgba(15, 23, 42, 0.04);
+        }
+
+
+        .asset-btn-secondary:hover {
+            color: var(--dark);
+
+            border-color: #cbd5e1;
+
+            background: #f8fafc;
+
+            box-shadow:
+                0 7px 16px rgba(15, 23, 42, 0.07);
+        }
+
+
+        .asset-btn-primary {
+            color: #ffffff;
+
+            border: 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3b82f6,
+                    #1d4ed8
+                );
+
+            box-shadow:
+                0 9px 20px rgba(37, 99, 235, 0.24),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+
+
+        .asset-btn-primary:hover {
+            color: #ffffff;
+
+            box-shadow:
+                0 13px 27px rgba(37, 99, 235, 0.31);
+        }
+
+
+        .asset-btn-outline-danger {
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+
+            background: #ffffff;
+
+            box-shadow:
+                0 3px 8px rgba(220, 38, 38, 0.03);
+        }
+
+
+        .asset-btn-outline-danger:hover {
+            color: #991b1b;
+
+            border-color: #fca5a5;
+
+            background: #fff7f7;
+
+            box-shadow:
+                0 8px 18px rgba(220, 38, 38, 0.08);
+        }
+
+
+        /* =========================================================
+           DETAIL WORKSPACE
+        ========================================================= */
+
+        .asset-detail-card {
+            position: relative;
+
+            margin-bottom: 18px;
+            padding: 27px 30px;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius-lg);
+
+            background:
+                rgba(255, 255, 255, 0.98);
+
+            box-shadow: var(--shadow-md);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .asset-detail-card:hover {
+            box-shadow:
+                0 18px 42px rgba(15, 23, 42, 0.09);
+        }
+
+
+        .asset-detail-card::before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            top: 22px;
+            bottom: 22px;
+
+            width: 3px;
+
+            border-radius: 0 5px 5px 0;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #2563eb,
+                    #7c3aed
+                );
+
+            opacity: 0.85;
+        }
+
+
+        /* =========================================================
+           SECTION HEADER
+        ========================================================= */
+
+        .asset-section-header {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 13px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .asset-section-icon {
+            width: 39px;
+            height: 39px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 11px;
+
+            color: var(--primary);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #eff6ff,
+                    #dbeafe
+                );
+
+            font-size: 9px;
+            font-weight: 900;
+
+            letter-spacing: 0.3px;
+
+            box-shadow:
+                inset 0 1px 0 #ffffff,
+                0 5px 12px rgba(37, 99, 235, 0.08);
+        }
+
+
+        .asset-section-title {
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: 17px;
+            font-weight: 800;
+
+            letter-spacing: -0.2px;
+        }
+
+
+        .asset-section-subtitle {
+            margin: 4px 0 0;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            line-height: 1.55;
+        }
+
+
+        /* =========================================================
+           INFORMATION ITEMS
+        ========================================================= */
+
+        .asset-info-item {
+            height: 100%;
+
+            min-height: 82px;
+
+            padding: 14px 15px;
+
+            border: 1px solid var(--border-light);
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #f8fafc
+                );
+
+            box-shadow:
+                0 4px 11px rgba(15, 23, 42, 0.025);
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .asset-info-item:hover {
+            transform: translateY(-1px);
+
+            border-color: #d7e2ef;
+
+            box-shadow:
+                0 8px 18px rgba(15, 23, 42, 0.055);
+        }
+
+
+        .asset-info-label {
+            margin-bottom: 7px;
+
+            color: #94a3b8;
+
+            font-size: 9px;
+            font-weight: 850;
+
+            letter-spacing: 0.8px;
+
+            text-transform: uppercase;
+        }
+
+
+        .asset-info-value {
+            color: var(--dark);
+
+            font-size: 13px;
+            font-weight: 700;
+
+            line-height: 1.5;
+
+            overflow-wrap: anywhere;
+        }
+
+
+        /* =========================================================
+           STATUS BADGES
+        ========================================================= */
+
+        .asset-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 27px;
+
+            padding: 5px 10px;
+
+            border-radius: 7px;
+
+            font-size: 9px;
+            font-weight: 850;
+
+            letter-spacing: 0.4px;
+
+            text-transform: uppercase;
+
+            border: 1px solid transparent;
+        }
+
+
+        .asset-status-available {
+            color: #166534;
+
+            background: #ecfdf3;
+
+            border-color: #bbf7d0;
+        }
+
+
+        .asset-status-assigned {
+            color: #1d4ed8;
+
+            background: #eff6ff;
+
+            border-color: #bfdbfe;
+        }
+
+
+        .asset-status-maintenance {
+            color: #9a3412;
+
+            background: #fff7ed;
+
+            border-color: #fed7aa;
+        }
+
+
+        .asset-status-damaged {
+            color: #b91c1c;
+
+            background: #fef2f2;
+
+            border-color: #fecaca;
+        }
+
+
+        .asset-status-lost {
+            color: #7e22ce;
+
+            background: #faf5ff;
+
+            border-color: #e9d5ff;
+        }
+
+
+        .asset-status-neutral {
+            color: #475569;
+
+            background: #f1f5f9;
+
+            border-color: #e2e8f0;
+        }
+
+
+        /* =========================================================
+           DESCRIPTION
+        ========================================================= */
+
+        .asset-description {
+            margin: 0;
+
+            padding: 17px 18px;
+
+            color: #475569;
+
+            border: 1px solid var(--border-light);
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #f8fafc,
+                    #ffffff
+                );
+
+            font-size: 13px;
+
+            line-height: 1.8;
+
+            overflow-wrap: anywhere;
+        }
+
+
+        /* =========================================================
+           IMAGE
+        ========================================================= */
+
+        .asset-image-frame {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 260px;
+
+            padding: 22px;
+
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #ffffff 0%,
+                    #f8fafc 70%
+                );
+
+            box-shadow:
+                inset 0 1px 3px rgba(15, 23, 42, 0.025);
+        }
+
+
+        .asset-detail-image {
+            display: block;
+
+            max-width: 100%;
+            max-height: 500px;
+
+            width: auto;
+            height: auto;
+
+            object-fit: contain;
+
+            border-radius: 11px;
+
+            box-shadow:
+                0 18px 38px rgba(15, 23, 42, 0.13);
+
+            border: 1px solid #e2e8f0;
+        }
+
+
+        /* =========================================================
+           DOCUMENT
+        ========================================================= */
+
+        .asset-document {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 18px;
+
+            padding: 17px 18px;
+
+            border: 1px solid var(--border-light);
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #f8fafc
+                );
+
+            box-shadow:
+                0 5px 14px rgba(15, 23, 42, 0.035);
+        }
+
+
+        .asset-document-info {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            min-width: 0;
+        }
+
+
+        .asset-document-icon {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            color: #b91c1c;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #fef2f2,
+                    #fee2e2
+                );
+
+            font-size: 9px;
+            font-weight: 900;
+
+            box-shadow:
+                inset 0 1px 0 #ffffff;
+        }
+
+
+        .asset-document-name {
+            color: var(--dark);
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+
+        .asset-document-label {
+            margin-top: 3px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+        }
+
+
+        /* =========================================================
+           FOOTER / SYSTEM NOTE
+        ========================================================= */
+
+        .asset-page-footer {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 0 5px;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+        }
+
+
+        .asset-security-note {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+        }
+
+
+        .asset-security-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 3px rgba(34, 197, 94, 0.10);
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 900px) {
+
+            .asset-detail-hero {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+
+            .asset-detail-actions {
+                width: 100%;
+
+                justify-content: flex-start;
+            }
+
+        }
+
+
+        @media (max-width: 768px) {
+
+            .asset-detail-page {
+                width: min(100% - 20px, 1180px);
+
+                padding-top: 15px;
+            }
+
+
+            .asset-detail-hero {
+                padding: 22px 20px;
+            }
+
+
+            .asset-detail-card {
+                padding: 23px 20px;
+            }
+
+
+            .asset-detail-actions {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+                width: 100%;
+            }
+
+
+            .asset-detail-actions .asset-btn {
+                width: 100%;
+            }
+
+
+            .asset-document {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+
+            .asset-document .asset-btn {
+                width: 100%;
+            }
+
+
+            .asset-page-footer {
+                flex-direction: column;
+
+                justify-content: center;
+
+                text-align: center;
+
+                padding-top: 4px;
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .asset-detail-title {
+                font-size: 24px;
+            }
+
+
+            .asset-detail-model {
+                font-size: 12px;
+            }
+
+
+            .asset-detail-actions {
+                grid-template-columns: 1fr;
+            }
+
+
+            .asset-section-title {
+                font-size: 15px;
+            }
+
+
+            .asset-section-subtitle {
+                font-size: 10px;
+            }
+
+
+            .asset-info-item {
+                min-height: 76px;
+            }
+
+
+            .asset-info-value {
+                font-size: 12px;
+            }
+
+
+            .asset-image-frame {
+                min-height: 190px;
+
+                padding: 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="asset-detail-page">
+
+
+    <!-- =====================================================
+         MESSAGES
+    ====================================================== -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div
+                class="alert asset-alert
+                {% if message.tags == 'error' %}
+                    asset-alert-danger
+                {% elif message.tags == 'success' %}
+                    asset-alert-success
+                {% else %}
+                    asset-alert-info
+                {% endif %}
+                alert-dismissible fade show"
+                role="alert"
+            >
+
+                {{ message }}
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                ></button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="asset-detail-hero">
+
+        <div class="asset-detail-hero-content">
+
+            <div class="asset-detail-id">
+                Asset Record · {{ asset.asset_id }}
+            </div>
+
+            <h1 class="asset-detail-title">
+                {{ asset.asset_name }}
+            </h1>
+
+            <p class="asset-detail-model">
+                {{ asset.brand_model }}
+            </p>
+
+        </div>
+
+
+        <div class="asset-detail-actions">
+
+            <a
+                href="{% url 'asset_list' %}"
+                class="asset-btn asset-btn-secondary"
+            >
+                ← Back
+            </a>
+
+
+            {% if can_manage %}
+
+                <a
+                    href="{% url 'asset_update' asset.id %}"
+                    class="asset-btn asset-btn-primary"
+                >
+                    Edit Asset
+                </a>
+
+            {% endif %}
+
+
+            {% if can_delete %}
+
+                <a
+                    href="{% url 'asset_delete' asset.id %}"
+                    class="asset-btn asset-btn-outline-danger"
+                >
+                    Delete
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ASSET INFORMATION
+    ====================================================== -->
+
+    <section class="asset-detail-card">
+
+        <div class="asset-section-header">
+
+            <div class="asset-section-icon">
+                01
+            </div>
+
+            <div>
+
+                <h2 class="asset-section-title">
+                    Asset Information
+                </h2>
+
+                <p class="asset-section-subtitle">
+                    Core identity, classification and operational details.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Asset ID
+                    </div>
+
+                    <div class="asset-info-value">
+                        {{ asset.asset_id }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Asset Name
+                    </div>
+
+                    <div class="asset-info-value">
+                        {{ asset.asset_name }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Category
+                    </div>
+
+                    <div class="asset-info-value">
+                        {{ asset.get_category_display }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Brand / Model
+                    </div>
+
+                    <div class="asset-info-value">
+                        {{ asset.brand_model }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Serial Number
+                    </div>
+
+                    <div class="asset-info-value">
+                        {{ asset.serial_number }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Department
+                    </div>
+
+                    <div class="asset-info-value">
+
+                        {% if asset.department %}
+
+                            {{ asset.department.name }}
+
+                        {% else %}
+
+                            Not assigned
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Condition
+                    </div>
+
+                    <div class="asset-info-value">
+                        {{ asset.get_condition_display }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Status
+                    </div>
+
+                    <div class="asset-info-value">
+
+
+                        {% if asset.status == "AVAILABLE" %}
+
+                            <span class="asset-status asset-status-available">
+                                {{ asset.get_status_display }}
+                            </span>
+
+
+                        {% elif asset.status == "ASSIGNED" %}
+
+                            <span class="asset-status asset-status-assigned">
+                                {{ asset.get_status_display }}
+                            </span>
+
+
+                        {% elif asset.status == "UNDER_MAINTENANCE" %}
+
+                            <span class="asset-status asset-status-maintenance">
+                                {{ asset.get_status_display }}
+                            </span>
+
+
+                        {% elif asset.status == "DAMAGED" %}
+
+                            <span class="asset-status asset-status-damaged">
+                                {{ asset.get_status_display }}
+                            </span>
+
+
+                        {% elif asset.status == "LOST" %}
+
+                            <span class="asset-status asset-status-lost">
+                                {{ asset.get_status_display }}
+                            </span>
+
+
+                        {% else %}
+
+                            <span class="asset-status asset-status-neutral">
+                                {{ asset.get_status_display }}
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Location
+                    </div>
+
+                    <div class="asset-info-value">
+
+                        {% if asset.asset_location %}
+
+                            {{ asset.asset_location }}
+
+                        {% else %}
+
+                            Not specified
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PURCHASE & WARRANTY
+    ====================================================== -->
+
+    <section class="asset-detail-card">
+
+        <div class="asset-section-header">
+
+            <div class="asset-section-icon">
+                02
+            </div>
+
+            <div>
+
+                <h2 class="asset-section-title">
+                    Purchase & Warranty
+                </h2>
+
+                <p class="asset-section-subtitle">
+                    Procurement, cost and warranty information.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Purchase Date
+                    </div>
+
+                    <div class="asset-info-value">
+
+                        {% if asset.purchase_date %}
+
+                            {{ asset.purchase_date|date:"d M Y" }}
+
+                        {% else %}
+
+                            Not specified
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Purchase Price
+                    </div>
+
+                    <div class="asset-info-value">
+
+                        {% if asset.purchase_price %}
+
+                            {{ asset.purchase_price }}
+
+                        {% else %}
+
+                            Not specified
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Warranty Expiry
+                    </div>
+
+                    <div class="asset-info-value">
+
+                        {% if asset.warranty_expiry_date %}
+
+                            {{ asset.warranty_expiry_date|date:"d M Y" }}
+
+                        {% else %}
+
+                            Not specified
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Vendor / Supplier
+                    </div>
+
+                    <div class="asset-info-value">
+
+                        {% if asset.vendor_name %}
+
+                            {{ asset.vendor_name }}
+
+                        {% else %}
+
+                            Not specified
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DESCRIPTION
+    ====================================================== -->
+
+    {% if asset.description %}
+
+        <section class="asset-detail-card">
+
+            <div class="asset-section-header">
+
+                <div class="asset-section-icon">
+                    03
+                </div>
+
+                <div>
+
+                    <h2 class="asset-section-title">
+                        Description
+                    </h2>
+
+                    <p class="asset-section-subtitle">
+                        Additional information about this asset.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <p class="asset-description">
+                {{ asset.description|linebreaksbr }}
+            </p>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         ASSET IMAGE
+    ====================================================== -->
+
+    {% if asset.asset_image %}
+
+        <section class="asset-detail-card">
+
+            <div class="asset-section-header">
+
+                <div class="asset-section-icon">
+                    IMG
+                </div>
+
+                <div>
+
+                    <h2 class="asset-section-title">
+                        Asset Image
+                    </h2>
+
+                    <p class="asset-section-subtitle">
+                        Visual reference for this IT asset.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="asset-image-frame">
+
+                <img
+                    src="{{ asset.asset_image.url }}"
+                    alt="{{ asset.asset_name }}"
+                    class="asset-detail-image"
+                >
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         DOCUMENTS
+    ====================================================== -->
+
+    <section class="asset-detail-card">
+
+        <div class="asset-section-header">
+
+            <div class="asset-section-icon">
+                DOC
+            </div>
+
+            <div>
+
+                <h2 class="asset-section-title">
+                    Documents
+                </h2>
+
+                <p class="asset-section-subtitle">
+                    Supporting documents associated with this asset.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if asset.invoice_document %}
+
+            <div class="asset-document">
+
+                <div class="asset-document-info">
+
+                    <div class="asset-document-icon">
+                        PDF
+                    </div>
+
+                    <div>
+
+                        <div class="asset-document-name">
+                            Invoice Document
+                        </div>
+
+                        <div class="asset-document-label">
+                            Uploaded asset invoice
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="{{ asset.invoice_document.url }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="asset-btn asset-btn-secondary"
+                >
+                    View Invoice
+                </a>
+
+            </div>
+
+        {% else %}
+
+            <div class="asset-description">
+                No invoice document has been uploaded for this asset.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         RECORD INFORMATION
+    ====================================================== -->
+
+    <section class="asset-detail-card">
+
+        <div class="asset-section-header">
+
+            <div class="asset-section-icon">
+                LOG
+            </div>
+
+            <div>
+
+                <h2 class="asset-section-title">
+                    Record Information
+                </h2>
+
+                <p class="asset-section-subtitle">
+                    System timestamps for this asset record.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+
+            <div class="col-md-6">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Created
+                    </div>
+
+                    <div class="asset-info-value">
+                        {{ asset.created_at|date:"d M Y, h:i A" }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <div class="asset-info-item">
+
+                    <div class="asset-info-label">
+                        Last Updated
+                    </div>
+
+                    <div class="asset-info-value">
+                        {{ asset.updated_at|date:"d M Y, h:i A" }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PAGE FOOTER
+    ====================================================== -->
+
+    <div class="asset-page-footer">
+
+        <div>
+            ITARMS · IT Asset & Resource Management System
+        </div>
+
+        <div class="asset-security-note">
+
+            <span class="asset-security-dot"></span>
+
+            Secure asset record management
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+</body>
+
+</html>

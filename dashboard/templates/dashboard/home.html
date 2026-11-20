@@ -1,0 +1,1624 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ITARMS Dashboard</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --topbar-height: 70px;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f7fb;
+            color: #1f2937;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        .dashboard-wrapper {
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: #111827;
+            color: #ffffff;
+            overflow-y: auto;
+            z-index: 1030;
+        }
+
+        .brand {
+            height: var(--topbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .brand span {
+            color: #60a5fa;
+            margin-right: 7px;
+        }
+
+        .sidebar-section {
+            padding: 20px 14px 8px;
+            color: #9ca3af;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 3px 10px;
+            padding: 10px 12px;
+            color: #d1d5db;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: #1f2937;
+            color: #ffffff;
+        }
+
+        .sidebar-link .icon {
+            width: 22px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            height: var(--topbar-height);
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            z-index: 1020;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .page-subtitle {
+            margin: 3px 0 0;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            line-height: 1.2;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .user-role {
+            margin-top: 3px;
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .content {
+            padding: 28px;
+        }
+
+        .welcome-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 24px;
+        }
+
+        .welcome-card h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .welcome-card p {
+            margin: 6px 0 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.07);
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            margin-top: 7px;
+            color: #111827;
+            font-size: 28px;
+            font-weight: 750;
+        }
+
+        .stat-description {
+            margin-top: 5px;
+            color: #9ca3af;
+            font-size: 11px;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-top: 24px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 17px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .table-responsive {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background: #f9fafb;
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
+
+        .table td {
+            color: #374151;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .empty-state {
+            padding: 35px 15px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        .mobile-menu-button {
+            display: none;
+            border: 0;
+            background: transparent;
+            font-size: 23px;
+            color: #111827;
+        }
+
+        .sidebar-overlay {
+            display: none;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.35);
+                z-index: 1025;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .user-info {
+                display: none;
+            }
+
+            .page-title {
+                font-size: 17px;
+            }
+
+            .content {
+                padding: 14px;
+            }
+
+            .welcome-card {
+                padding: 18px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <span>IT</span> ITARMS
+        </div>
+
+        <div class="sidebar-section">
+            Main
+        </div>
+
+        <a href="/dashboard/" class="sidebar-link active">
+            <span class="icon">▦</span>
+            <span>Dashboard</span>
+        </a>
+
+        <div class="sidebar-section">
+            Management
+        </div>
+
+        <a href="/assets/" class="sidebar-link">
+            <span class="icon">▣</span>
+            <span>Assets</span>
+        </a>
+
+        <a href="/assignments/" class="sidebar-link">
+            <span class="icon">⇄</span>
+            <span>Assignments</span>
+        </a>
+
+        <a href="/asset-requests/" class="sidebar-link">
+            <span class="icon">▤</span>
+            <span>Asset Requests</span>
+        </a>
+
+        <a href="/maintenance/" class="sidebar-link">
+            <span class="icon">⚙</span>
+            <span>Maintenance</span>
+        </a>
+
+        <a href="/departments/" class="sidebar-link">
+            <span class="icon">⌂</span>
+            <span>Departments</span>
+        </a>
+
+        <a href="/reports/" class="sidebar-link">
+            <span class="icon">▥</span>
+            <span>Reports</span>
+        </a>
+
+        <a href="/notifications/" class="sidebar-link">
+            <span class="icon">◉</span>
+            <span>Notifications</span>
+        </a>
+
+        <div class="sidebar-section">
+            Account
+        </div>
+
+        <a href="/users/profile/" class="sidebar-link">
+            <span class="icon">●</span>
+            <span>My Profile</span>
+        </a>
+
+        <a href="/users/logout/" class="sidebar-link">
+            <span class="icon">↪</span>
+            <span>Logout</span>
+        </a>
+
+    </aside>
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Topbar -->
+        <header class="topbar">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <button
+                    type="button"
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
+                    aria-label="Open navigation"
+                >
+                    ☰
+                </button>
+
+                <div>
+                    <h1 class="page-title">
+                        Dashboard
+                    </h1>
+
+                    <p class="page-subtitle">
+                        IT Asset & Resource Management System
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="user-area">
+
+                <div class="user-avatar" id="userAvatar">
+                    U
+                </div>
+
+                <div class="user-info">
+
+                    <div
+                        class="user-name"
+                        id="userName"
+                    >
+                        User
+                    </div>
+
+                    <div
+                        class="user-role"
+                        id="userRole"
+                    >
+                        Loading...
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- Content -->
+        <section class="content">
+
+            <div class="welcome-card">
+
+                <h2 id="welcomeTitle">
+                    Welcome
+                </h2>
+
+                <p id="welcomeSubtitle">
+                    Loading dashboard information...
+                </p>
+
+            </div>
+
+            <!-- Statistics -->
+            <div class="row g-3">
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            Total Assets
+                        </div>
+
+                        <div
+                            class="stat-value"
+                            id="totalAssets"
+                        >
+                            0
+                        </div>
+
+                        <div class="stat-description">
+                            Assets within your permitted scope
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            Available Assets
+                        </div>
+
+                        <div
+                            class="stat-value"
+                            id="availableAssets"
+                        >
+                            0
+                        </div>
+
+                        <div class="stat-description">
+                            Currently available
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            Assigned Assets
+                        </div>
+
+                        <div
+                            class="stat-value"
+                            id="assignedAssets"
+                        >
+                            0
+                        </div>
+
+                        <div class="stat-description">
+                            Currently assigned
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            Under Maintenance
+                        </div>
+
+                        <div
+                            class="stat-value"
+                            id="maintenanceAssets"
+                        >
+                            0
+                        </div>
+
+                        <div class="stat-description">
+                            Assets under maintenance
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            Total Employees
+                        </div>
+
+                        <div
+                            class="stat-value"
+                            id="totalEmployees"
+                        >
+                            0
+                        </div>
+
+                        <div class="stat-description">
+                            Employees in your permitted scope
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            Active Assignments
+                        </div>
+
+                        <div
+                            class="stat-value"
+                            id="activeAssignments"
+                        >
+                            0
+                        </div>
+
+                        <div class="stat-description">
+                            Current active assignments
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            Pending Asset Requests
+                        </div>
+
+                        <div
+                            class="stat-value"
+                            id="pendingAssetRequests"
+                        >
+                            0
+                        </div>
+
+                        <div class="stat-description">
+                            Requests awaiting processing
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            Pending Maintenance
+                        </div>
+
+                        <div
+                            class="stat-value"
+                            id="pendingMaintenance"
+                        >
+                            0
+                        </div>
+
+                        <div class="stat-description">
+                            Maintenance requests pending
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Charts -->
+            <div class="row g-3 mt-1">
+
+                <div class="col-12 col-lg-6">
+                    <div class="section-card">
+
+                        <div class="section-header">
+                            <h3>
+                                Assets by Category
+                            </h3>
+                        </div>
+
+                        <div class="section-body">
+                            <div class="chart-container">
+                                <canvas id="categoryChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="section-card">
+
+                        <div class="section-header">
+                            <h3>
+                                Assets by Status
+                            </h3>
+                        </div>
+
+                        <div class="section-body">
+                            <div class="chart-container">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="section-card">
+
+                        <div class="section-header">
+                            <h3>
+                                Assets by Department
+                            </h3>
+                        </div>
+
+                        <div class="section-body">
+                            <div class="chart-container">
+                                <canvas id="departmentChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="section-card">
+
+                        <div class="section-header">
+                            <h3>
+                                Maintenance Status
+                            </h3>
+                        </div>
+
+                        <div class="section-body">
+                            <div class="chart-container">
+                                <canvas id="maintenanceChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Recent Assets -->
+            <div class="section-card">
+
+                <div class="section-header">
+                    <h3>
+                        Recent Assets
+                    </h3>
+                </div>
+
+                <div class="section-body p-0">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Asset ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Department</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentAssetsTable">
+                                <tr>
+                                    <td
+                                        colspan="6"
+                                        class="empty-state"
+                                    >
+                                        Loading...
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Recent Assignments -->
+            <div class="section-card">
+
+                <div class="section-header">
+                    <h3>
+                        Recent Assignments
+                    </h3>
+                </div>
+
+                <div class="section-body p-0">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Employee</th>
+                                    <th>Employee ID</th>
+                                    <th>Assigned Date</th>
+                                    <th>Return Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentAssignmentsTable">
+                                <tr>
+                                    <td
+                                        colspan="6"
+                                        class="empty-state"
+                                    >
+                                        Loading...
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="section-card">
+
+                <div class="section-header">
+                    <h3>
+                        Recent Asset Requests
+                    </h3>
+                </div>
+
+                <div class="section-body p-0">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Employee</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentRequestsTable">
+                                <tr>
+                                    <td
+                                        colspan="6"
+                                        class="empty-state"
+                                    >
+                                        Loading...
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Recent Maintenance -->
+            <div class="section-card">
+
+                <div class="section-header">
+                    <h3>
+                        Recent Maintenance
+                    </h3>
+                </div>
+
+                <div class="section-body p-0">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Request Type</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Employee</th>
+                                    <th>Requested</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentMaintenanceTable">
+                                <tr>
+                                    <td
+                                        colspan="6"
+                                        class="empty-state"
+                                    >
+                                        Loading...
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+<script>
+    const dashboardUrl = "{% url 'dashboard:home' %}";
+
+    let categoryChart = null;
+    let statusChart = null;
+    let departmentChart = null;
+    let maintenanceChart = null;
+
+    function escapeHtml(value) {
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function formatLabel(value) {
+        if (!value) {
+            return "Not specified";
+        }
+
+        return String(value)
+            .replaceAll("_", " ")
+            .toLowerCase()
+            .replace(/\b\w/g, letter => letter.toUpperCase());
+    }
+
+    function getStatusClass(status) {
+        const normalized = String(status || "").toUpperCase();
+
+        if (
+            normalized === "AVAILABLE" ||
+            normalized === "COMPLETED" ||
+            normalized === "APPROVED" ||
+            normalized === "ACTIVE"
+        ) {
+            return "status-success";
+        }
+
+        if (
+            normalized === "PENDING" ||
+            normalized === "UNDER_MAINTENANCE" ||
+            normalized === "IN_PROGRESS" ||
+            normalized === "EXPIRING_SOON"
+        ) {
+            return "status-warning";
+        }
+
+        if (
+            normalized === "DAMAGED" ||
+            normalized === "LOST" ||
+            normalized === "REJECTED" ||
+            normalized === "EXPIRED"
+        ) {
+            return "status-danger";
+        }
+
+        if (normalized === "ASSIGNED") {
+            return "status-info";
+        }
+
+        return "status-secondary";
+    }
+
+    function statusBadge(status) {
+        return `
+            <span class="status-badge ${getStatusClass(status)}">
+                ${escapeHtml(formatLabel(status))}
+            </span>
+        `;
+    }
+
+    function setText(id, value) {
+        const element = document.getElementById(id);
+
+        if (element) {
+            element.textContent = value ?? 0;
+        }
+    }
+
+    function renderEmptyRow(elementId, colspan, message) {
+        const element = document.getElementById(elementId);
+
+        if (!element) {
+            return;
+        }
+
+        element.innerHTML = `
+            <tr>
+                <td colspan="${colspan}" class="empty-state">
+                    ${escapeHtml(message)}
+                </td>
+            </tr>
+        `;
+    }
+
+    function renderRecentAssets(items) {
+        const table = document.getElementById("recentAssetsTable");
+
+        if (!items || items.length === 0) {
+            renderEmptyRow(
+                "recentAssetsTable",
+                6,
+                "No asset records available."
+            );
+            return;
+        }
+
+        table.innerHTML = items.map(item => `
+            <tr>
+                <td>
+                    <strong>
+                        ${escapeHtml(item.asset_id)}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHtml(item.asset_name)}
+                </td>
+
+                <td>
+                    ${escapeHtml(formatLabel(item.category))}
+                </td>
+
+                <td>
+                    ${statusBadge(item.status)}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.department || "Not assigned")}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.location || "Not specified")}
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    function renderRecentAssignments(items) {
+        const table = document.getElementById(
+            "recentAssignmentsTable"
+        );
+
+        if (!items || items.length === 0) {
+            renderEmptyRow(
+                "recentAssignmentsTable",
+                6,
+                "No assignment records available."
+            );
+            return;
+        }
+
+        table.innerHTML = items.map(item => `
+            <tr>
+                <td>
+                    <strong>
+                        ${escapeHtml(item.asset_id)}
+                    </strong>
+                    <br>
+                    <small class="text-muted">
+                        ${escapeHtml(item.asset_name)}
+                    </small>
+                </td>
+
+                <td>
+                    ${escapeHtml(item.employee_name)}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.employee_id)}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.assigned_date || "—")}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.return_date || "—")}
+                </td>
+
+                <td>
+                    ${item.is_active
+                        ? statusBadge("ASSIGNED")
+                        : statusBadge("COMPLETED")}
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    function renderRecentRequests(items) {
+        const table = document.getElementById(
+            "recentRequestsTable"
+        );
+
+        if (!items || items.length === 0) {
+            renderEmptyRow(
+                "recentRequestsTable",
+                6,
+                "No asset request records available."
+            );
+            return;
+        }
+
+        table.innerHTML = items.map(item => `
+            <tr>
+                <td>
+                    ${escapeHtml(item.asset_name || "Not specified")}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.asset_category)}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.quantity)}
+                </td>
+
+                <td>
+                    ${statusBadge(item.priority)}
+                </td>
+
+                <td>
+                    ${statusBadge(item.status)}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.employee)}
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    function renderRecentMaintenance(items) {
+        const table = document.getElementById(
+            "recentMaintenanceTable"
+        );
+
+        if (!items || items.length === 0) {
+            renderEmptyRow(
+                "recentMaintenanceTable",
+                6,
+                "No maintenance records available."
+            );
+            return;
+        }
+
+        table.innerHTML = items.map(item => `
+            <tr>
+                <td>
+                    <strong>
+                        ${escapeHtml(item.asset_id)}
+                    </strong>
+                    <br>
+                    <small class="text-muted">
+                        ${escapeHtml(item.asset_name)}
+                    </small>
+                </td>
+
+                <td>
+                    ${escapeHtml(formatLabel(item.request_type))}
+                </td>
+
+                <td>
+                    ${statusBadge(item.priority)}
+                </td>
+
+                <td>
+                    ${statusBadge(item.status)}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.employee)}
+                </td>
+
+                <td>
+                    ${escapeHtml(item.requested_at || "—")}
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    function destroyChart(chart) {
+        if (chart) {
+            chart.destroy();
+        }
+    }
+
+    function createBarChart(
+        canvasId,
+        labels,
+        values,
+        label
+    ) {
+        const canvas = document.getElementById(canvasId);
+
+        if (!canvas) {
+            return null;
+        }
+
+        return new Chart(canvas, {
+            type: "bar",
+
+            data: {
+                labels: labels.map(formatLabel),
+
+                datasets: [
+                    {
+                        label: label,
+                        data: values,
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function createDoughnutChart(
+        canvasId,
+        labels,
+        values,
+        label
+    ) {
+        const canvas = document.getElementById(canvasId);
+
+        if (!canvas) {
+            return null;
+        }
+
+        return new Chart(canvas, {
+            type: "doughnut",
+
+            data: {
+                labels: labels.map(formatLabel),
+
+                datasets: [
+                    {
+                        label: label,
+                        data: values,
+                        borderWidth: 2
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        });
+    }
+
+    function renderCharts(data) {
+        destroyChart(categoryChart);
+        destroyChart(statusChart);
+        destroyChart(departmentChart);
+        destroyChart(maintenanceChart);
+
+        const categoryData =
+            data.asset_category_wise || {};
+
+        const statusData =
+            data.asset_status_wise || {};
+
+        const departmentData =
+            data.asset_department_wise || {};
+
+        const maintenanceData =
+            data.maintenance_status_wise || {};
+
+        categoryChart = createBarChart(
+            "categoryChart",
+            Object.keys(categoryData),
+            Object.values(categoryData),
+            "Assets"
+        );
+
+        statusChart = createDoughnutChart(
+            "statusChart",
+            Object.keys(statusData),
+            Object.values(statusData),
+            "Assets"
+        );
+
+        departmentChart = createBarChart(
+            "departmentChart",
+            Object.keys(departmentData),
+            Object.values(departmentData),
+            "Assets"
+        );
+
+        maintenanceChart = createDoughnutChart(
+            "maintenanceChart",
+            Object.keys(maintenanceData),
+            Object.values(maintenanceData),
+            "Maintenance Requests"
+        );
+    }
+
+    function updateUserHeader(roleDisplay) {
+        const userNameElement =
+            document.getElementById("userName");
+
+        const userRoleElement =
+            document.getElementById("userRole");
+
+        const welcomeTitle =
+            document.getElementById("welcomeTitle");
+
+        const welcomeSubtitle =
+            document.getElementById("welcomeSubtitle");
+
+        const userAvatar =
+            document.getElementById("userAvatar");
+
+        const name =
+            "{{ request.user.get_full_name|default:request.user.username|escapejs }}";
+
+        const role =
+            roleDisplay ||
+            "{{ request.user.get_role_display|escapejs }}";
+
+        if (userNameElement) {
+            userNameElement.textContent = name;
+        }
+
+        if (userRoleElement) {
+            userRoleElement.textContent = role;
+        }
+
+        if (welcomeTitle) {
+            welcomeTitle.textContent =
+                `Welcome, ${name}`;
+        }
+
+        if (welcomeSubtitle) {
+            welcomeSubtitle.textContent =
+                `${role} dashboard`;
+        }
+
+        if (userAvatar) {
+            const firstLetter =
+                name.trim().charAt(0).toUpperCase() || "U";
+
+            userAvatar.textContent = firstLetter;
+        }
+    }
+
+    function renderDashboard(data) {
+        const statistics =
+            data.asset_statistics || {};
+
+        setText(
+            "totalAssets",
+            statistics.total
+        );
+
+        setText(
+            "availableAssets",
+            statistics.available
+        );
+
+        setText(
+            "assignedAssets",
+            statistics.assigned
+        );
+
+        setText(
+            "maintenanceAssets",
+            statistics.under_maintenance
+        );
+
+        setText(
+            "totalEmployees",
+            data.total_employees
+        );
+
+        setText(
+            "activeAssignments",
+            data.active_assignments
+        );
+
+        setText(
+            "pendingAssetRequests",
+            data.pending_asset_requests
+        );
+
+        setText(
+            "pendingMaintenance",
+            data.pending_maintenance_requests
+        );
+
+        renderCharts(data);
+
+        renderRecentAssets(
+            data.recent_assets
+        );
+
+        renderRecentAssignments(
+            data.recent_assignments
+        );
+
+        renderRecentRequests(
+            data.recent_asset_requests
+        );
+
+        renderRecentMaintenance(
+            data.recent_maintenance_requests
+        );
+
+        updateUserHeader(
+            data.role_display
+        );
+    }
+
+    async function loadDashboard() {
+        try {
+            const response =
+                await fetch(dashboardUrl, {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    },
+                    credentials: "same-origin"
+                });
+
+            if (
+                response.redirected ||
+                response.status === 401 ||
+                response.status === 403
+            ) {
+                window.location.href =
+                    "/users/login/";
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    "Unable to load dashboard."
+                );
+            }
+
+            const result =
+                await response.json();
+
+            if (!result.data) {
+                throw new Error(
+                    "Dashboard data is unavailable."
+                );
+            }
+
+            renderDashboard(result.data);
+
+        } catch (error) {
+            console.error(
+                "Dashboard loading error:",
+                error
+            );
+
+            document.getElementById(
+                "welcomeSubtitle"
+            ).textContent =
+                "Unable to load dashboard data. Please try again.";
+        }
+    }
+
+    const mobileMenuButton =
+        document.getElementById(
+            "mobileMenuButton"
+        );
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const sidebarOverlay =
+        document.getElementById(
+            "sidebarOverlay"
+        );
+
+    function closeSidebar() {
+        sidebar.classList.remove("show");
+        sidebarOverlay.classList.remove("show");
+    }
+
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener(
+            "click",
+            function () {
+                sidebar.classList.toggle("show");
+                sidebarOverlay.classList.toggle(
+                    "show"
+                );
+            }
+        );
+    }
+
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener(
+            "click",
+            closeSidebar
+        );
+    }
+
+    document
+        .querySelectorAll(".sidebar-link")
+        .forEach(link => {
+            link.addEventListener(
+                "click",
+                closeSidebar
+            );
+        });
+
+    updateUserHeader(
+        "{{ request.user.get_role_display|escapejs }}"
+    );
+
+    loadDashboard();
+</script>
+
+</body>
+</html>

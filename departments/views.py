@@ -346,6 +346,35 @@ def department_manager_assets(request):
 
 
 @login_required
+def department_manager_asset_detail(request, asset_id):
+    """
+    Department Manager can only view the details of an asset
+    belonging to the manager's own department.
+
+    The department restriction is enforced server-side so a manager
+    cannot access another department's asset by changing the asset_id
+    in the URL.
+    """
+
+    department = get_manager_department(request)
+
+    asset = get_object_or_404(
+        Asset.objects.select_related("department"),
+        pk=asset_id,
+        department=department,
+    )
+
+    return render(
+        request,
+        "departments/department_manager_asset_detail.html",
+        {
+            "department": department,
+            "asset": asset,
+        },
+    )
+
+
+@login_required
 def department_manager_asset_allocation(request):
     """
     Shows active asset allocations where the employee belongs to
@@ -636,8 +665,6 @@ def department_manager_process_asset_request(
         raise PermissionDenied(
             "Invalid asset request decision."
         )
-
-    old_status = asset_request.status
 
     with transaction.atomic():
         asset_request.status = decision

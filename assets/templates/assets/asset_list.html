@@ -1,0 +1,2496 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Asset Management | ITARMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        /* =========================================================
+           ITARMS ASSET LIST
+           Complete page-specific styling
+        ========================================================= */
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-soft: #eff6ff;
+
+            --success: #16a34a;
+            --success-soft: #ecfdf3;
+
+            --warning: #d97706;
+            --warning-soft: #fff7ed;
+
+            --danger: #dc2626;
+            --danger-soft: #fef2f2;
+
+            --purple: #7c3aed;
+            --purple-soft: #f5f3ff;
+
+            --dark: #0f172a;
+            --dark-soft: #1e293b;
+
+            --text: #334155;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --background: #f4f7fb;
+            --white: #ffffff;
+
+            --shadow-sm:
+                0 4px 12px rgba(15, 23, 42, 0.05);
+
+            --shadow-md:
+                0 12px 30px rgba(15, 23, 42, 0.08);
+
+            --shadow-lg:
+                0 24px 60px rgba(15, 23, 42, 0.12);
+
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(37, 99, 235, 0.08),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 90% 5%,
+                    rgba(124, 58, 237, 0.07),
+                    transparent 25%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f8fafc 0%,
+                    #f1f5f9 100%
+                );
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+        /* =========================================================
+           PAGE WRAPPER
+        ========================================================= */
+
+        .asset-page {
+            width: min(1700px, calc(100% - 36px));
+            margin: 0 auto;
+            padding: 30px 0 50px;
+        }
+
+        /* =========================================================
+           TOP HEADER
+        ========================================================= */
+
+        .asset-header {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 24px;
+
+            padding: 24px 28px;
+
+            margin-bottom: 20px;
+
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: var(--radius-lg);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.98),
+                    rgba(248, 250, 252, 0.96)
+                );
+
+            box-shadow:
+                var(--shadow-md),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+            overflow: hidden;
+        }
+
+        .asset-header::before {
+            content: "";
+
+            position: absolute;
+
+            top: -80px;
+            right: -80px;
+
+            width: 220px;
+            height: 220px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(37, 99, 235, 0.10),
+                    transparent 68%
+                );
+
+            pointer-events: none;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            width: 54px;
+            height: 54px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 15px;
+
+            color: #ffffff;
+
+            font-size: 23px;
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #3b82f6,
+                    #1d4ed8
+                );
+
+            box-shadow:
+                0 10px 22px rgba(37, 99, 235, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+            transform: translateY(-1px);
+        }
+
+        .header-kicker {
+            margin-bottom: 3px;
+
+            color: var(--primary);
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: clamp(22px, 2.2vw, 30px);
+            font-weight: 800;
+
+            letter-spacing: -0.7px;
+        }
+
+        .header-description {
+            margin: 5px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            position: relative;
+            z-index: 2;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* =========================================================
+           BUTTONS
+        ========================================================= */
+
+        .crud-btn {
+            min-height: 42px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 10px 17px;
+
+            border: 0;
+            border-radius: 11px;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .crud-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .crud-btn-primary {
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3b82f6,
+                    #1d4ed8
+                );
+
+            box-shadow:
+                0 8px 18px rgba(37, 99, 235, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+
+        .crud-btn-primary:hover {
+            color: #ffffff;
+
+            box-shadow:
+                0 12px 25px rgba(37, 99, 235, 0.32);
+        }
+
+        .btn-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        /* =========================================================
+           ALERTS
+        ========================================================= */
+
+        .page-alerts {
+            margin-bottom: 18px;
+        }
+
+        .page-alert {
+            margin-bottom: 10px;
+
+            border: 1px solid;
+            border-radius: 13px;
+
+            box-shadow: var(--shadow-sm);
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .page-alert.alert-success {
+            color: #166534;
+
+            background: var(--success-soft);
+            border-color: #bbf7d0;
+        }
+
+        .page-alert.alert-danger {
+            color: #991b1b;
+
+            background: var(--danger-soft);
+            border-color: #fecaca;
+        }
+
+        .page-alert.alert-info {
+            color: #1e40af;
+
+            background: var(--primary-soft);
+            border-color: #bfdbfe;
+        }
+
+        /* =========================================================
+           MAIN CRUD CONTAINER
+        ========================================================= */
+
+        .crud-container {
+            position: relative;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: var(--radius-lg);
+
+            background: rgba(255, 255, 255, 0.97);
+
+            box-shadow: var(--shadow-lg);
+        }
+
+        .crud-container::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #7c3aed,
+                    #2563eb
+                );
+        }
+
+        /* =========================================================
+           CONTROL BAR
+        ========================================================= */
+
+        .crud-controls {
+            padding: 24px 24px 20px;
+
+            border-bottom: 1px solid var(--border);
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #ffffff,
+                    #fbfdff
+                );
+        }
+
+        .controls-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+        .controls-title-wrap {
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+        }
+
+        .controls-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            color: var(--primary);
+
+            background: var(--primary-soft);
+
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .controls-title {
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .controls-subtitle {
+            margin: 3px 0 0;
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+        .record-summary {
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .record-count {
+            min-width: 30px;
+            height: 28px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 8px;
+
+            border-radius: 8px;
+
+            color: var(--primary);
+
+            background: var(--primary-soft);
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        /* =========================================================
+           FILTER FORM
+        ========================================================= */
+
+        .filter-grid {
+            display: grid;
+
+            grid-template-columns:
+                minmax(250px, 1.8fr)
+                minmax(145px, 1fr)
+                minmax(145px, 1fr)
+                minmax(145px, 1fr)
+                auto;
+
+            gap: 12px;
+
+            align-items: end;
+        }
+
+        .filter-field {
+            min-width: 0;
+        }
+
+        .filter-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #475569;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .search-symbol {
+            position: absolute;
+
+            top: 50%;
+            left: 13px;
+
+            transform: translateY(-50%);
+
+            color: #94a3b8;
+
+            font-size: 17px;
+
+            pointer-events: none;
+        }
+
+        .filter-input,
+        .filter-select {
+            width: 100%;
+            height: 43px;
+
+            padding: 9px 12px;
+
+            border: 1px solid #dbe3ee;
+            border-radius: 10px;
+
+            outline: none;
+
+            color: var(--dark);
+
+            background: #ffffff;
+
+            font-size: 13px;
+
+            box-shadow:
+                inset 0 1px 2px rgba(15, 23, 42, 0.025);
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .filter-input.search-input {
+            padding-left: 39px;
+        }
+
+        .filter-input::placeholder {
+            color: #a0aec0;
+        }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            border-color: #60a5fa;
+
+            box-shadow:
+                0 0 0 3px rgba(59, 130, 246, 0.11);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-submit {
+            height: 43px;
+
+            padding: 0 18px;
+
+            border: 0;
+            border-radius: 10px;
+
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #1d4ed8
+                );
+
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 7px 16px rgba(37, 99, 235, 0.20);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .filter-submit:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 20px rgba(37, 99, 235, 0.27);
+        }
+
+        .filter-reset {
+            height: 43px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 15px;
+
+            border: 1px solid #dbe3ee;
+            border-radius: 10px;
+
+            color: #475569;
+
+            background: #ffffff;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .filter-reset:hover {
+            color: var(--dark);
+
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        /* =========================================================
+           LIVE SEARCH INDICATOR
+        ========================================================= */
+
+        .live-search-info {
+            min-height: 20px;
+
+            margin-top: 10px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+        .live-search-info strong {
+            color: var(--primary);
+        }
+
+        /* =========================================================
+           TABLE HEADER
+        ========================================================= */
+
+        .table-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 18px 24px;
+
+            border-bottom: 1px solid var(--border);
+
+            background: #ffffff;
+        }
+
+        .inventory-title {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .inventory-dot {
+            width: 9px;
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #2563eb;
+
+            box-shadow:
+                0 0 0 5px rgba(37, 99, 235, 0.09);
+        }
+
+        .toolbar-note {
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* =========================================================
+           TABLE
+        ========================================================= */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .asset-table {
+            width: 100%;
+
+            min-width: 1180px;
+
+            margin: 0;
+
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .asset-table thead th {
+            padding: 13px 15px;
+
+            border-bottom: 1px solid #dbe3ee;
+
+            color: #64748b;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #f8fafc,
+                    #f4f7fb
+                );
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+
+            white-space: nowrap;
+        }
+
+        .asset-table tbody td {
+            padding: 15px;
+
+            border-bottom: 1px solid #edf1f5;
+
+            color: #475569;
+
+            background: #ffffff;
+
+            font-size: 12px;
+            font-weight: 500;
+
+            vertical-align: middle;
+
+            transition:
+                background 0.18s ease;
+        }
+
+        .asset-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .asset-table tbody tr:hover td {
+            background: #f8fbff;
+        }
+
+        .asset-table tbody tr {
+            transition:
+                transform 0.18s ease;
+        }
+
+        .asset-table tbody tr:hover {
+            transform: translateX(1px);
+        }
+
+        /* =========================================================
+           ASSET CELLS
+        ========================================================= */
+
+        .asset-id {
+            display: inline-flex;
+            align-items: center;
+
+            padding: 6px 9px;
+
+            border-radius: 8px;
+
+            color: #1d4ed8;
+
+            background: #eff6ff;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 0.2px;
+        }
+
+        .asset-name {
+            max-width: 220px;
+
+            color: var(--dark);
+
+            font-size: 12px;
+            font-weight: 750;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .asset-secondary {
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+        .cell-main {
+            color: #334155;
+            font-weight: 650;
+        }
+
+        /* =========================================================
+           STATUS BADGES
+        ========================================================= */
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 6px;
+
+            min-width: 104px;
+
+            padding: 6px 9px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+        .status-badge::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+
+            box-shadow:
+                0 0 0 3px rgba(255, 255, 255, 0.7);
+        }
+
+        .status-available {
+            color: #15803d;
+            background: #ecfdf3;
+        }
+
+        .status-assigned {
+            color: #1d4ed8;
+            background: #eff6ff;
+        }
+
+        .status-maintenance {
+            color: #b45309;
+            background: #fff7ed;
+        }
+
+        .status-damaged {
+            color: #c2410c;
+            background: #fff7ed;
+        }
+
+        .status-lost {
+            color: #b91c1c;
+            background: #fef2f2;
+        }
+
+        .status-neutral {
+            color: #475569;
+            background: #f1f5f9;
+        }
+
+        /* =========================================================
+           ACTIONS
+        ========================================================= */
+
+        .action-group {
+            display: flex;
+            align-items: center;
+
+            gap: 6px;
+
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            min-height: 32px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 6px 10px;
+
+            border: 1px solid #dbe3ee;
+            border-radius: 8px;
+
+            color: #475569;
+
+            background: #ffffff;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            transition:
+                all 0.18s ease;
+        }
+
+        .action-btn:hover {
+            color: #1d4ed8;
+
+            border-color: #bfdbfe;
+
+            background: #eff6ff;
+
+            transform: translateY(-1px);
+        }
+
+        .action-btn-edit {
+            color: #6d28d9;
+
+            border-color: #ddd6fe;
+
+            background: #faf5ff;
+        }
+
+        .action-btn-edit:hover {
+            color: #5b21b6;
+
+            border-color: #c4b5fd;
+
+            background: #f5f3ff;
+        }
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty-state {
+            display: none;
+
+            padding: 65px 25px;
+
+            text-align: center;
+
+            background: #ffffff;
+        }
+
+        .empty-icon {
+            width: 62px;
+            height: 62px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 16px;
+
+            border-radius: 18px;
+
+            color: #64748b;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #f8fafc,
+                    #e2e8f0
+                );
+
+            box-shadow:
+                inset 0 1px 0 #ffffff,
+                0 10px 25px rgba(15, 23, 42, 0.08);
+
+            font-size: 26px;
+        }
+
+        .empty-title {
+            margin: 0 0 6px;
+
+            color: var(--dark);
+
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .empty-text {
+            max-width: 430px;
+
+            margin: 0 auto;
+
+            color: var(--muted);
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* =========================================================
+           PAGINATION
+        ========================================================= */
+
+        .pagination-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 16px 24px;
+
+            border-top: 1px solid var(--border);
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #ffffff,
+                    #f8fafc
+                );
+        }
+
+        .pagination-info {
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .pagination-info strong {
+            color: var(--dark);
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+
+            gap: 5px;
+        }
+
+        .page-btn {
+            min-width: 34px;
+            height: 34px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 9px;
+
+            border: 1px solid #dbe3ee;
+            border-radius: 8px;
+
+            color: #475569;
+
+            background: #ffffff;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                all 0.18s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            color: var(--primary);
+
+            border-color: #bfdbfe;
+
+            background: #eff6ff;
+        }
+
+        .page-btn.active {
+            color: #ffffff;
+
+            border-color: var(--primary);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3b82f6,
+                    #1d4ed8
+                );
+
+            box-shadow:
+                0 5px 12px rgba(37, 99, 235, 0.20);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .page-dots {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-width: 25px;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+        }
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .page-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-top: 14px;
+            padding: 0 4px;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+        }
+
+        .footer-status {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 6px;
+        }
+
+        .footer-status-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 3px rgba(34, 197, 94, 0.10);
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1200px) {
+
+            .filter-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .filter-field.search-field {
+                grid-column: 1 / -1;
+            }
+
+            .filter-actions {
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .asset-page {
+                width: min(100% - 20px, 1700px);
+                padding-top: 15px;
+            }
+
+            .asset-header {
+                flex-direction: column;
+                align-items: stretch;
+
+                padding: 20px;
+            }
+
+            .header-left {
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .header-actions .crud-btn {
+                width: 100%;
+            }
+
+            .crud-controls {
+                padding: 18px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-field.search-field {
+                grid-column: auto;
+            }
+
+            .filter-actions {
+                width: 100%;
+            }
+
+            .filter-submit,
+            .filter-reset {
+                flex: 1;
+            }
+
+            .table-toolbar {
+                padding: 15px 18px;
+            }
+
+            .pagination-bar {
+                flex-direction: column;
+                align-items: stretch;
+
+                padding: 14px 18px;
+            }
+
+            .pagination-info {
+                text-align: center;
+            }
+
+            .pagination-controls {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .page-footer {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .header-icon {
+                width: 46px;
+                height: 46px;
+
+                font-size: 19px;
+            }
+
+            .header-title {
+                font-size: 21px;
+            }
+
+            .header-description {
+                font-size: 12px;
+            }
+
+            .controls-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .record-summary {
+                align-self: flex-start;
+            }
+
+            .page-btn {
+                min-width: 31px;
+                height: 31px;
+
+                padding: 0 7px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="asset-page">
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <header class="asset-header">
+
+        <div class="header-left">
+
+            <div class="header-icon">
+                ▦
+            </div>
+
+            <div>
+
+                <div class="header-kicker">
+                    ITARMS / Asset Management
+                </div>
+
+                <h1 class="header-title">
+                    Asset Management
+                </h1>
+
+                <p class="header-description">
+                    Manage, monitor and maintain your organization's
+                    IT assets from one centralized workspace.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% if can_manage %}
+
+            <div class="header-actions">
+
+                <a
+                    href="{% url 'asset_create' %}"
+                    class="crud-btn crud-btn-primary"
+                >
+                    <span class="btn-icon">＋</span>
+                    Add New Asset
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </header>
+
+
+    <!-- =====================================================
+         MESSAGES
+    ====================================================== -->
+
+    {% if messages %}
+
+        <div class="page-alerts">
+
+            {% for message in messages %}
+
+                <div
+                    class="alert page-alert
+                    {% if message.tags == 'error' %}
+                        alert-danger
+                    {% elif message.tags == 'success' %}
+                        alert-success
+                    {% else %}
+                        alert-info
+                    {% endif %}
+                    alert-dismissible fade show"
+                    role="alert"
+                >
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    ></button>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         MAIN CRUD PAGE
+    ====================================================== -->
+
+    <main class="crud-container">
+
+        <!-- FILTER / SEARCH AREA -->
+
+        <section class="crud-controls">
+
+            <div class="controls-heading">
+
+                <div class="controls-title-wrap">
+
+                    <div class="controls-icon">
+                        ⌕
+                    </div>
+
+                    <div>
+
+                        <h2 class="controls-title">
+                            Search & Filter
+                        </h2>
+
+                        <p class="controls-subtitle">
+                            Quickly find and organize asset records.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="record-summary">
+
+                    <span>
+                        Total Records
+                    </span>
+
+                    <span
+                        class="record-count"
+                        id="totalRecordCount"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVER-SIDE FILTER FORM -->
+
+            <form
+                method="get"
+                id="assetFilterForm"
+            >
+
+                <div class="filter-grid">
+
+                    <!-- SEARCH -->
+
+                    <div class="filter-field search-field">
+
+                        <label
+                            for="liveSearch"
+                            class="filter-label"
+                        >
+                            Search Assets
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <span class="search-symbol">
+                                ⌕
+                            </span>
+
+                            <input
+                                type="text"
+                                id="liveSearch"
+                                name="q"
+                                value="{{ search_query }}"
+                                class="filter-input search-input"
+                                placeholder="Search by ID, name, serial number, brand, model, department..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="filter-field">
+
+                        <label
+                            for="categoryFilter"
+                            class="filter-label"
+                        >
+                            Category
+                        </label>
+
+                        <select
+                            id="categoryFilter"
+                            name="category"
+                            class="filter-select"
+                        >
+
+                            <option value="">
+                                All Categories
+                            </option>
+
+                            {% for value, label in categories %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if selected_category == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="filter-field">
+
+                        <label
+                            for="statusFilter"
+                            class="filter-label"
+                        >
+                            Status
+                        </label>
+
+                        <select
+                            id="statusFilter"
+                            name="status"
+                            class="filter-select"
+                        >
+
+                            <option value="">
+                                All Statuses
+                            </option>
+
+                            {% for value, label in statuses %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if selected_status == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CONDITION -->
+
+                    <div class="filter-field">
+
+                        <label
+                            for="conditionFilter"
+                            class="filter-label"
+                        >
+                            Condition
+                        </label>
+
+                        <select
+                            id="conditionFilter"
+                            name="condition"
+                            class="filter-select"
+                        >
+
+                            <option value="">
+                                All Conditions
+                            </option>
+
+                            {% for value, label in conditions %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if selected_condition == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="filter-actions">
+
+                        <button
+                            type="submit"
+                            class="filter-submit"
+                        >
+                            Apply
+                        </button>
+
+                        <a
+                            href="{% url 'asset_list' %}"
+                            class="filter-reset"
+                        >
+                            Reset
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+
+            <div
+                class="live-search-info"
+                id="liveSearchInfo"
+            >
+                Showing all loaded asset records.
+            </div>
+
+        </section>
+
+
+        <!-- TABLE TOOLBAR -->
+
+        <div class="table-toolbar">
+
+            <h2 class="inventory-title">
+
+                <span class="inventory-dot"></span>
+
+                Asset Inventory
+
+            </h2>
+
+            <span class="toolbar-note">
+                Manage and review current asset records
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             ASSET TABLE
+        ================================================== -->
+
+        <div class="table-wrapper">
+
+            <table
+                class="asset-table"
+                id="assetTable"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Asset ID
+                        </th>
+
+                        <th>
+                            Asset Name
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Brand / Model
+                        </th>
+
+                        <th>
+                            Serial Number
+                        </th>
+
+                        <th>
+                            Department
+                        </th>
+
+                        <th>
+                            Condition
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="assetTableBody">
+
+                    {% for asset in assets %}
+
+                        <tr class="asset-row">
+
+                            <!-- ASSET ID -->
+
+                            <td>
+
+                                <a
+                                    href="{% url 'asset_detail' asset.id %}"
+                                    class="asset-id"
+                                >
+                                    {{ asset.asset_id }}
+                                </a>
+
+                            </td>
+
+
+                            <!-- ASSET NAME -->
+
+                            <td>
+
+                                <div
+                                    class="asset-name"
+                                    title="{{ asset.asset_name }}"
+                                >
+                                    {{ asset.asset_name }}
+                                </div>
+
+                            </td>
+
+
+                            <!-- CATEGORY -->
+
+                            <td>
+
+                                <span class="cell-main">
+                                    {{ asset.get_category_display }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- BRAND / MODEL -->
+
+                            <td>
+
+                                <span class="cell-main">
+                                    {{ asset.brand_model }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- SERIAL -->
+
+                            <td>
+
+                                <span class="cell-main">
+                                    {{ asset.serial_number }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- DEPARTMENT -->
+
+                            <td>
+
+                                {% if asset.department %}
+
+                                    <span class="cell-main">
+                                        {{ asset.department.name }}
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="asset-secondary">
+                                        Not assigned
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- CONDITION -->
+
+                            <td>
+
+                                <span class="cell-main">
+                                    {{ asset.get_condition_display }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if asset.status == "AVAILABLE" %}
+
+                                    <span class="status-badge status-available">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+                                {% elif asset.status == "ASSIGNED" %}
+
+                                    <span class="status-badge status-assigned">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+                                {% elif asset.status == "UNDER_MAINTENANCE" %}
+
+                                    <span class="status-badge status-maintenance">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+                                {% elif asset.status == "DAMAGED" %}
+
+                                    <span class="status-badge status-damaged">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+                                {% elif asset.status == "LOST" %}
+
+                                    <span class="status-badge status-lost">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status-badge status-neutral">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ACTIONS -->
+
+                            <td>
+
+                                <div class="action-group">
+
+                                    <a
+                                        href="{% url 'asset_detail' asset.id %}"
+                                        class="action-btn"
+                                    >
+                                        View
+                                    </a>
+
+                                    {% if can_manage %}
+
+                                        <a
+                                            href="{% url 'asset_update' asset.id %}"
+                                            class="action-btn action-btn-edit"
+                                        >
+                                            Edit
+                                        </a>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <!-- Django-side empty state -->
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+
+            <!-- JAVASCRIPT EMPTY / NO SEARCH RESULTS -->
+
+            <div
+                class="empty-state"
+                id="emptyState"
+            >
+
+                <div class="empty-icon">
+                    ◇
+                </div>
+
+                <h3 class="empty-title">
+                    No Assets Found
+                </h3>
+
+                <p class="empty-text">
+                    No asset records match your current search.
+                    Try another keyword or reset the filters.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PAGINATION
+        ================================================== -->
+
+        <div
+            class="pagination-bar"
+            id="paginationBar"
+        >
+
+            <div
+                class="pagination-info"
+                id="paginationInfo"
+            >
+                Showing 0 of 0 records
+            </div>
+
+            <div
+                class="pagination-controls"
+                id="paginationControls"
+            ></div>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer class="page-footer">
+
+        <div>
+            ITARMS · IT Asset & Resource Management System
+        </div>
+
+        <div class="footer-status">
+
+            <span class="footer-status-dot"></span>
+
+            Asset management workspace active
+
+        </div>
+
+    </footer>
+
+</div>
+
+
+<!-- =========================================================
+     BOOTSTRAP
+========================================================= -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+<!-- =========================================================
+     LIVE SEARCH + PAGINATION
+========================================================= -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput =
+            document.getElementById("liveSearch");
+
+        const tableBody =
+            document.getElementById("assetTableBody");
+
+        const rows = Array.from(
+            tableBody.querySelectorAll(".asset-row")
+        );
+
+        const emptyState =
+            document.getElementById("emptyState");
+
+        const paginationControls =
+            document.getElementById("paginationControls");
+
+        const paginationInfo =
+            document.getElementById("paginationInfo");
+
+        const totalRecordCount =
+            document.getElementById("totalRecordCount");
+
+        const liveSearchInfo =
+            document.getElementById("liveSearchInfo");
+
+
+        const recordsPerPage = 10;
+
+        let currentPage = 1;
+
+        let filteredRows = [...rows];
+
+
+        /*
+         * -------------------------------------------------------
+         * INITIAL TOTAL
+         * -------------------------------------------------------
+         */
+
+        totalRecordCount.textContent = rows.length;
+
+
+        /*
+         * -------------------------------------------------------
+         * SEARCH
+         * -------------------------------------------------------
+         */
+
+        function filterRecords() {
+
+            const searchTerm =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+
+            filteredRows = rows.filter(function (row) {
+
+                const rowText =
+                    row.textContent
+                        .toLowerCase()
+                        .replace(/\s+/g, " ");
+
+                return rowText.includes(searchTerm);
+
+            });
+
+
+            currentPage = 1;
+
+            updateTable();
+        }
+
+
+        /*
+         * -------------------------------------------------------
+         * PAGINATION
+         * -------------------------------------------------------
+         */
+
+        function getTotalPages() {
+
+            if (filteredRows.length === 0) {
+                return 1;
+            }
+
+            return Math.ceil(
+                filteredRows.length / recordsPerPage
+            );
+        }
+
+
+        function renderPagination() {
+
+            paginationControls.innerHTML = "";
+
+            const totalPages =
+                getTotalPages();
+
+
+            /*
+             * Previous
+             */
+
+            const previousButton =
+                document.createElement("button");
+
+            previousButton.type = "button";
+
+            previousButton.className = "page-btn";
+
+            previousButton.innerHTML = "‹";
+
+            previousButton.disabled =
+                currentPage === 1;
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    if (currentPage > 1) {
+
+                        currentPage--;
+
+                        updateTable();
+                    }
+
+                }
+            );
+
+            paginationControls.appendChild(
+                previousButton
+            );
+
+
+            /*
+             * Page Numbers
+             */
+
+            const pages = getVisiblePages(
+                currentPage,
+                totalPages
+            );
+
+
+            pages.forEach(function (page) {
+
+                if (page === "...") {
+
+                    const dots =
+                        document.createElement("span");
+
+                    dots.className = "page-dots";
+
+                    dots.textContent = "...";
+
+                    paginationControls.appendChild(
+                        dots
+                    );
+
+                    return;
+                }
+
+
+                const pageButton =
+                    document.createElement("button");
+
+                pageButton.type = "button";
+
+                pageButton.className =
+                    "page-btn";
+
+                pageButton.textContent = page;
+
+
+                if (page === currentPage) {
+
+                    pageButton.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+                pageButton.addEventListener(
+                    "click",
+                    function () {
+
+                        currentPage = page;
+
+                        updateTable();
+
+                    }
+                );
+
+
+                paginationControls.appendChild(
+                    pageButton
+                );
+
+            });
+
+
+            /*
+             * Next
+             */
+
+            const nextButton =
+                document.createElement("button");
+
+            nextButton.type = "button";
+
+            nextButton.className = "page-btn";
+
+            nextButton.innerHTML = "›";
+
+            nextButton.disabled =
+                currentPage === totalPages;
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        currentPage <
+                        totalPages
+                    ) {
+
+                        currentPage++;
+
+                        updateTable();
+
+                    }
+
+                }
+            );
+
+            paginationControls.appendChild(
+                nextButton
+            );
+
+        }
+
+
+        /*
+         * -------------------------------------------------------
+         * VISIBLE PAGE NUMBERS
+         * -------------------------------------------------------
+         */
+
+        function getVisiblePages(
+            current,
+            total
+        ) {
+
+            if (total <= 7) {
+
+                return Array.from(
+                    { length: total },
+                    (_, index) => index + 1
+                );
+
+            }
+
+
+            const pages = [];
+
+
+            pages.push(1);
+
+
+            if (current > 4) {
+
+                pages.push("...");
+
+            }
+
+
+            const start =
+                Math.max(2, current - 1);
+
+            const end =
+                Math.min(
+                    total - 1,
+                    current + 1
+                );
+
+
+            for (
+                let page = start;
+                page <= end;
+                page++
+            ) {
+
+                pages.push(page);
+
+            }
+
+
+            if (current < total - 3) {
+
+                pages.push("...");
+
+            }
+
+
+            pages.push(total);
+
+
+            return pages;
+        }
+
+
+        /*
+         * -------------------------------------------------------
+         * UPDATE TABLE
+         * -------------------------------------------------------
+         */
+
+        function updateTable() {
+
+            rows.forEach(function (row) {
+
+                row.style.display = "none";
+
+            });
+
+
+            const totalFiltered =
+                filteredRows.length;
+
+
+            const totalPages =
+                getTotalPages();
+
+
+            if (
+                currentPage >
+                totalPages
+            ) {
+
+                currentPage = totalPages;
+
+            }
+
+
+            const startIndex =
+                (currentPage - 1) *
+                recordsPerPage;
+
+
+            const endIndex =
+                Math.min(
+                    startIndex + recordsPerPage,
+                    totalFiltered
+                );
+
+
+            const visibleRows =
+                filteredRows.slice(
+                    startIndex,
+                    endIndex
+                );
+
+
+            visibleRows.forEach(function (row) {
+
+                row.style.display =
+                    "table-row";
+
+            });
+
+
+            /*
+             * Empty state
+             */
+
+            if (totalFiltered === 0) {
+
+                emptyState.style.display =
+                    "block";
+
+            } else {
+
+                emptyState.style.display =
+                    "none";
+
+            }
+
+
+            /*
+             * Pagination information
+             */
+
+            if (totalFiltered === 0) {
+
+                paginationInfo.innerHTML =
+                    "Showing <strong>0</strong> of <strong>"
+                    + rows.length
+                    + "</strong> records";
+
+            } else {
+
+                paginationInfo.innerHTML =
+                    "Showing <strong>"
+                    + (startIndex + 1)
+                    + "-"
+                    + endIndex
+                    + "</strong> of <strong>"
+                    + totalFiltered
+                    + "</strong> records";
+
+            }
+
+
+            /*
+             * Live search information
+             */
+
+            const searchTerm =
+                searchInput.value.trim();
+
+
+            if (searchTerm !== "") {
+
+                liveSearchInfo.innerHTML =
+                    'Live search: <strong>'
+                    + totalFiltered
+                    + '</strong> matching record'
+                    + (
+                        totalFiltered === 1
+                            ? ""
+                            : "s"
+                    )
+                    + '.';
+
+            } else {
+
+                liveSearchInfo.textContent =
+                    "Showing all loaded asset records.";
+
+            }
+
+
+            renderPagination();
+
+        }
+
+
+        /*
+         * -------------------------------------------------------
+         * LIVE SEARCH EVENT
+         * -------------------------------------------------------
+         */
+
+        searchInput.addEventListener(
+            "input",
+            filterRecords
+        );
+
+
+        /*
+         * -------------------------------------------------------
+         * INITIAL RENDER
+         * -------------------------------------------------------
+         */
+
+        updateTable();
+
+    });
+
+</script>
+
+</body>
+
+</html>

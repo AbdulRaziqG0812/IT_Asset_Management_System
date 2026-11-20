@@ -972,28 +972,79 @@ def update_employee_asset_return_status(
 # ============================================================================
 
 
+def get_role_redirect(user):
+    """
+    Return the correct landing page for each authenticated role.
+
+    Keeping all role-based login routing in one place prevents
+    different parts of the login flow from becoming inconsistent.
+    """
+
+    if user.role == User.Role.SUPER_ADMIN:
+        return "user_management"
+
+    if user.role == User.Role.IT_ADMIN:
+        return "dashboard:home"
+
+    if user.role == User.Role.HR_MANAGER:
+        return "hr_employee_management"
+
+    if user.role == User.Role.DEPARTMENT_MANAGER:
+        return "department_manager_dashboard"
+
+    if user.role == User.Role.EMPLOYEE:
+        return "employee_dashboard"
+
+    return None
+
+
 def login_view(request):
+    """
+    Authenticate users and redirect every supported role to its
+    correct application landing page.
+    """
+
     if request.user.is_authenticated:
-        if request.user.role == User.Role.SUPER_ADMIN:
-            return redirect("user_management")
+        if not request.user.is_active:
+            logout(request)
 
-        if request.user.role == User.Role.EMPLOYEE:
-            return redirect("employee_dashboard")
+            return render(
+                request,
+                "accounts/login.html",
+                {
+                    "error": (
+                        "Your account is inactive. "
+                        "Please contact the administrator."
+                    ),
+                },
+            )
 
-        if request.user.role == User.Role.HR_MANAGER:
-            return redirect("hr_employee_management")
+        redirect_name = get_role_redirect(request.user)
+
+        if redirect_name:
+            return redirect(redirect_name)
 
         return render(
             request,
             "accounts/login.html",
             {
-                "error": "You are already logged in.",
+                "error": (
+                    "Your account has an invalid or unsupported role. "
+                    "Please contact the administrator."
+                ),
             },
         )
 
     if request.method == "POST":
-        username = request.POST.get("username", "").strip()
-        password = request.POST.get("password", "")
+        username = request.POST.get(
+            "username",
+            "",
+        ).strip()
+
+        password = request.POST.get(
+            "password",
+            "",
+        )
 
         if not username or not password:
             return render(
@@ -1033,28 +1084,23 @@ def login_view(request):
                 },
             )
 
+        redirect_name = get_role_redirect(user)
+
+        if redirect_name is None:
+            return render(
+                request,
+                "accounts/login.html",
+                {
+                    "error": (
+                        "Your account has an invalid or unsupported role. "
+                        "Please contact the administrator."
+                    ),
+                },
+            )
+
         login(request, user)
 
-        if user.role == User.Role.SUPER_ADMIN:
-            return redirect("user_management")
-
-        if user.role == User.Role.EMPLOYEE:
-            return redirect("employee_dashboard")
-
-        if user.role == User.Role.HR_MANAGER:
-            return redirect("hr_employee_management")
-
-        return render(
-            request,
-            "accounts/login.html",
-            {
-                "error": (
-                    f"Login successful. "
-                    f"{user.get_role_display()} dashboard "
-                    f"will be available here."
-                ),
-            },
-        )
+        return redirect(redirect_name)
 
     return render(
         request,

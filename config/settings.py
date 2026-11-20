@@ -49,12 +49,13 @@ INSTALLED_APPS = [
     'departments',
     'assignments',
     'asset_requests',
-    "maintenance",
-    "software_licenses",
-    "vendors",
+    'maintenance',
+    'software_licenses',
+    'vendors',
     'audit_logs',
-    "reports",
-    "notifications",
+    'reports',
+    'notifications',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -136,7 +137,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files uploaded by users
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Email
@@ -144,6 +151,8 @@ STATIC_URL = 'static/'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+
+# Authentication
 AUTH_USER_MODEL = 'accounts.User'
 
 LOGIN_URL = "/users/login/"

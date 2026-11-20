@@ -1,0 +1,1908 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ page_title }} | ITARMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* =========================================================
+           ITARMS - ASSET FORM
+           Page-specific CSS
+        ========================================================= */
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-soft: #eff6ff;
+
+            --success: #16a34a;
+            --success-soft: #ecfdf3;
+
+            --danger: #dc2626;
+            --danger-soft: #fef2f2;
+
+            --warning: #d97706;
+            --warning-soft: #fff7ed;
+
+            --dark: #0f172a;
+            --text: #334155;
+            --muted: #64748b;
+            --light-muted: #94a3b8;
+
+            --border: #dce4ef;
+            --border-light: #e9eef5;
+
+            --background: #f4f7fb;
+            --white: #ffffff;
+
+            --shadow-sm:
+                0 4px 12px rgba(15, 23, 42, 0.05);
+
+            --shadow-md:
+                0 12px 30px rgba(15, 23, 42, 0.08);
+
+            --shadow-lg:
+                0 25px 65px rgba(15, 23, 42, 0.12);
+
+            --radius-sm: 9px;
+            --radius-md: 15px;
+            --radius-lg: 22px;
+        }
+
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at 8% 8%,
+                    rgba(37, 99, 235, 0.08),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 92% 10%,
+                    rgba(124, 58, 237, 0.07),
+                    transparent 25%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f8fafc 0%,
+                    #f1f5f9 100%
+                );
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+
+        /* =========================================================
+           PAGE
+        ========================================================= */
+
+        .asset-form-page {
+            width: min(1180px, calc(100% - 36px));
+
+            margin: 0 auto;
+
+            padding: 30px 0 55px;
+        }
+
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .form-header {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 25px;
+
+            padding: 25px 28px;
+
+            margin-bottom: 20px;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(255, 255, 255, 0.9);
+
+            border-radius: var(--radius-lg);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.98),
+                    rgba(248, 250, 252, 0.96)
+                );
+
+            box-shadow:
+                var(--shadow-md),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .form-header::after {
+            content: "";
+
+            position: absolute;
+
+            width: 240px;
+            height: 240px;
+
+            top: -145px;
+            right: -70px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(37, 99, 235, 0.12),
+                    transparent 68%
+                );
+
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-kicker {
+            margin-bottom: 5px;
+
+            color: var(--primary);
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: clamp(24px, 3vw, 32px);
+            font-weight: 850;
+
+            letter-spacing: -0.8px;
+        }
+
+        .header-description {
+            max-width: 680px;
+
+            margin: 7px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .header-description strong {
+            color: var(--dark);
+        }
+
+        .header-action {
+            position: relative;
+            z-index: 3;
+
+            flex-shrink: 0;
+        }
+
+
+        /* =========================================================
+           BUTTONS
+        ========================================================= */
+
+        .form-btn {
+            min-height: 42px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 10px 17px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .form-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-btn-secondary {
+            color: #475569;
+
+            border: 1px solid var(--border);
+
+            background: #ffffff;
+
+            box-shadow:
+                0 3px 8px rgba(15, 23, 42, 0.04);
+        }
+
+        .form-btn-secondary:hover {
+            color: var(--dark);
+
+            border-color: #cbd5e1;
+
+            background: #f8fafc;
+        }
+
+        .form-btn-primary {
+            color: #ffffff;
+
+            border: 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3b82f6,
+                    #1d4ed8
+                );
+
+            box-shadow:
+                0 9px 20px rgba(37, 99, 235, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+
+        .form-btn-primary:hover {
+            color: #ffffff;
+
+            box-shadow:
+                0 13px 27px rgba(37, 99, 235, 0.32);
+        }
+
+
+        /* =========================================================
+           MAIN FORM CONTAINER
+        ========================================================= */
+
+        .form-workspace {
+            position: relative;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(255, 255, 255, 0.95);
+
+            border-radius: var(--radius-lg);
+
+            background:
+                rgba(255, 255, 255, 0.98);
+
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-workspace::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #7c3aed,
+                    #2563eb
+                );
+        }
+
+
+        /* =========================================================
+           FORM ERROR
+        ========================================================= */
+
+        .form-global-error {
+            margin: 24px 28px 0;
+
+            padding: 14px 16px;
+
+            border: 1px solid #fecaca;
+
+            border-radius: 11px;
+
+            color: #991b1b;
+
+            background: var(--danger-soft);
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .form-global-error strong {
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #7f1d1d;
+
+            font-size: 12px;
+        }
+
+        .form-global-error ul {
+            margin: 5px 0 0;
+            padding-left: 18px;
+        }
+
+
+        /* =========================================================
+           FORM SECTION
+        ========================================================= */
+
+        .form-section {
+            padding: 30px 30px 32px;
+
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .form-section:last-of-type {
+            border-bottom: 0;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 13px;
+
+            margin-bottom: 25px;
+        }
+
+        .section-number {
+            width: 39px;
+            height: 39px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 11px;
+
+            color: var(--primary);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #eff6ff,
+                    #dbeafe
+                );
+
+            font-size: 11px;
+            font-weight: 900;
+
+            box-shadow:
+                inset 0 1px 0 #ffffff,
+                0 5px 12px rgba(37, 99, 235, 0.08);
+        }
+
+        .section-title {
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: 17px;
+            font-weight: 800;
+
+            letter-spacing: -0.2px;
+        }
+
+        .section-description {
+            margin: 4px 0 0;
+
+            color: var(--muted);
+
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+
+        /* =========================================================
+           FORM FIELDS
+        ========================================================= */
+
+        .field-wrapper {
+            min-width: 0;
+        }
+
+        .field-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            margin-bottom: 8px;
+
+            color: #334155;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 0.2px;
+        }
+
+        .required-mark {
+            color: var(--danger);
+
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .optional-mark {
+            margin-left: 3px;
+
+            padding: 3px 6px;
+
+            border-radius: 5px;
+
+            color: #64748b;
+
+            background: #f1f5f9;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            letter-spacing: 0.3px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =========================================================
+           DJANGO GENERATED INPUTS
+        ========================================================= */
+
+        .field-wrapper input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+        .field-wrapper select,
+        .field-wrapper textarea,
+        .standard-field {
+            width: 100%;
+
+            min-height: 44px;
+
+            padding: 10px 12px;
+
+            border: 1px solid #dbe3ee;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            color: var(--dark);
+
+            background: #ffffff;
+
+            font-size: 13px;
+
+            box-shadow:
+                inset 0 1px 2px rgba(15, 23, 42, 0.025);
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .field-wrapper textarea {
+            min-height: 125px;
+
+            resize: vertical;
+
+            line-height: 1.6;
+        }
+
+        .field-wrapper select {
+            cursor: pointer;
+        }
+
+        .field-wrapper input::placeholder,
+        .field-wrapper textarea::placeholder {
+            color: #a0aec0;
+        }
+
+        .field-wrapper input:focus,
+        .field-wrapper select:focus,
+        .field-wrapper textarea:focus {
+            border-color: #60a5fa;
+
+            background: #ffffff;
+
+            box-shadow:
+                0 0 0 3px rgba(59, 130, 246, 0.10),
+                0 5px 15px rgba(37, 99, 235, 0.04);
+        }
+
+        .field-wrapper input:hover,
+        .field-wrapper select:hover,
+        .field-wrapper textarea:hover {
+            border-color: #cbd5e1;
+        }
+
+
+        /* =========================================================
+           FILE INPUTS
+        ========================================================= */
+
+        input[type="file"] {
+            width: 100%;
+
+            min-height: 46px;
+
+            padding: 8px;
+
+            border: 1px dashed #cbd5e1;
+
+            border-radius: 10px;
+
+            color: #64748b;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8fafc,
+                    #ffffff
+                );
+
+            font-size: 11px;
+
+            cursor: pointer;
+
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease;
+        }
+
+        input[type="file"]:hover {
+            border-color: #93c5fd;
+
+            background: #f8fbff;
+        }
+
+        input[type="file"]::file-selector-button {
+            margin-right: 9px;
+
+            padding: 7px 11px;
+
+            border: 0;
+
+            border-radius: 7px;
+
+            color: #1d4ed8;
+
+            background: #eff6ff;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            cursor: pointer;
+        }
+
+
+        /* =========================================================
+           HELP TEXT
+        ========================================================= */
+
+        .field-help {
+            margin-top: 6px;
+
+            color: var(--light-muted);
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           FIELD ERRORS
+        ========================================================= */
+
+        .field-error {
+            margin-top: 7px;
+
+            padding: 7px 9px;
+
+            border-left: 3px solid var(--danger);
+
+            border-radius: 5px;
+
+            color: #b91c1c;
+
+            background: #fff7f7;
+
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .field-error ul {
+            margin: 0;
+            padding-left: 15px;
+        }
+
+        .field-wrapper:has(.field-error)
+        input:not([type="file"]),
+        .field-wrapper:has(.field-error)
+        select,
+        .field-wrapper:has(.field-error)
+        textarea {
+            border-color: #fca5a5;
+
+            background: #fffafa;
+        }
+
+
+        /* =========================================================
+           DESCRIPTION
+        ========================================================= */
+
+        .description-field {
+            width: 100%;
+        }
+
+        .description-field textarea {
+            min-height: 145px;
+        }
+
+
+        /* =========================================================
+           FILE CARD
+        ========================================================= */
+
+        .file-card {
+            height: 100%;
+
+            padding: 18px;
+
+            border: 1px solid #e1e8f0;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #f8fafc
+                );
+
+            box-shadow:
+                0 5px 15px rgba(15, 23, 42, 0.035);
+        }
+
+        .file-title {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            margin-bottom: 13px;
+
+            color: var(--dark);
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .file-icon {
+            width: 35px;
+            height: 35px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            color: var(--primary);
+
+            background: var(--primary-soft);
+
+            font-size: 9px;
+            font-weight: 900;
+
+            letter-spacing: 0.3px;
+        }
+
+        .file-help {
+            margin-top: 8px;
+
+            color: var(--light-muted);
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .current-file {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+
+            gap: 5px;
+
+            margin-top: 12px;
+            padding: 9px 10px;
+
+            border: 1px solid #bfdbfe;
+
+            border-radius: 8px;
+
+            color: #475569;
+
+            background: #f8fbff;
+
+            font-size: 10px;
+        }
+
+        .current-file strong {
+            color: #334155;
+        }
+
+        .current-file a {
+            color: var(--primary);
+
+            font-weight: 800;
+        }
+
+        .current-file a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =========================================================
+           REQUIRED NOTE
+        ========================================================= */
+
+        .required-note {
+            display: flex;
+            align-items: center;
+
+            gap: 6px;
+
+            margin-top: 25px;
+
+            padding: 10px 12px;
+
+            border-radius: 8px;
+
+            color: #64748b;
+
+            background: #f8fafc;
+
+            font-size: 10px;
+        }
+
+        .required-note .asterisk {
+            color: var(--danger);
+
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+
+        /* =========================================================
+           FORM FOOTER
+        ========================================================= */
+
+        .form-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 20px 30px;
+
+            border-top: 1px solid var(--border);
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #ffffff,
+                    #f8fafc
+                );
+        }
+
+        .footer-note {
+            color: var(--muted);
+
+            font-size: 10px;
+        }
+
+        .footer-actions {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+        }
+
+
+        /* =========================================================
+           BOTTOM NOTE
+        ========================================================= */
+
+        .page-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-top: 13px;
+            padding: 0 5px;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+        }
+
+        .security-note {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 6px;
+        }
+
+        .security-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 3px rgba(34, 197, 94, 0.10);
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 768px) {
+
+            .asset-form-page {
+                width: min(100% - 20px, 1180px);
+
+                padding-top: 15px;
+            }
+
+            .form-header {
+                flex-direction: column;
+                align-items: stretch;
+
+                padding: 20px;
+            }
+
+            .header-action,
+            .header-action .form-btn {
+                width: 100%;
+            }
+
+            .form-section {
+                padding: 24px 20px;
+            }
+
+            .form-footer {
+                flex-direction: column;
+                align-items: stretch;
+
+                padding: 18px 20px;
+            }
+
+            .footer-note {
+                text-align: center;
+            }
+
+            .footer-actions {
+                width: 100%;
+            }
+
+            .footer-actions .form-btn {
+                flex: 1;
+            }
+
+            .page-bottom {
+                flex-direction: column;
+                justify-content: center;
+
+                text-align: center;
+            }
+        }
+
+
+        @media (max-width: 480px) {
+
+            .header-title {
+                font-size: 23px;
+            }
+
+            .header-description {
+                font-size: 12px;
+            }
+
+            .section-heading {
+                gap: 10px;
+            }
+
+            .section-number {
+                width: 35px;
+                height: 35px;
+            }
+
+            .section-title {
+                font-size: 15px;
+            }
+
+            .section-description {
+                font-size: 11px;
+            }
+
+            .form-footer .form-btn {
+                min-height: 44px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="asset-form-page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="form-header">
+
+        <div class="header-content">
+
+            <div class="header-kicker">
+                ITARMS / Asset Management /
+                {% if asset %}
+                    Edit Asset
+                {% else %}
+                    New Asset
+                {% endif %}
+            </div>
+
+            <h1 class="header-title">
+                {{ page_title }}
+            </h1>
+
+            <p class="header-description">
+
+                {% if asset %}
+
+                    Update the information and configuration of
+                    <strong>{{ asset.asset_id }}</strong>
+                    while keeping the asset record accurate.
+
+                {% else %}
+
+                    Register a new IT asset and keep its complete
+                    information organized in the system.
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+
+        <div class="header-action">
+
+            <a
+                href="{% if asset %}{% url 'asset_detail' asset.id %}{% else %}{% url 'asset_list' %}{% endif %}"
+                class="form-btn form-btn-secondary"
+            >
+                ← Cancel
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         FORM WORKSPACE
+    ====================================================== -->
+
+    <main class="form-workspace">
+
+
+        <!-- GLOBAL FORM ERROR -->
+
+        {% if form.non_field_errors %}
+
+            <div class="form-global-error">
+
+                <strong>
+                    Please review the form.
+                </strong>
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+        {% endif %}
+
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+            novalidate
+        >
+
+            {% csrf_token %}
+
+
+            <!-- =================================================
+                 SECTION 01
+            ================================================== -->
+
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        01
+                    </div>
+
+                    <div>
+
+                        <h2 class="section-title">
+                            Basic Information
+                        </h2>
+
+                        <p class="section-description">
+                            Enter the primary identity and classification
+                            information of the IT asset.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row g-4">
+
+
+                    <!-- ASSET NAME -->
+
+                    <div class="col-md-6">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.asset_name.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Asset Name
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
+                            </label>
+
+                            {{ form.asset_name }}
+
+                            {% if form.asset_name.errors %}
+
+                                <div class="field-error">
+                                    {{ form.asset_name.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="col-md-6">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.category.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Category
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
+                            </label>
+
+                            {{ form.category }}
+
+                            {% if form.category.errors %}
+
+                                <div class="field-error">
+                                    {{ form.category.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BRAND MODEL -->
+
+                    <div class="col-md-6">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.brand_model.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Brand / Model
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
+                            </label>
+
+                            {{ form.brand_model }}
+
+                            {% if form.brand_model.errors %}
+
+                                <div class="field-error">
+                                    {{ form.brand_model.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SERIAL NUMBER -->
+
+                    <div class="col-md-6">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.serial_number.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Serial Number
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
+                            </label>
+
+                            {{ form.serial_number }}
+
+                            <div class="field-help">
+                                Serial number must be unique for every asset.
+                            </div>
+
+                            {% if form.serial_number.errors %}
+
+                                <div class="field-error">
+                                    {{ form.serial_number.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 02
+            ================================================== -->
+
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        02
+                    </div>
+
+                    <div>
+
+                        <h2 class="section-title">
+                            Purchase & Warranty
+                        </h2>
+
+                        <p class="section-description">
+                            Record purchasing information and warranty
+                            details when available.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row g-4">
+
+
+                    <!-- PURCHASE DATE -->
+
+                    <div class="col-md-4">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.purchase_date.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Purchase Date
+
+                                <span class="optional-mark">
+                                    Optional
+                                </span>
+
+                            </label>
+
+                            {{ form.purchase_date }}
+
+                            {% if form.purchase_date.errors %}
+
+                                <div class="field-error">
+                                    {{ form.purchase_date.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PURCHASE PRICE -->
+
+                    <div class="col-md-4">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.purchase_price.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Purchase Price
+
+                                <span class="optional-mark">
+                                    Optional
+                                </span>
+
+                            </label>
+
+                            {{ form.purchase_price }}
+
+                            <div class="field-help">
+                                Enter the purchase amount without currency symbols.
+                            </div>
+
+                            {% if form.purchase_price.errors %}
+
+                                <div class="field-error">
+                                    {{ form.purchase_price.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- WARRANTY -->
+
+                    <div class="col-md-4">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.warranty_expiry_date.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Warranty Expiry
+
+                                <span class="optional-mark">
+                                    Optional
+                                </span>
+
+                            </label>
+
+                            {{ form.warranty_expiry_date }}
+
+                            {% if form.warranty_expiry_date.errors %}
+
+                                <div class="field-error">
+                                    {{ form.warranty_expiry_date.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- VENDOR -->
+
+                    <div class="col-md-6">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.vendor_name.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Vendor / Supplier
+
+                                <span class="optional-mark">
+                                    Optional
+                                </span>
+
+                            </label>
+
+                            {{ form.vendor_name }}
+
+                            {% if form.vendor_name.errors %}
+
+                                <div class="field-error">
+                                    {{ form.vendor_name.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 03
+            ================================================== -->
+
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        03
+                    </div>
+
+                    <div>
+
+                        <h2 class="section-title">
+                            Assignment & Status
+                        </h2>
+
+                        <p class="section-description">
+                            Define where the asset belongs and its current
+                            operational condition.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row g-4">
+
+
+                    <!-- DEPARTMENT -->
+
+                    <div class="col-md-4">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.department.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Department
+
+                                <span class="optional-mark">
+                                    Optional
+                                </span>
+
+                            </label>
+
+                            {{ form.department }}
+
+                            {% if form.department.errors %}
+
+                                <div class="field-error">
+                                    {{ form.department.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+
+                    <div class="col-md-4">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.asset_location.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Asset Location
+
+                                <span class="optional-mark">
+                                    Optional
+                                </span>
+
+                            </label>
+
+                            {{ form.asset_location }}
+
+                            {% if form.asset_location.errors %}
+
+                                <div class="field-error">
+                                    {{ form.asset_location.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CONDITION -->
+
+                    <div class="col-md-4">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.condition.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Condition
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
+                            </label>
+
+                            {{ form.condition }}
+
+                            {% if form.condition.errors %}
+
+                                <div class="field-error">
+                                    {{ form.condition.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="col-md-4">
+
+                        <div class="field-wrapper">
+
+                            <label
+                                for="{{ form.status.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Status
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
+                            </label>
+
+                            {{ form.status }}
+
+                            {% if form.status.errors %}
+
+                                <div class="field-error">
+                                    {{ form.status.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 04
+            ================================================== -->
+
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        04
+                    </div>
+
+                    <div>
+
+                        <h2 class="section-title">
+                            Additional Information
+                        </h2>
+
+                        <p class="section-description">
+                            Add useful notes and supporting documents
+                            for complete asset record keeping.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row g-4">
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="col-12">
+
+                        <div class="field-wrapper description-field">
+
+                            <label
+                                for="{{ form.description.id_for_label }}"
+                                class="field-label"
+                            >
+
+                                Description
+
+                                <span class="optional-mark">
+                                    Optional
+                                </span>
+
+                            </label>
+
+                            {{ form.description }}
+
+                            {% if form.description.errors %}
+
+                                <div class="field-error">
+                                    {{ form.description.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INVOICE -->
+
+                    <div class="col-lg-6">
+
+                        <div class="file-card">
+
+                            <div class="file-title">
+
+                                <span class="file-icon">
+                                    PDF
+                                </span>
+
+                                <span>
+                                    Invoice Document
+                                </span>
+
+                                <span class="optional-mark">
+                                    Optional
+                                </span>
+
+                            </div>
+
+                            {{ form.invoice_document }}
+
+                            <div class="file-help">
+                                Maximum 10 MB.
+                                Allowed formats: PDF, JPG, JPEG, PNG.
+                            </div>
+
+                            {% if form.invoice_document.errors %}
+
+                                <div class="field-error">
+                                    {{ form.invoice_document.errors }}
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if asset.invoice_document %}
+
+                                <div class="current-file">
+
+                                    <strong>
+                                        Current:
+                                    </strong>
+
+                                    <a
+                                        href="{{ asset.invoice_document.url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        View existing invoice
+                                    </a>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ASSET IMAGE -->
+
+                    <div class="col-lg-6">
+
+                        <div class="file-card">
+
+                            <div class="file-title">
+
+                                <span class="file-icon">
+                                    IMG
+                                </span>
+
+                                <span>
+                                    Asset Image
+                                </span>
+
+                                <span class="optional-mark">
+                                    Optional
+                                </span>
+
+                            </div>
+
+                            {{ form.asset_image }}
+
+                            <div class="file-help">
+                                Maximum 5 MB.
+                                Allowed formats: JPG, JPEG, PNG, WEBP.
+                            </div>
+
+                            {% if form.asset_image.errors %}
+
+                                <div class="field-error">
+                                    {{ form.asset_image.errors }}
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if asset.asset_image %}
+
+                                <div class="current-file">
+
+                                    <strong>
+                                        Current:
+                                    </strong>
+
+                                    <a
+                                        href="{{ asset.asset_image.url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        View existing image
+                                    </a>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="required-note">
+
+                    <span class="asterisk">
+                        *
+                    </span>
+
+                    Fields marked with an asterisk are required.
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 FORM FOOTER
+            ================================================== -->
+
+            <footer class="form-footer">
+
+                <div class="footer-note">
+                    Please review all information before saving the asset.
+                </div>
+
+                <div class="footer-actions">
+
+                    <a
+                        href="{% if asset %}{% url 'asset_detail' asset.id %}{% else %}{% url 'asset_list' %}{% endif %}"
+                        class="form-btn form-btn-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="form-btn form-btn-primary"
+                    >
+                        {{ submit_text }}
+                    </button>
+
+                </div>
+
+            </footer>
+
+        </form>
+
+    </main>
+
+
+    <!-- =====================================================
+         BOTTOM INFORMATION
+    ====================================================== -->
+
+    <div class="page-bottom">
+
+        <div>
+            ITARMS · IT Asset & Resource Management System
+        </div>
+
+        <div class="security-note">
+
+            <span class="security-dot"></span>
+
+            Secure asset record management
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+</body>
+
+</html>

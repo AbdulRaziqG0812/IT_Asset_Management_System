@@ -4,6 +4,7 @@ from .views import (
     department_manager_dashboard,
     department_manager_employees,
     department_manager_assets,
+    department_manager_asset_detail,
     department_manager_asset_allocation,
     department_manager_employee_detail,
     department_manager_create_asset_request,
@@ -32,6 +33,11 @@ urlpatterns = [
         "manager/assets/",
         department_manager_assets,
         name="department_manager_assets",
+    ),
+    path(
+        "manager/assets/<int:asset_id>/",
+        department_manager_asset_detail,
+        name="department_manager_asset_detail",
     ),
     path(
         "manager/assets/allocation/",

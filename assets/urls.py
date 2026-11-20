@@ -1,20 +1,38 @@
 from django.urls import path
 
 from .views import (
-    department_manager_assets,
-    department_manager_asset_detail,
+    asset_create,
+    asset_delete,
+    asset_detail,
+    asset_list,
+    asset_update,
 )
 
 
 urlpatterns = [
     path(
-        "department-manager/",
-        department_manager_assets,
-        name="department_manager_assets",
+        "",
+        asset_list,
+        name="asset_list",
     ),
     path(
-        "department-manager/<int:asset_id>/",
-        department_manager_asset_detail,
-        name="department_manager_asset_detail",
+        "add/",
+        asset_create,
+        name="asset_create",
+    ),
+    path(
+        "<int:asset_id>/",
+        asset_detail,
+        name="asset_detail",
+    ),
+    path(
+        "<int:asset_id>/edit/",
+        asset_update,
+        name="asset_update",
+    ),
+    path(
+        "<int:asset_id>/delete/",
+        asset_delete,
+        name="asset_delete",
     ),
 ]

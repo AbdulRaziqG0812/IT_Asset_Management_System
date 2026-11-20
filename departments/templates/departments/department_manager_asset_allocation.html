@@ -1,145 +1,1096 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
 
-\<html lang="en"> \<head>     \<meta charset="UTF-8">     \<meta name="viewport" content="width=device-width, initial-scale=1.0">     \<title>Asset Allocation | ITARMS\</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
->
+    <title>Asset Allocation | ITARMS</title>
 
-<style>
-    body {
-        background: #f4f6f9;
-    }
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    .card {
-        border: 0;
-        border-radius: 14px;
-        box-shadow: 0 2px 10px rgba(0,0,0,.05);
-    }
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+            background: #f3f6fa;
+            color: #172033;
+        }
 
-    .table td,
-    .table th {
-        vertical-align: middle;
-        white-space: nowrap;
-    }
-</style>
-```
+        body {
+            overflow-x: hidden;
+        }
 
-\</head>
+        /* =========================
+           SIDEBAR
+        ========================== */
 
-\<body>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 255px;
+            height: 100vh;
+            background: #111827;
+            color: #fff;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #1f2937;
+        }
 
-\<nav class="navbar navbar-dark bg-dark">
-&#x20;   \<div class="container">
-&#x20;       \<a class="navbar-brand fw-bold"
-&#x20;          href="{% url 'department_manager_dashboard' %}">
-&#x20;           ITARMS
-&#x20;       \</a>
+        .brand {
+            height: 72px;
+            display: flex;
+            align-items: center;
+            padding: 0 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            text-decoration: none;
+            color: #fff;
+        }
 
-```
-    <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">
-        Logout
-    </a>
-</div>
-```
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 11px;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+        }
 
-\</nav>
+        .brand-icon svg {
+            width: 21px;
+            height: 21px;
+        }
 
-\<main class="container py-4">
+        .brand-text {
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: .3px;
+        }
 
-```
-<div class="card mb-4">
-    <div class="card-body">
-        <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
-            <div>
-                <h2 class="mb-1">Asset Allocation</h2>
-                <p class="text-muted mb-0">
-                    Active allocations for {{ department.name }}
-                </p>
+        .sidebar-section {
+            padding: 22px 13px 10px;
+        }
+
+        .sidebar-label {
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 10px 9px;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 44px;
+            padding: 10px 12px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            transition:
+                background .2s ease,
+                color .2s ease,
+                transform .2s ease;
+        }
+
+        .nav-link svg {
+            width: 19px;
+            height: 19px;
+            flex-shrink: 0;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: #1f2937;
+            transform: translateX(2px);
+        }
+
+        .nav-link.active {
+            background: #2563eb;
+            color: #fff;
+            box-shadow: 0 7px 18px rgba(37, 99, 235, 0.22);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 15px 13px 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logout-button {
+            width: 100%;
+            min-height: 43px;
+            border: 0;
+            border-radius: 9px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        .logout-button:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        .logout-button svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* =========================
+           MAIN AREA
+        ========================== */
+
+        .main-wrapper {
+            margin-left: 255px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 72px;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 1px solid #dbe1e8;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu svg {
+            width: 21px;
+            height: 21px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 750;
+            color: #172033;
+        }
+
+        .topbar-subtitle {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 37px;
+            height: 37px;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        /* =========================
+           CONTENT
+        ========================== */
+
+        .content {
+            padding: 30px;
+            max-width: 1550px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .header-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 11px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .header-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 5px;
+            font-size: 24px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            padding: 10px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            color: #334155;
+            background: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            transition: .2s ease;
+            white-space: nowrap;
+        }
+
+        .back-button svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .back-button:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+            background: #eff6ff;
+        }
+
+        /* =========================
+           TABLE CARD
+        ========================== */
+
+        .table-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-title-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .card-title strong {
+            font-size: 15px;
+            color: #172033;
+        }
+
+        .allocation-count {
+            background: #eff6ff;
+            color: #2563eb;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        thead {
+            background: #f8fafc;
+        }
+
+        th {
+            padding: 14px 18px;
+            text-align: left;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .55px;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #eef2f6;
+            color: #334155;
+            font-size: 13px;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: background .15s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .asset-id {
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .asset-name {
+            font-weight: 650;
+            color: #334155;
+        }
+
+        .employee-name {
+            font-weight: 650;
+            color: #334155;
+        }
+
+        .employee-id {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .category-text {
+            color: #475569;
+        }
+
+        .date-text {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2563eb;
+        }
+
+        /* =========================
+           EMPTY STATE
+        ========================== */
+
+        .empty-state {
+            padding: 65px 25px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background: #f1f5f9;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .empty-icon svg {
+            width: 29px;
+            height: 29px;
+        }
+
+        .empty-state h3 {
+            margin: 0 0 7px;
+            font-size: 17px;
+            color: #334155;
+        }
+
+        .empty-state p {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* =========================
+           OVERLAY
+        ========================== */
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .45);
+            z-index: 999;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 1100px) {
+            .sidebar {
+                width: 235px;
+            }
+
+            .main-wrapper {
+                margin-left: 235px;
+            }
+
+            .content {
+                padding: 24px;
+            }
+
+            .topbar {
+                padding: 0 24px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                left: -270px;
+                width: 255px;
+                transition: left .25s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .topbar-user span {
+                display: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .content {
+                padding: 17px;
+            }
+
+            .page-header {
+                padding: 18px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .header-left {
+                width: 100%;
+            }
+
+            .page-header h1 {
+                font-size: 21px;
+            }
+
+            .back-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .card-header {
+                padding: 15px 17px;
+            }
+
+            .topbar {
+                height: 64px;
+            }
+
+            .page-title {
+                font-size: 17px;
+            }
+
+            .topbar-subtitle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+    <aside class="sidebar" id="sidebar">
+
+        <a href="{% url 'department_manager_dashboard' %}" class="brand">
+
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                </svg>
             </div>
 
-            <a href="{% url 'department_manager_dashboard' %}"
-               class="btn btn-outline-primary align-self-start">
-                Back to Dashboard
-            </a>
+            <span class="brand-text">ITARMS</span>
+
+        </a>
+
+        <div class="sidebar-section">
+
+            <div class="sidebar-label">
+                Department Management
+            </div>
+
+            <nav class="nav-list">
+
+                <!-- Dashboard -->
+                <a href="{% url 'department_manager_dashboard' %}"
+                   class="nav-link">
+
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+                <!-- Employees -->
+                <a href="{% url 'department_manager_employees' %}"
+                   class="nav-link">
+
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+
+                    <span>Employees</span>
+
+                </a>
+
+                <!-- Assets -->
+                <a href="{% url 'department_manager_assets' %}"
+                   class="nav-link">
+
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+
+                    <span>Assets</span>
+
+                </a>
+
+                <!-- Asset Allocation - ACTIVE -->
+                <a href="{% url 'department_manager_asset_allocation' %}"
+                   class="nav-link active">
+
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v20"></path>
+                        <path d="M2 12h20"></path>
+                        <circle cx="12" cy="12" r="9"></circle>
+                    </svg>
+
+                    <span>Asset Allocation</span>
+
+                </a>
+
+                <!-- Asset Requests -->
+                <a href="{% url 'department_manager_asset_requests' %}"
+                   class="nav-link">
+
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="8" y1="13" x2="16" y2="13"></line>
+                        <line x1="8" y1="17" x2="16" y2="17"></line>
+                        <line x1="8" y1="9" x2="10" y2="9"></line>
+                    </svg>
+
+                    <span>Asset Requests</span>
+
+                </a>
+
+                <!-- Create Request -->
+                <a href="{% url 'department_manager_create_asset_request' %}"
+                   class="nav-link">
+
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+
+                    <span>Create Request</span>
+
+                </a>
+
+            </nav>
+
         </div>
-    </div>
-</div>
 
-<div class="card">
-    <div class="card-header bg-white py-3">
-        <strong>Currently Assigned Assets</strong>
-    </div>
+        <!-- Sidebar Logout -->
+        <div class="sidebar-bottom">
 
-    <div class="card-body p-0">
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
 
-        {% if assignments %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Asset ID</th>
-                            <th>Asset Name</th>
-                            <th>Category</th>
-                            <th>Employee ID</th>
-                            <th>Employee Name</th>
-                            <th>Assigned Date</th>
-                            <th>Asset Status</th>
-                        </tr>
-                    </thead>
+                <button type="submit" class="logout-button">
 
-                    <tbody>
-                        {% for assignment in assignments %}
-                            <tr>
-                                <td>
-                                    <strong>
-                                        {{ assignment.asset.asset_id }}
-                                    </strong>
-                                </td>
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
 
-                                <td>
-                                    {{ assignment.asset.asset_name }}
-                                </td>
+                    <span>Logout</span>
 
-                                <td>
-                                    {{ assignment.asset.get_category_display }}
-                                </td>
+                </button>
 
-                                <td>
-                                    {{ assignment.employee.employee_id }}
-                                </td>
+            </form>
 
-                                <td>
-                                    {{ assignment.employee.user.get_full_name|default:assignment.employee.user.username }}
-                                </td>
+        </div>
 
-                                <td>
-                                    {{ assignment.assigned_date|date:"d M Y" }}
-                                </td>
+    </aside>
 
-                                <td>
-                                    <span class="badge text-bg-primary">
-                                        {{ assignment.asset.get_status_display }}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+
+    <!-- =========================
+         MAIN WRAPPER
+    ========================== -->
+    <div class="main-wrapper">
+
+        <!-- Topbar -->
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    type="button"
+                    class="mobile-menu"
+                    id="mobileMenu"
+                    aria-label="Open menu">
+
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <line x1="4" y1="6" x2="20" y2="6"></line>
+                        <line x1="4" y1="12" x2="20" y2="12"></line>
+                        <line x1="4" y1="18" x2="20" y2="18"></line>
+                    </svg>
+
+                </button>
+
+                <div>
+                    <h2 class="page-title">Asset Allocation</h2>
+
+                    <div class="topbar-subtitle">
+                        Department Resource Management
+                    </div>
+                </div>
+
             </div>
-        {% else %}
-            <div class="p-5 text-center text-muted">
-                No active asset allocations found.
+
+            <div class="topbar-user">
+
+                <div class="user-avatar">
+                    DM
+                </div>
+
+                <span>Department Manager</span>
+
             </div>
-        {% endif %}
+
+        </header>
+
+
+        <!-- =========================
+             CONTENT
+        ========================== -->
+        <main class="content">
+
+            <!-- Page Header -->
+            <section class="page-header">
+
+                <div class="header-left">
+
+                    <div class="header-icon">
+
+                        <svg viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20"></path>
+                            <path d="M2 12h20"></path>
+                            <circle cx="12" cy="12" r="9"></circle>
+                        </svg>
+
+                    </div>
+
+                    <div>
+
+                        <h1>Asset Allocation</h1>
+
+                        <p>
+                            Active allocations for
+                            <strong>{{ department.name }}</strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <a
+                    href="{% url 'department_manager_dashboard' %}"
+                    class="back-button">
+
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+
+                    Back to Dashboard
+
+                </a>
+
+            </section>
+
+
+            <!-- Allocation Table -->
+            <section class="table-card">
+
+                <div class="card-header">
+
+                    <div class="card-title">
+
+                        <div class="card-title-icon">
+
+                            <svg viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                                <line x1="8" y1="9" x2="16" y2="9"></line>
+                                <line x1="8" y1="13" x2="16" y2="13"></line>
+                                <line x1="8" y1="17" x2="13" y2="17"></line>
+                            </svg>
+
+                        </div>
+
+                        <strong>Currently Assigned Assets</strong>
+
+                    </div>
+
+                    {% if assignments %}
+                        <span class="allocation-count">
+                            {{ assignments|length }} Allocation{{ assignments|length|pluralize }}
+                        </span>
+                    {% endif %}
+
+                </div>
+
+
+                <div>
+
+                    {% if assignments %}
+
+                        <div class="table-wrapper">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Asset ID</th>
+                                        <th>Asset Name</th>
+                                        <th>Category</th>
+                                        <th>Employee ID</th>
+                                        <th>Employee Name</th>
+                                        <th>Assigned Date</th>
+                                        <th>Asset Status</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    {% for assignment in assignments %}
+
+                                        <tr>
+
+                                            <td>
+                                                <span class="asset-id">
+                                                    {{ assignment.asset.asset_id }}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="asset-name">
+                                                    {{ assignment.asset.asset_name }}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="category-text">
+                                                    {{ assignment.asset.get_category_display }}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="employee-id">
+                                                    {{ assignment.employee.employee_id }}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="employee-name">
+                                                    {{ assignment.employee.user.get_full_name|default:assignment.employee.user.username }}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="date-text">
+                                                    {{ assignment.assigned_date|date:"d M Y" }}
+                                                </span>
+                                            </td>
+
+                                            <td>
+
+                                                <span class="status-badge">
+
+                                                    <span class="status-dot"></span>
+
+                                                    {{ assignment.asset.get_status_display }}
+
+                                                </span>
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+
+                                <svg viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="1.8">
+                                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                                    <path d="M8 9h8"></path>
+                                    <path d="M8 13h8"></path>
+                                    <path d="M8 17h4"></path>
+                                </svg>
+
+                            </div>
+
+                            <h3>No Active Asset Allocations</h3>
+
+                            <p>
+                                There are currently no assets assigned to employees
+                                in this department.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </section>
+
+        </main>
 
     </div>
-</div>
-```
 
-\</main>
 
-\</body>
-\</html>
+    <!-- =========================
+         MOBILE SIDEBAR SCRIPT
+    ========================== -->
+    <script>
+
+        const mobileMenu = document.getElementById("mobileMenu");
+        const sidebar = document.getElementById("sidebar");
+        const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+        function openSidebar() {
+            sidebar.classList.add("open");
+            sidebarOverlay.classList.add("active");
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove("open");
+            sidebarOverlay.classList.remove("active");
+        }
+
+        if (mobileMenu) {
+            mobileMenu.addEventListener("click", openSidebar);
+        }
+
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener("click", closeSidebar);
+        }
+
+        document.querySelectorAll(".nav-link").forEach(function (link) {
+            link.addEventListener("click", function () {
+                if (window.innerWidth <= 900) {
+                    closeSidebar();
+                }
+            });
+        });
+
+        window.addEventListener("resize", function () {
+            if (window.innerWidth > 900) {
+                closeSidebar();
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
