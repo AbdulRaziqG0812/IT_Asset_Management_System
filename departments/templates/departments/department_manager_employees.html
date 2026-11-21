@@ -1,1607 +1,23 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Department Employees | ITARMS</title>
 
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-soft: #eff6ff;
+    <link
+        rel="stylesheet"
+        href="{% static 'departments/department_manager.css' %}"
+    >
 
-            --success: #15803d;
-            --success-soft: #f0fdf4;
-
-            --warning: #b45309;
-            --warning-soft: #fffbeb;
-
-            --danger: #dc2626;
-            --danger-soft: #fef2f2;
-
-            --text-main: #172033;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-
-            --border: #e5e7eb;
-            --background: #f3f6fa;
-            --surface: #ffffff;
-
-            --sidebar: #0f172a;
-            --sidebar-hover: #1e293b;
-
-            --shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.06);
-            --shadow-md: 0 12px 30px rgba(15, 23, 42, 0.08);
-            --shadow-lg: 0 20px 45px rgba(15, 23, 42, 0.12);
-
-            --radius-lg: 18px;
-            --radius-md: 12px;
-
-            --sidebar-width: 255px;
-            --topbar-height: 72px;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-
-            font-family:
-                Inter,
-                "Segoe UI",
-                Roboto,
-                Helvetica,
-                Arial,
-                sans-serif;
-
-            color: var(--text-main);
-
-            background:
-                radial-gradient(
-                    circle at top right,
-                    rgba(37, 99, 235, 0.055),
-                    transparent 28%
-                ),
-                linear-gradient(
-                    180deg,
-                    #f8fafc 0%,
-                    var(--background) 100%
-                );
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        button,
-        input,
-        select {
-            font-family: inherit;
-        }
-
-        /* =========================================================
-           APP LAYOUT
-        ========================================================= */
-
-        .app-shell {
-            min-height: 100vh;
-        }
-
-        /* =========================================================
-           SIDEBAR
-        ========================================================= */
-
-        .sidebar {
-            position: fixed;
-            inset: 0 auto 0 0;
-
-            z-index: 1000;
-
-            width: var(--sidebar-width);
-            height: 100vh;
-
-            display: flex;
-            flex-direction: column;
-
-            padding: 20px 14px;
-
-            background:
-                linear-gradient(
-                    180deg,
-                    #0f172a 0%,
-                    #111c31 100%
-                );
-
-            border-right: 1px solid rgba(255, 255, 255, 0.06);
-
-            box-shadow:
-                10px 0 35px rgba(15, 23, 42, 0.08);
-
-            transition:
-                transform 0.25s ease;
-        }
-
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-
-            padding: 5px 9px 22px;
-
-            color: #ffffff;
-        }
-
-        .brand-mark {
-            width: 40px;
-            height: 40px;
-
-            flex-shrink: 0;
-
-            display: grid;
-            place-items: center;
-
-            border-radius: 11px;
-
-            color: #ffffff;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #3b82f6,
-                    #1d4ed8
-                );
-
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.25),
-                0 7px 18px rgba(37, 99, 235, 0.35);
-
-            font-size: 14px;
-            font-weight: 900;
-        }
-
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-
-        .brand-name {
-            color: #ffffff;
-
-            font-size: 18px;
-            font-weight: 850;
-
-            letter-spacing: 0.2px;
-        }
-
-        .brand-subtitle {
-            color: #94a3b8;
-
-            font-size: 9px;
-            font-weight: 700;
-
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-        }
-
-        .sidebar-label {
-            padding: 0 10px;
-            margin: 6px 0 9px;
-
-            color: #64748b;
-
-            font-size: 9px;
-            font-weight: 800;
-
-            letter-spacing: 1.1px;
-            text-transform: uppercase;
-        }
-
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-
-            gap: 5px;
-        }
-
-        .sidebar-link {
-            position: relative;
-
-            display: flex;
-            align-items: center;
-
-            gap: 11px;
-
-            min-height: 43px;
-
-            padding: 0 11px;
-
-            border: 1px solid transparent;
-            border-radius: 10px;
-
-            color: #cbd5e1;
-            background: transparent;
-
-            font-size: 12px;
-            font-weight: 700;
-
-            transition:
-                background 0.2s ease,
-                color 0.2s ease,
-                border-color 0.2s ease,
-                transform 0.2s ease;
-        }
-
-        .sidebar-link:hover {
-            color: #ffffff;
-
-            background: var(--sidebar-hover);
-
-            border-color:
-                rgba(255, 255, 255, 0.06);
-
-            transform: translateX(2px);
-        }
-
-        .sidebar-link.active {
-            color: #ffffff;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(37, 99, 235, 0.95),
-                    rgba(29, 78, 216, 0.95)
-                );
-
-            border-color:
-                rgba(96, 165, 250, 0.28);
-
-            box-shadow:
-                0 7px 18px rgba(37, 99, 235, 0.20);
-        }
-
-        .sidebar-link.active::before {
-            content: "";
-
-            position: absolute;
-
-            left: -14px;
-
-            width: 3px;
-            height: 22px;
-
-            border-radius:
-                0 4px 4px 0;
-
-            background: #60a5fa;
-        }
-
-        .sidebar-icon {
-            width: 27px;
-            height: 27px;
-
-            flex-shrink: 0;
-
-            display: grid;
-            place-items: center;
-
-            border-radius: 8px;
-
-            background:
-                rgba(255, 255, 255, 0.06);
-
-            font-size: 13px;
-        }
-
-        .sidebar-link.active .sidebar-icon {
-            background:
-                rgba(255, 255, 255, 0.13);
-        }
-
-        .sidebar-footer {
-            margin-top: auto;
-
-            padding-top: 15px;
-        }
-
-        .sidebar-user {
-            display: flex;
-            align-items: center;
-
-            gap: 10px;
-
-            padding: 11px;
-
-            border:
-                1px solid rgba(255, 255, 255, 0.07);
-
-            border-radius: 11px;
-
-            background:
-                rgba(255, 255, 255, 0.035);
-        }
-
-        .user-avatar {
-            width: 34px;
-            height: 34px;
-
-            flex-shrink: 0;
-
-            display: grid;
-            place-items: center;
-
-            border-radius: 9px;
-
-            color: #bfdbfe;
-
-            background:
-                rgba(37, 99, 235, 0.18);
-
-            font-size: 13px;
-            font-weight: 900;
-        }
-
-        .user-info {
-            min-width: 0;
-        }
-
-        .user-role {
-            color: #ffffff;
-
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .user-department {
-            margin-top: 2px;
-
-            color: #64748b;
-
-            font-size: 9px;
-            font-weight: 600;
-
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .logout-form {
-            margin-top: 9px;
-        }
-
-        .logout-button {
-            width: 100%;
-            min-height: 39px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            gap: 8px;
-
-            border:
-                1px solid rgba(248, 113, 113, 0.22);
-
-            border-radius: 9px;
-
-            color: #fca5a5;
-
-            background:
-                rgba(220, 38, 38, 0.08);
-
-            cursor: pointer;
-
-            font-size: 11px;
-            font-weight: 800;
-
-            transition:
-                background 0.2s ease,
-                color 0.2s ease,
-                border-color 0.2s ease;
-        }
-
-        .logout-button:hover {
-            color: #ffffff;
-
-            background:
-                rgba(220, 38, 38, 0.75);
-
-            border-color:
-                rgba(248, 113, 113, 0.45);
-        }
-
-        /* =========================================================
-           MOBILE
-        ========================================================= */
-
-        .mobile-topbar {
-            display: none;
-        }
-
-        .sidebar-overlay {
-            display: none;
-        }
-
-        /* =========================================================
-           MAIN CONTENT
-        ========================================================= */
-
-        .main-content {
-            width: calc(100% - var(--sidebar-width));
-
-            min-height: 100vh;
-
-            margin-left: var(--sidebar-width);
-
-            padding:
-                28px 30px 40px;
-        }
-
-        .content-width {
-            width: min(1500px, 100%);
-
-            margin: 0 auto;
-        }
-
-        /* =========================================================
-           PAGE HEADER
-        ========================================================= */
-
-        .page-header {
-            position: relative;
-
-            overflow: hidden;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 25px;
-
-            padding: 26px 29px;
-
-            border:
-                1px solid var(--border);
-
-            border-radius: var(--radius-lg);
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #ffffff 0%,
-                    #f8fbff 100%
-                );
-
-            box-shadow: var(--shadow-md);
-        }
-
-        .page-header::before {
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-            left: 0;
-
-            width: 100%;
-            height: 4px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #2563eb,
-                    #3b82f6,
-                    #60a5fa
-                );
-        }
-
-        .page-heading {
-            min-width: 0;
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-
-            gap: 7px;
-
-            margin-bottom: 8px;
-
-            color: var(--primary);
-
-            font-size: 10px;
-            font-weight: 850;
-
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-        }
-
-        .eyebrow-dot {
-            width: 7px;
-            height: 7px;
-
-            border-radius: 50%;
-
-            background: var(--primary);
-
-            box-shadow:
-                0 0 0 4px
-                rgba(37, 99, 235, 0.10);
-        }
-
-        .page-title {
-            margin: 0 0 6px;
-
-            color: var(--text-main);
-
-            font-size:
-                clamp(23px, 2.5vw, 30px);
-
-            line-height: 1.2;
-
-            font-weight: 850;
-
-            letter-spacing: -0.5px;
-        }
-
-        .department-info {
-            margin: 0;
-
-            color: var(--text-secondary);
-
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .department-code {
-            display: inline-flex;
-
-            margin-left: 6px;
-
-            padding: 3px 8px;
-
-            border:
-                1px solid #dbeafe;
-
-            border-radius: 6px;
-
-            color: #1d4ed8;
-
-            background: #eff6ff;
-
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-
-            gap: 8px;
-
-            flex-shrink: 0;
-        }
-
-        .header-button {
-            min-height: 40px;
-
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            gap: 7px;
-
-            padding: 0 14px;
-
-            border:
-                1px solid #bfdbfe;
-
-            border-radius: 9px;
-
-            color: var(--primary);
-
-            background: #ffffff;
-
-            font-size: 11px;
-            font-weight: 800;
-
-            transition:
-                background 0.2s ease,
-                color 0.2s ease,
-                border-color 0.2s ease,
-                transform 0.2s ease;
-        }
-
-        .header-button:hover {
-            color: #ffffff;
-
-            background: var(--primary);
-
-            border-color: var(--primary);
-
-            transform: translateY(-1px);
-        }
-
-        /* =========================================================
-           SUMMARY
-        ========================================================= */
-
-        .summary-strip {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, minmax(0, 1fr));
-
-            gap: 13px;
-
-            margin-top: 17px;
-        }
-
-        .summary-item {
-            position: relative;
-
-            display: flex;
-            align-items: center;
-
-            gap: 12px;
-
-            min-height: 76px;
-
-            padding: 13px 16px;
-
-            overflow: hidden;
-
-            border:
-                1px solid var(--border);
-
-            border-radius: 13px;
-
-            background: #ffffff;
-
-            box-shadow: var(--shadow-sm);
-
-            transition:
-                transform 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        .summary-item:hover {
-            transform: translateY(-2px);
-
-            box-shadow: var(--shadow-md);
-        }
-
-        .summary-icon {
-            width: 39px;
-            height: 39px;
-
-            flex-shrink: 0;
-
-            display: grid;
-            place-items: center;
-
-            border-radius: 10px;
-
-            color: var(--primary);
-
-            background: var(--primary-soft);
-
-            font-size: 16px;
-        }
-
-        .summary-content {
-            min-width: 0;
-        }
-
-        .summary-label {
-            display: block;
-
-            color: var(--text-muted);
-
-            font-size: 9px;
-            font-weight: 800;
-
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-        }
-
-        .summary-value {
-            display: block;
-
-            margin-top: 3px;
-
-            color: var(--text-main);
-
-            font-size: 17px;
-            font-weight: 850;
-        }
-
-        /* =========================================================
-           WORKSPACE
-        ========================================================= */
-
-        .workspace {
-            margin-top: 17px;
-
-            overflow: hidden;
-
-            border:
-                1px solid var(--border);
-
-            border-radius: var(--radius-lg);
-
-            background: #ffffff;
-
-            box-shadow: var(--shadow-sm);
-        }
-
-        .workspace-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 18px;
-
-            min-height: 67px;
-
-            padding: 0 22px;
-
-            border-bottom:
-                1px solid var(--border);
-
-            background:
-                linear-gradient(
-                    180deg,
-                    #ffffff,
-                    #fbfdff
-                );
-        }
-
-        .workspace-title {
-            display: flex;
-            align-items: center;
-
-            gap: 10px;
-
-            margin: 0;
-
-            color: var(--text-main);
-
-            font-size: 15px;
-            font-weight: 850;
-        }
-
-        .section-icon {
-            width: 33px;
-            height: 33px;
-
-            display: grid;
-            place-items: center;
-
-            border:
-                1px solid #dbeafe;
-
-            border-radius: 9px;
-
-            color: var(--primary);
-
-            background: var(--primary-soft);
-
-            font-size: 14px;
-        }
-
-        .record-count {
-            color: var(--text-muted);
-
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        /* =========================================================
-           TOOLBAR
-        ========================================================= */
-
-        .toolbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 15px;
-
-            padding: 17px 22px;
-
-            border-bottom:
-                1px solid var(--border);
-
-            background: #fcfdff;
-        }
-
-        .toolbar-left {
-            display: flex;
-            align-items: center;
-
-            flex: 1;
-
-            gap: 9px;
-
-            min-width: 0;
-        }
-
-        .search-box {
-            position: relative;
-
-            flex: 1;
-
-            max-width: 440px;
-        }
-
-        .search-icon {
-            position: absolute;
-
-            top: 50%;
-            left: 13px;
-
-            transform: translateY(-50%);
-
-            color: #94a3b8;
-
-            font-size: 14px;
-
-            pointer-events: none;
-        }
-
-        .search-input {
-            width: 100%;
-            min-height: 40px;
-
-            padding:
-                0 13px 0 37px;
-
-            border:
-                1px solid #dbe3ee;
-
-            border-radius: 9px;
-
-            outline: none;
-
-            color: var(--text-main);
-
-            background: #ffffff;
-
-            font-size: 12px;
-            font-weight: 600;
-
-            transition:
-                border-color 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        .search-input::placeholder {
-            color: #94a3b8;
-            font-weight: 500;
-        }
-
-        .search-input:focus {
-            border-color: #93c5fd;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(37, 99, 235, 0.08);
-        }
-
-        .filter-select,
-        .page-size {
-            min-height: 40px;
-
-            border:
-                1px solid #dbe3ee;
-
-            border-radius: 9px;
-
-            outline: none;
-
-            color: #475569;
-
-            background: #ffffff;
-
-            font-size: 11px;
-            font-weight: 700;
-
-            cursor: pointer;
-
-            transition:
-                border-color 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        .filter-select {
-            padding: 0 32px 0 12px;
-        }
-
-        .page-size {
-            padding: 0 28px 0 11px;
-        }
-
-        .filter-select:focus,
-        .page-size:focus {
-            border-color: #93c5fd;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(37, 99, 235, 0.08);
-        }
-
-        .page-size-wrap {
-            display: flex;
-            align-items: center;
-
-            gap: 8px;
-
-            flex-shrink: 0;
-        }
-
-        .page-size-label {
-            color: var(--text-muted);
-
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        /* =========================================================
-           TABLE
-        ========================================================= */
-
-        .table-wrapper {
-            width: 100%;
-
-            overflow-x: auto;
-
-            scrollbar-width: thin;
-
-            scrollbar-color:
-                #cbd5e1 transparent;
-        }
-
-        .employee-table {
-            width: 100%;
-
-            min-width: 1050px;
-
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .employee-table thead th {
-            padding: 13px 17px;
-
-            border-bottom:
-                1px solid var(--border);
-
-            color: #64748b;
-
-            background: #f8fafc;
-
-            font-size: 9px;
-            font-weight: 850;
-
-            letter-spacing: 0.7px;
-            text-transform: uppercase;
-
-            text-align: left;
-
-            white-space: nowrap;
-        }
-
-        .employee-table tbody td {
-            padding: 15px 17px;
-
-            border-bottom:
-                1px solid #edf2f7;
-
-            color: var(--text-secondary);
-
-            font-size: 12px;
-            font-weight: 500;
-
-            vertical-align: middle;
-
-            white-space: nowrap;
-        }
-
-        .employee-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .employee-table tbody tr {
-            transition:
-                background 0.18s ease;
-        }
-
-        .employee-table tbody tr:hover td {
-            background: #f8fbff;
-        }
-
-        .employee-id {
-            color: #334155 !important;
-            font-weight: 850 !important;
-        }
-
-        .employee-name {
-            color: var(--text-main) !important;
-            font-weight: 750 !important;
-        }
-
-        .employee-email,
-        .job-title,
-        .date-value {
-            color: #475569 !important;
-        }
-
-        .date-value {
-            font-weight: 650 !important;
-        }
-
-        .return-status {
-            color: #475569;
-
-            font-size: 11px;
-            font-weight: 650;
-        }
-
-        /* =========================================================
-           STATUS
-        ========================================================= */
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-
-            gap: 6px;
-
-            min-height: 26px;
-
-            padding: 0 9px;
-
-            border-radius: 7px;
-
-            font-size: 10px;
-            font-weight: 850;
-
-            white-space: nowrap;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-
-            border-radius: 50%;
-
-            background: currentColor;
-        }
-
-        .status-active {
-            color: var(--success);
-
-            background: var(--success-soft);
-
-            border:
-                1px solid #bbf7d0;
-        }
-
-        .status-pending {
-            color: var(--warning);
-
-            background: var(--warning-soft);
-
-            border:
-                1px solid #fde68a;
-        }
-
-        .status-other {
-            color: #475569;
-
-            background: #f1f5f9;
-
-            border:
-                1px solid #e2e8f0;
-        }
-
-        /* =========================================================
-           VIEW BUTTON
-        ========================================================= */
-
-        .view-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            gap: 5px;
-
-            min-height: 32px;
-
-            padding: 0 11px;
-
-            border:
-                1px solid #bfdbfe;
-
-            border-radius: 8px;
-
-            color: var(--primary);
-
-            background: #ffffff;
-
-            font-size: 10px;
-            font-weight: 850;
-
-            transition:
-                background 0.2s ease,
-                color 0.2s ease,
-                border-color 0.2s ease,
-                transform 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        .view-btn:hover {
-            color: #ffffff;
-
-            background: var(--primary);
-
-            border-color: var(--primary);
-
-            transform: translateY(-1px);
-
-            box-shadow:
-                0 5px 12px
-                rgba(37, 99, 235, 0.16);
-        }
-
-        /* =========================================================
-           EMPTY STATE
-        ========================================================= */
-
-        .empty-state {
-            min-height: 290px;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            padding: 45px 25px;
-
-            text-align: center;
-        }
-
-        .empty-icon {
-            width: 62px;
-            height: 62px;
-
-            display: grid;
-            place-items: center;
-
-            margin-bottom: 15px;
-
-            border:
-                1px solid #dbeafe;
-
-            border-radius: 17px;
-
-            color: var(--primary);
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #eff6ff,
-                    #dbeafe
-                );
-
-            box-shadow:
-                inset 0 1px 0
-                rgba(255, 255, 255, 0.8),
-
-                0 8px 20px
-                rgba(37, 99, 235, 0.10);
-
-            font-size: 23px;
-        }
-
-        .empty-title {
-            margin: 0 0 6px;
-
-            color: var(--text-main);
-
-            font-size: 16px;
-            font-weight: 850;
-        }
-
-        .empty-text {
-            max-width: 420px;
-
-            margin: 0;
-
-            color: var(--text-secondary);
-
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        /* =========================================================
-           PAGINATION
-        ========================================================= */
-
-        .pagination-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 15px;
-
-            min-height: 66px;
-
-            padding: 0 22px;
-
-            border-top:
-                1px solid var(--border);
-
-            background: #fbfdff;
-        }
-
-        .pagination-info {
-            color: var(--text-muted);
-
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        .pagination {
-            display: flex;
-            align-items: center;
-
-            gap: 5px;
-        }
-
-        .page-button {
-            min-width: 31px;
-            height: 31px;
-
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: 0 8px;
-
-            border:
-                1px solid #dbe3ee;
-
-            border-radius: 7px;
-
-            color: #475569;
-
-            background: #ffffff;
-
-            font-size: 10px;
-            font-weight: 800;
-
-            cursor: pointer;
-
-            transition:
-                background 0.18s ease,
-                color 0.18s ease,
-                border-color 0.18s ease;
-        }
-
-        .page-button:hover:not(:disabled) {
-            color: var(--primary);
-
-            border-color: #93c5fd;
-
-            background: #eff6ff;
-        }
-
-        .page-button.active {
-            color: #ffffff;
-
-            background: var(--primary);
-
-            border-color: var(--primary);
-
-            box-shadow:
-                0 4px 10px
-                rgba(37, 99, 235, 0.18);
-        }
-
-        .page-button:disabled {
-            opacity: 0.45;
-
-            cursor: not-allowed;
-        }
-
-        .page-dots {
-            color: #94a3b8;
-
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        /* =========================================================
-           FOOTER
-        ========================================================= */
-
-        .page-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 15px;
-
-            padding: 18px 3px 0;
-
-            color: var(--text-muted);
-
-            font-size: 10px;
-            font-weight: 600;
-        }
-
-        /* =========================================================
-           RESPONSIVE
-        ========================================================= */
-
-        @media (max-width: 1050px) {
-
-            :root {
-                --sidebar-width: 225px;
-            }
-
-            .main-content {
-                padding-left: 20px;
-                padding-right: 20px;
-            }
-        }
-
-        @media (max-width: 850px) {
-
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-overlay {
-                position: fixed;
-                inset: 0;
-
-                z-index: 900;
-
-                display: none;
-
-                background:
-                    rgba(15, 23, 42, 0.45);
-
-                backdrop-filter: blur(2px);
-            }
-
-            .sidebar-overlay.show {
-                display: block;
-            }
-
-            .mobile-topbar {
-                position: sticky;
-                top: 0;
-
-                z-index: 800;
-
-                min-height: 62px;
-
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                padding: 0 16px;
-
-                color: #ffffff;
-
-                background: #0f172a;
-
-                box-shadow:
-                    0 8px 25px
-                    rgba(15, 23, 42, 0.16);
-            }
-
-            .mobile-brand {
-                display: flex;
-                align-items: center;
-
-                gap: 9px;
-
-                font-size: 17px;
-                font-weight: 850;
-            }
-
-            .mobile-brand-mark {
-                width: 32px;
-                height: 32px;
-
-                display: grid;
-                place-items: center;
-
-                border-radius: 9px;
-
-                background:
-                    linear-gradient(
-                        145deg,
-                        #3b82f6,
-                        #1d4ed8
-                    );
-
-                font-size: 11px;
-                font-weight: 900;
-            }
-
-            .menu-button {
-                width: 38px;
-                height: 38px;
-
-                display: grid;
-                place-items: center;
-
-                border:
-                    1px solid
-                    rgba(255, 255, 255, 0.15);
-
-                border-radius: 9px;
-
-                color: #ffffff;
-
-                background:
-                    rgba(255, 255, 255, 0.08);
-
-                cursor: pointer;
-
-                font-size: 17px;
-            }
-
-            .main-content {
-                width: 100%;
-
-                margin-left: 0;
-
-                padding:
-                    18px 14px 35px;
-            }
-
-            .page-header {
-                align-items: flex-start;
-
-                flex-direction: column;
-            }
-
-            .header-actions {
-                width: 100%;
-            }
-
-            .header-button {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 650px) {
-
-            .summary-strip {
-                grid-template-columns: 1fr;
-            }
-
-            .summary-item {
-                min-height: 68px;
-            }
-
-            .workspace-header {
-                padding: 0 16px;
-            }
-
-            .toolbar {
-                align-items: stretch;
-
-                flex-direction: column;
-
-                padding: 14px 16px;
-            }
-
-            .toolbar-left {
-                width: 100%;
-
-                flex-direction: column;
-            }
-
-            .search-box {
-                width: 100%;
-
-                max-width: none;
-            }
-
-            .filter-select {
-                width: 100%;
-            }
-
-            .page-size-wrap {
-                justify-content: space-between;
-            }
-
-            .page-size {
-                flex: 1;
-            }
-
-            .pagination-bar {
-                align-items: flex-start;
-
-                flex-direction: column;
-
-                padding: 14px 16px;
-            }
-
-            .pagination {
-                width: 100%;
-
-                justify-content: center;
-            }
-
-            .page-footer {
-                align-items: flex-start;
-
-                flex-direction: column;
-            }
-        }
-
-        @media (max-width: 430px) {
-
-            .main-content {
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-
-            .page-header {
-                padding: 23px 18px;
-            }
-
-            .page-title {
-                font-size: 22px;
-            }
-
-            .department-code {
-                display: inline-flex;
-
-                margin-left: 0;
-                margin-top: 5px;
-            }
-
-            .workspace {
-                border-radius: 14px;
-            }
-
-            .record-count {
-                display: none;
-            }
-
-            .pagination {
-                gap: 3px;
-            }
-
-            .page-button {
-                min-width: 29px;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -1618,14 +34,21 @@
             href="{% url 'department_manager_dashboard' %}"
             class="sidebar-brand"
         >
+
             <span class="brand-mark">IT</span>
 
             <span class="brand-text">
-                <span class="brand-name">ITARMS</span>
+
+                <span class="brand-name">
+                    ITARMS
+                </span>
+
                 <span class="brand-subtitle">
                     Resource Management
                 </span>
+
             </span>
+
         </a>
 
 
@@ -1636,57 +59,93 @@
 
         <nav class="sidebar-nav">
 
+            <!-- Dashboard -->
+
             <a
                 href="{% url 'department_manager_dashboard' %}"
                 class="sidebar-link"
             >
-                <span class="sidebar-icon">⌂</span>
-                <span>Dashboard</span>
+
+                <span class="sidebar-icon">
+                    ⌂
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
             </a>
 
+
+            <!-- Employees -->
 
             <a
                 href="{% url 'department_manager_employees' %}"
                 class="sidebar-link active"
             >
-                <span class="sidebar-icon">👥</span>
-                <span>Employees</span>
+
+                <span class="sidebar-icon">
+                    👥
+                </span>
+
+                <span>
+                    Employees
+                </span>
+
             </a>
 
+
+            <!-- Department Assets -->
 
             <a
                 href="{% url 'department_manager_assets' %}"
                 class="sidebar-link"
             >
-                <span class="sidebar-icon">💻</span>
-                <span>Department Assets</span>
+
+                <span class="sidebar-icon">
+                    💻
+                </span>
+
+                <span>
+                    Department Assets
+                </span>
+
             </a>
 
 
-            <a
-                href="{% url 'department_manager_asset_allocation' %}"
-                class="sidebar-link"
-            >
-                <span class="sidebar-icon">📦</span>
-                <span>Asset Allocation</span>
-            </a>
-
+            <!-- Asset Requests -->
 
             <a
                 href="{% url 'department_manager_asset_requests' %}"
                 class="sidebar-link"
             >
-                <span class="sidebar-icon">⏳</span>
-                <span>Asset Requests</span>
+
+                <span class="sidebar-icon">
+                    ⏳
+                </span>
+
+                <span>
+                    Asset Requests
+                </span>
+
             </a>
 
 
+            <!-- Asset Allocations -->
+
             <a
-                href="{% url 'department_manager_create_asset_request' %}"
+                href="{% url 'department_manager_asset_allocation' %}"
                 class="sidebar-link"
             >
-                <span class="sidebar-icon">＋</span>
-                <span>Create Request</span>
+
+                <span class="sidebar-icon">
+                    📦
+                </span>
+
+                <span>
+                    Asset Allocations
+                </span>
+
             </a>
 
         </nav>
@@ -1720,14 +179,20 @@
                 action="{% url 'logout' %}"
                 class="logout-form"
             >
+
                 {% csrf_token %}
 
                 <button
                     type="submit"
                     class="logout-button"
                 >
-                    <span>↪</span>
+
+                    <span>
+                        ↪
+                    </span>
+
                     Logout
+
                 </button>
 
             </form>
@@ -1736,6 +201,10 @@
 
     </aside>
 
+
+    <!-- =========================================================
+         SIDEBAR OVERLAY
+    ========================================================== -->
 
     <div
         class="sidebar-overlay"
@@ -1751,9 +220,17 @@
     <header class="mobile-topbar">
 
         <div class="mobile-brand">
-            <span class="mobile-brand-mark">IT</span>
-            <span>ITARMS</span>
+
+            <span class="mobile-brand-mark">
+                IT
+            </span>
+
+            <span>
+                ITARMS
+            </span>
+
         </div>
+
 
         <button
             type="button"
@@ -1775,29 +252,39 @@
 
         <div class="content-width">
 
-            <!-- PAGE HEADER -->
+
+            <!-- =====================================================
+                 PAGE HEADER
+            ====================================================== -->
 
             <section class="page-header">
 
                 <div class="page-heading">
 
                     <div class="eyebrow">
+
                         <span class="eyebrow-dot"></span>
+
                         Department Management
+
                     </div>
+
 
                     <h1 class="page-title">
                         Department Employees
                     </h1>
+
 
                     <p class="department-info">
 
                         {{ department.name }}
 
                         {% if department.code %}
+
                             <span class="department-code">
                                 {{ department.code }}
                             </span>
+
                         {% endif %}
 
                     </p>
@@ -1819,9 +306,14 @@
             </section>
 
 
-            <!-- SUMMARY -->
+            <!-- =====================================================
+                 SUMMARY
+            ====================================================== -->
 
             <section class="summary-strip">
+
+
+                <!-- Total Employees -->
 
                 <div class="summary-item">
 
@@ -1847,6 +339,8 @@
                 </div>
 
 
+                <!-- Active Employees -->
+
                 <div class="summary-item">
 
                     <div class="summary-icon">
@@ -1870,6 +364,8 @@
 
                 </div>
 
+
+                <!-- Pending Employees -->
 
                 <div class="summary-item">
 
@@ -1897,9 +393,14 @@
             </section>
 
 
-            <!-- EMPLOYEE WORKSPACE -->
+            <!-- =====================================================
+                 EMPLOYEE WORKSPACE
+            ====================================================== -->
 
             <section class="workspace">
+
+
+                <!-- Workspace Header -->
 
                 <div class="workspace-header">
 
@@ -1924,11 +425,16 @@
                 </div>
 
 
-                <!-- TOOLBAR -->
+                <!-- =================================================
+                     TOOLBAR
+                ================================================== -->
 
                 <div class="toolbar">
 
                     <div class="toolbar-left">
+
+
+                        <!-- Search -->
 
                         <div class="search-box">
 
@@ -1946,6 +452,8 @@
 
                         </div>
 
+
+                        <!-- Status Filter -->
 
                         <select
                             id="statusFilter"
@@ -1974,6 +482,8 @@
                     </div>
 
 
+                    <!-- Page Size -->
+
                     <div class="page-size-wrap">
 
                         <span class="page-size-label">
@@ -1990,7 +500,10 @@
                                 5
                             </option>
 
-                            <option value="10" selected>
+                            <option
+                                value="10"
+                                selected
+                            >
                                 10
                             </option>
 
@@ -2011,6 +524,11 @@
 
                 {% if employees %}
 
+
+                    <!-- =================================================
+                         EMPLOYEE TABLE
+                    ================================================== -->
+
                     <div class="table-wrapper">
 
                         <table
@@ -2021,14 +539,39 @@
                             <thead>
 
                                 <tr>
-                                    <th>Employee ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Job Title</th>
-                                    <th>Employment Status</th>
-                                    <th>Asset Return</th>
-                                    <th>Joining Date</th>
-                                    <th>Action</th>
+
+                                    <th>
+                                        Employee ID
+                                    </th>
+
+                                    <th>
+                                        Name
+                                    </th>
+
+                                    <th>
+                                        Email
+                                    </th>
+
+                                    <th>
+                                        Job Title
+                                    </th>
+
+                                    <th>
+                                        Employment Status
+                                    </th>
+
+                                    <th>
+                                        Asset Return
+                                    </th>
+
+                                    <th>
+                                        Joining Date
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
                                 </tr>
 
                             </thead>
@@ -2044,23 +587,32 @@
                                         data-status="{{ employee.employment_status }}"
                                     >
 
+
                                         <td class="employee-id">
+
                                             {{ employee.employee_id }}
+
                                         </td>
 
 
                                         <td class="employee-name">
+
                                             {{ employee.user.get_full_name|default:employee.user.username }}
+
                                         </td>
 
 
                                         <td class="employee-email">
+
                                             {{ employee.user.email|default:"—" }}
+
                                         </td>
 
 
                                         <td class="job-title">
+
                                             {{ employee.job_title|default:"—" }}
+
                                         </td>
 
 
@@ -2069,22 +621,33 @@
                                             {% if employee.employment_status == "ACTIVE" %}
 
                                                 <span class="status-badge status-active">
+
                                                     <span class="status-dot"></span>
+
                                                     Active
+
                                                 </span>
+
 
                                             {% elif employee.employment_status == "RESIGNATION_PENDING" %}
 
                                                 <span class="status-badge status-pending">
+
                                                     <span class="status-dot"></span>
+
                                                     Resignation Pending
+
                                                 </span>
+
 
                                             {% else %}
 
                                                 <span class="status-badge status-other">
+
                                                     <span class="status-dot"></span>
+
                                                     {{ employee.get_employment_status_display }}
+
                                                 </span>
 
                                             {% endif %}
@@ -2093,16 +656,22 @@
 
 
                                         <td class="return-status">
+
                                             {{ employee.get_asset_return_status_display }}
+
                                         </td>
 
 
                                         <td class="date-value">
 
                                             {% if employee.date_of_joining %}
+
                                                 {{ employee.date_of_joining|date:"d M Y" }}
+
                                             {% else %}
+
                                                 —
+
                                             {% endif %}
 
                                         </td>
@@ -2112,10 +681,15 @@
 
                                             <a
                                                 href="{% url 'department_manager_employee_detail' employee.id %}"
-                                                class="view-btn"
+                                                class="view-button"
                                             >
+
                                                 View
-                                                <span>→</span>
+
+                                                <span>
+                                                    →
+                                                </span>
+
                                             </a>
 
                                         </td>
@@ -2131,7 +705,9 @@
                     </div>
 
 
-                    <!-- NO SEARCH RESULT -->
+                    <!-- =================================================
+                         NO SEARCH RESULT
+                    ================================================== -->
 
                     <div
                         class="empty-state"
@@ -2143,20 +719,26 @@
                             🔎
                         </div>
 
+
                         <h3 class="empty-title">
                             No Matching Employees
                         </h3>
 
+
                         <p class="empty-text">
+
                             No employee record matches your current
                             search or filter. Try changing your search
                             term or status filter.
+
                         </p>
 
                     </div>
 
 
-                    <!-- PAGINATION -->
+                    <!-- =================================================
+                         PAGINATION
+                    ================================================== -->
 
                     <div
                         class="pagination-bar"
@@ -2178,7 +760,13 @@
 
                     </div>
 
+
                 {% else %}
+
+
+                    <!-- =================================================
+                         EMPTY EMPLOYEE STATE
+                    ================================================== -->
 
                     <div class="empty-state">
 
@@ -2186,13 +774,17 @@
                             👥
                         </div>
 
+
                         <h3 class="empty-title">
                             No Employees Found
                         </h3>
 
+
                         <p class="empty-text">
+
                             There are currently no employees available
                             in your department.
+
                         </p>
 
                     </div>
@@ -2202,7 +794,9 @@
             </section>
 
 
-            <!-- FOOTER -->
+            <!-- =====================================================
+                 FOOTER
+            ====================================================== -->
 
             <footer class="page-footer">
 
@@ -2223,7 +817,12 @@
 </div>
 
 
+<!-- =============================================================
+     JAVASCRIPT
+============================================================== -->
+
 <script>
+
     /* =========================================================
        SIDEBAR
     ========================================================== */
@@ -2239,6 +838,7 @@
         sidebar.classList.toggle("open");
 
         overlay.classList.toggle("show");
+
     }
 
 
@@ -2253,6 +853,7 @@
         sidebar.classList.remove("open");
 
         overlay.classList.remove("show");
+
     }
 
 
@@ -2271,55 +872,66 @@
                     )
                 );
 
+
             const searchInput =
                 document.getElementById(
                     "employeeSearch"
                 );
+
 
             const statusFilter =
                 document.getElementById(
                     "statusFilter"
                 );
 
+
             const pageSizeSelect =
                 document.getElementById(
                     "pageSize"
                 );
+
 
             const pagination =
                 document.getElementById(
                     "pagination"
                 );
 
+
             const paginationInfo =
                 document.getElementById(
                     "paginationInfo"
                 );
+
 
             const recordCount =
                 document.getElementById(
                     "recordCount"
                 );
 
+
             const totalEmployees =
                 document.getElementById(
                     "totalEmployees"
                 );
+
 
             const activeEmployees =
                 document.getElementById(
                     "activeEmployees"
                 );
 
+
             const pendingEmployees =
                 document.getElementById(
                     "pendingEmployees"
                 );
 
+
             const noResults =
                 document.getElementById(
                     "noResults"
                 );
+
 
             let currentPage = 1;
 
@@ -2331,12 +943,14 @@
             totalEmployees.textContent =
                 rows.length;
 
+
             activeEmployees.textContent =
                 rows.filter(
                     row =>
                         row.dataset.status ===
                         "ACTIVE"
                 ).length;
+
 
             pendingEmployees.textContent =
                 rows.filter(
@@ -2357,8 +971,10 @@
                         .trim()
                         .toLowerCase();
 
+
                 const selectedStatus =
                     statusFilter.value;
+
 
                 return rows.filter(
                     function (row) {
@@ -2366,8 +982,10 @@
                         const searchableText =
                             row.dataset.search || "";
 
+
                         const rowStatus =
                             row.dataset.status || "";
+
 
                         const matchesSearch =
                             !searchTerm ||
@@ -2375,7 +993,9 @@
                                 searchTerm
                             );
 
+
                         let matchesStatus = true;
+
 
                         if (
                             selectedStatus ===
@@ -2386,7 +1006,9 @@
                                 rowStatus ===
                                 "ACTIVE";
 
-                        } else if (
+                        }
+
+                        else if (
                             selectedStatus ===
                             "RESIGNATION_PENDING"
                         ) {
@@ -2395,7 +1017,9 @@
                                 rowStatus ===
                                 "RESIGNATION_PENDING";
 
-                        } else if (
+                        }
+
+                        else if (
                             selectedStatus ===
                             "OTHER"
                         ) {
@@ -2405,14 +1029,18 @@
                                     "ACTIVE" &&
                                 rowStatus !==
                                     "RESIGNATION_PENDING";
+
                         }
+
 
                         return (
                             matchesSearch &&
                             matchesStatus
                         );
+
                     }
                 );
+
             }
 
 
@@ -2426,6 +1054,7 @@
 
                 pagination.innerHTML = "";
 
+
                 if (totalPages <= 1) {
                     return;
                 }
@@ -2436,17 +1065,22 @@
                         "button"
                     );
 
+
                 previousButton.type =
                     "button";
+
 
                 previousButton.className =
                     "page-button";
 
+
                 previousButton.textContent =
                     "‹";
 
+
                 previousButton.disabled =
                     currentPage === 1;
+
 
                 previousButton.addEventListener(
                     "click",
@@ -2459,9 +1093,12 @@
                             currentPage--;
 
                             renderTable();
+
                         }
+
                     }
                 );
+
 
                 pagination.appendChild(
                     previousButton
@@ -2474,6 +1111,7 @@
                         currentPage - 2
                     );
 
+
                 let endPage =
                     Math.min(
                         totalPages,
@@ -2485,9 +1123,11 @@
 
                     addPageButton(1);
 
+
                     if (startPage > 2) {
                         addDots();
                     }
+
                 }
 
 
@@ -2498,6 +1138,7 @@
                 ) {
 
                     addPageButton(page);
+
                 }
 
 
@@ -2511,11 +1152,14 @@
                     ) {
 
                         addDots();
+
                     }
+
 
                     addPageButton(
                         totalPages
                     );
+
                 }
 
 
@@ -2524,18 +1168,23 @@
                         "button"
                     );
 
+
                 nextButton.type =
                     "button";
+
 
                 nextButton.className =
                     "page-button";
 
+
                 nextButton.textContent =
                     "›";
+
 
                 nextButton.disabled =
                     currentPage ===
                     totalPages;
+
 
                 nextButton.addEventListener(
                     "click",
@@ -2549,9 +1198,12 @@
                             currentPage++;
 
                             renderTable();
+
                         }
+
                     }
                 );
+
 
                 pagination.appendChild(
                     nextButton
@@ -2565,8 +1217,10 @@
                             "button"
                         );
 
+
                     button.type =
                         "button";
+
 
                     button.className =
                         "page-button" +
@@ -2576,8 +1230,10 @@
                                 : ""
                         );
 
+
                     button.textContent =
                         page;
+
 
                     button.addEventListener(
                         "click",
@@ -2587,12 +1243,15 @@
                                 page;
 
                             renderTable();
+
                         }
                     );
+
 
                     pagination.appendChild(
                         button
                     );
+
                 }
 
 
@@ -2603,16 +1262,21 @@
                             "span"
                         );
 
+
                     dots.className =
                         "page-dots";
+
 
                     dots.textContent =
                         "…";
 
+
                     pagination.appendChild(
                         dots
                     );
+
                 }
+
             }
 
 
@@ -2625,11 +1289,13 @@
                 const filteredRows =
                     getFilteredRows();
 
+
                 const pageSize =
                     parseInt(
                         pageSizeSelect.value,
                         10
                     );
+
 
                 const totalPages =
                     Math.max(
@@ -2648,6 +1314,7 @@
 
                     currentPage =
                         totalPages;
+
                 }
 
 
@@ -2656,6 +1323,7 @@
 
                         row.style.display =
                             "none";
+
                     }
                 );
 
@@ -2663,6 +1331,7 @@
                 const startIndex =
                     (currentPage - 1) *
                     pageSize;
+
 
                 const endIndex =
                     startIndex +
@@ -2681,6 +1350,7 @@
 
                         row.style.display =
                             "";
+
                     }
                 );
 
@@ -2692,12 +1362,14 @@
                     noResults.style.display =
                         "flex";
 
+
                     document
                         .getElementById(
                             "employeeTable"
                         )
                         .style.display =
                         "none";
+
 
                     document
                         .getElementById(
@@ -2706,15 +1378,19 @@
                         .style.display =
                         "none";
 
+
                     recordCount.textContent =
                         "0 matching records";
 
+
                     return;
+
                 }
 
 
                 noResults.style.display =
                     "none";
+
 
                 document
                     .getElementById(
@@ -2722,6 +1398,7 @@
                     )
                     .style.display =
                     "";
+
 
                 document
                     .getElementById(
@@ -2733,6 +1410,7 @@
 
                 const from =
                     startIndex + 1;
+
 
                 const to =
                     Math.min(
@@ -2752,6 +1430,7 @@
                 renderPagination(
                     totalPages
                 );
+
             }
 
 
@@ -2766,6 +1445,7 @@
                     currentPage = 1;
 
                     renderTable();
+
                 }
             );
 
@@ -2777,6 +1457,7 @@
                     currentPage = 1;
 
                     renderTable();
+
                 }
             );
 
@@ -2788,6 +1469,7 @@
                     currentPage = 1;
 
                     renderTable();
+
                 }
             );
 
@@ -2800,6 +1482,7 @@
 
         }
     );
+
 </script>
 
 </body>

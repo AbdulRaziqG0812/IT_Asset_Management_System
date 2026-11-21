@@ -1,1083 +1,515 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Create Asset Request | ITARMS</title>
 
-    <style>
-        :root {
-            --sidebar: #111827;
-            --sidebar-hover: #1f2937;
-            --sidebar-active: #2563eb;
-            --sidebar-text: #cbd5e1;
-            --sidebar-muted: #94a3b8;
+    <link
+        rel="stylesheet"
+        href="{% static 'departments/department_manager.css' %}"
+    >
 
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #d97706;
-
-            --bg: #f3f6fa;
-            --surface: #ffffff;
-            --border: #e5e7eb;
-            --text: #172033;
-            --muted: #64748b;
-
-            --sidebar-width: 255px;
-            --topbar-height: 72px;
-            --radius: 14px;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100%;
-        }
-
-        body {
-            font-family:
-                Inter,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                Arial,
-                sans-serif;
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        button,
-        input,
-        select,
-        textarea {
-            font: inherit;
-        }
-
-        /* =========================
-           SIDEBAR
-        ========================= */
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: var(--sidebar);
-            color: white;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            box-shadow: 4px 0 18px rgba(15, 23, 42, 0.12);
-        }
-
-        .brand {
-            height: var(--topbar-height);
-            display: flex;
-            align-items: center;
-            padding: 0 22px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            flex-shrink: 0;
-        }
-
-        .brand-mark {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 11px;
-            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28);
-        }
-
-        .brand-mark svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .brand-text {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 0.2px;
-            color: #ffffff;
-        }
-
-        .sidebar-section {
-            padding: 20px 14px 8px;
-        }
-
-        .sidebar-section-title {
-            padding: 0 10px 8px;
-            color: var(--sidebar-muted);
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.09em;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 44px;
-            padding: 10px 12px;
-            margin-bottom: 4px;
-            border-radius: 10px;
-            color: var(--sidebar-text);
-            font-size: 14px;
-            font-weight: 600;
-            transition:
-                background 0.2s ease,
-                color 0.2s ease,
-                transform 0.2s ease;
-        }
-
-        .nav-link:hover {
-            background: var(--sidebar-hover);
-            color: #ffffff;
-            transform: translateX(2px);
-        }
-
-        .nav-link.active {
-            background: var(--sidebar-active);
-            color: #ffffff;
-            box-shadow: 0 5px 14px rgba(37, 99, 235, 0.22);
-        }
-
-        .nav-icon {
-            width: 20px;
-            height: 20px;
-            flex: 0 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-icon svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-        }
-
-        .sidebar-bottom {
-            margin-top: auto;
-            padding: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .logout-btn {
-            width: 100%;
-            min-height: 44px;
-            border: 0;
-            border-radius: 10px;
-            background: rgba(220, 38, 38, 0.12);
-            color: #fca5a5;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.2s ease;
-        }
-
-        .logout-btn:hover {
-            background: rgba(220, 38, 38, 0.2);
-            color: #fecaca;
-        }
-
-        /* =========================
-           MAIN AREA
-        ========================= */
-
-        .main-wrapper {
-            margin-left: var(--sidebar-width);
-            min-height: 100vh;
-        }
-
-        .topbar {
-            height: var(--topbar-height);
-            background: rgba(255, 255, 255, 0.96);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            position: sticky;
-            top: 0;
-            z-index: 900;
-            backdrop-filter: blur(8px);
-        }
-
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .page-context {
-            font-size: 14px;
-            color: var(--muted);
-        }
-
-        .page-context strong {
-            color: var(--text);
-            font-weight: 700;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            width: 40px;
-            height: 40px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: #ffffff;
-            color: var(--text);
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .topbar-logout {
-            border: 1px solid #fecaca;
-            background: #fff5f5;
-            color: #b91c1c;
-            border-radius: 9px;
-            padding: 9px 14px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-
-        .topbar-logout:hover {
-            background: #fee2e2;
-        }
-
-        .content {
-            padding: 30px;
-            max-width: 1250px;
-            margin: 0 auto;
-        }
-
-        /* =========================
-           PAGE HEADER
-        ========================= */
-
-        .page-header {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.045);
-        }
-
-        .page-header-inner {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .page-header h1 {
-            margin: 0 0 6px;
-            font-size: 24px;
-            line-height: 1.3;
-            font-weight: 800;
-            color: var(--text);
-        }
-
-        .page-header p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* =========================
-           BUTTONS
-        ========================= */
-
-        .btn {
-            min-height: 42px;
-            border-radius: 9px;
-            padding: 10px 15px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border: 1px solid transparent;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition:
-                background 0.2s ease,
-                border-color 0.2s ease,
-                transform 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: #ffffff;
-            box-shadow: 0 5px 12px rgba(37, 99, 235, 0.16);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-outline {
-            background: #ffffff;
-            color: var(--primary);
-            border-color: #bfdbfe;
-        }
-
-        .btn-outline:hover {
-            background: #eff6ff;
-        }
-
-        .btn-secondary {
-            background: #ffffff;
-            color: #475569;
-            border-color: var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: #f8fafc;
-        }
-
-        /* =========================
-           ALERTS
-        ========================= */
-
-        .alert {
-            border-radius: 11px;
-            padding: 14px 16px;
-            margin-bottom: 20px;
-            border: 1px solid;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .alert-danger {
-            background: #fef2f2;
-            border-color: #fecaca;
-            color: #991b1b;
-        }
-
-        .alert-info {
-            background: #eff6ff;
-            border-color: #bfdbfe;
-            color: #1e40af;
-        }
-
-        .alert strong {
-            font-weight: 800;
-        }
-
-        .alert ul {
-            margin: 8px 0 0;
-            padding-left: 20px;
-        }
-
-        /* =========================
-           FORM CARD
-        ========================= */
-
-        .form-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.045);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 18px 22px;
-            border-bottom: 1px solid var(--border);
-            background: #ffffff;
-        }
-
-        .card-header-title {
-            margin: 0;
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--text);
-        }
-
-        .card-body {
-            padding: 24px;
-        }
-
-        .department-info {
-            margin-bottom: 25px;
-        }
-
-        .department-info small {
-            display: block;
-            margin-top: 4px;
-            color: #3b82f6;
-        }
-
-        /* =========================
-           FORM GRID
-        ========================= */
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 22px;
-        }
-
-        .form-group {
-            min-width: 0;
-        }
-
-        .form-group.full {
-            grid-column: 1 / -1;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: #334155;
-            font-size: 13px;
-            font-weight: 750;
-        }
-
-        .required::after {
-            content: " *";
-            color: var(--danger);
-        }
-
-        .form-control,
-        .form-select {
-            width: 100%;
-            min-height: 44px;
-            border: 1px solid #d8dee8;
-            border-radius: 9px;
-            background: #ffffff;
-            color: var(--text);
-            padding: 10px 12px;
-            outline: none;
-            transition:
-                border-color 0.2s ease,
-                box-shadow 0.2s ease,
-                background 0.2s ease;
-        }
-
-        .form-control:hover,
-        .form-select:hover {
-            border-color: #b8c2d1;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        textarea.form-control {
-            min-height: 135px;
-            resize: vertical;
-            line-height: 1.55;
-        }
-
-        .form-text {
-            margin-top: 7px;
-            color: var(--muted);
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        .form-divider {
-            height: 1px;
-            border: 0;
-            background: var(--border);
-            margin: 28px 0 22px;
-        }
-
-        .form-actions {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        /* =========================
-           MOBILE OVERLAY
-        ========================= */
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.48);
-            z-index: 950;
-        }
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 900px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.25s ease;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-overlay.active {
-                display: block;
-            }
-
-            .main-wrapper {
-                margin-left: 0;
-            }
-
-            .mobile-menu-btn {
-                display: inline-flex;
-            }
-
-            .topbar {
-                padding: 0 18px;
-            }
-
-            .content {
-                padding: 22px 18px;
-            }
-
-            .topbar-logout {
-                display: none;
-            }
-        }
-
-        @media (max-width: 700px) {
-            .page-header-inner {
-                flex-direction: column;
-            }
-
-            .page-header {
-                padding: 20px;
-            }
-
-            .page-header h1 {
-                font-size: 21px;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 18px;
-            }
-
-            .form-group.full {
-                grid-column: auto;
-            }
-
-            .card-body {
-                padding: 20px;
-            }
-
-            .form-actions {
-                flex-direction: column-reverse;
-                align-items: stretch;
-            }
-
-            .form-actions .btn {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .content {
-                padding: 16px 12px;
-            }
-
-            .topbar {
-                height: 64px;
-            }
-
-            .page-header {
-                padding: 17px;
-                margin-bottom: 15px;
-            }
-
-            .card-body {
-                padding: 17px;
-            }
-
-            .card-header {
-                padding: 16px 17px;
-            }
-
-            .page-context {
-                font-size: 13px;
-            }
-        }
-    </style>
 </head>
+
 
 <body>
 
-    <!-- Mobile Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- =========================
+    <!-- =========================================================
+         MOBILE SIDEBAR OVERLAY
+    ========================================================== -->
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- =========================================================
          SIDEBAR
-    ========================== -->
+    ========================================================== -->
+
     <aside class="sidebar" id="sidebar">
 
-        <div class="brand">
-            <div class="brand-mark">
-                <svg viewBox="0 0 24 24" fill="none"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M12 3L20 7V12C20 16.5 17.1 19.5 12 21C6.9 19.5 4 16.5 4 12V7L12 3Z"
-                        stroke="white"
-                        stroke-width="1.8"
-                        stroke-linejoin="round"
-                    />
-                    <path
-                        d="M9 12L11 14L15.5 9.5"
-                        stroke="white"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </svg>
-            </div>
+        <a
+            href="{% url 'department_manager_dashboard' %}"
+            class="sidebar-brand"
+        >
 
-            <div class="brand-text">ITARMS</div>
+            <span class="brand-mark">IT</span>
+
+            <span class="brand-text">
+
+                <span class="brand-name">
+                    ITARMS
+                </span>
+
+                <span class="brand-subtitle">
+                    Resource Management
+                </span>
+
+            </span>
+
+        </a>
+
+
+        <div class="sidebar-label">
+            Department Manager
         </div>
 
-        <div class="sidebar-section">
 
-            <div class="sidebar-section-title">
-                Main
+        <nav class="sidebar-nav">
+
+            <!-- Dashboard -->
+
+            <a
+                href="{% url 'department_manager_dashboard' %}"
+                class="sidebar-link "
+            >
+
+                <span class="sidebar-icon">
+                    ⌂
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- Employees -->
+
+            <a
+                href="{% url 'department_manager_employees' %}"
+                class="sidebar-link "
+            >
+
+                <span class="sidebar-icon">
+                    👥
+                </span>
+
+                <span>
+                    Employees
+                </span>
+
+            </a>
+
+
+            <!-- Department Assets -->
+
+            <a
+                href="{% url 'department_manager_assets' %}"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    💻
+                </span>
+
+                <span>
+                    Department Assets
+                </span>
+
+            </a>
+
+
+            <!-- Asset Requests -->
+
+            <a
+                href="{% url 'department_manager_asset_requests' %}"
+                class="sidebar-link active"
+            >
+
+                <span class="sidebar-icon">
+                    ⏳
+                </span>
+
+                <span>
+                    Asset Requests
+                </span>
+
+            </a>
+
+
+            <!-- Asset Allocations -->
+
+            <a
+                href="{% url 'department_manager_asset_allocation' %}"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    📦
+                </span>
+
+                <span>
+                    Asset Allocations
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <div class="sidebar-user">
+
+                <div class="user-avatar">
+                    DM
+                </div>
+
+                <div class="user-info">
+
+                    <div class="user-role">
+                        Department Manager
+                    </div>
+
+                    <div class="user-department">
+                        {{ department.name }}
+                    </div>
+
+                </div>
+
             </div>
 
-            <a href="{% url 'department_manager_dashboard' %}" class="nav-link">
 
-                <span class="nav-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <rect x="3" y="3" width="7" height="7" rx="1.5"
-                              stroke="currentColor" stroke-width="1.8"/>
-                        <rect x="14" y="3" width="7" height="7" rx="1.5"
-                              stroke="currentColor" stroke-width="1.8"/>
-                        <rect x="3" y="14" width="7" height="7" rx="1.5"
-                              stroke="currentColor" stroke-width="1.8"/>
-                        <rect x="14" y="14" width="7" height="7" rx="1.5"
-                              stroke="currentColor" stroke-width="1.8"/>
-                    </svg>
-                </span>
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
 
-                Dashboard
-            </a>
-
-        </div>
-
-        <div class="sidebar-section">
-
-            <div class="sidebar-section-title">
-                Management
-            </div>
-
-            <a href="{% url 'department_manager_employees' %}" class="nav-link">
-
-                <span class="nav-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path
-                            d="M16 21V19C16 16.8 14.2 15 12 15H6C3.8 15 2 16.8 2 19V21"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <circle
-                            cx="9"
-                            cy="7"
-                            r="3.5"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                        />
-                        <path
-                            d="M22 21V19C22 17.2 20.8 15.7 19.1 15.2"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M16.5 3.2C18.3 3.7 19.5 5.2 19.5 7C19.5 8.8 18.3 10.3 16.5 10.8"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                    </svg>
-                </span>
-
-                Employees
-            </a>
-
-            <a href="{% url 'department_manager_assets' %}" class="nav-link">
-
-                <span class="nav-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <rect
-                            x="3"
-                            y="4"
-                            width="18"
-                            height="16"
-                            rx="2"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                        />
-                        <path
-                            d="M7 8H17"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M7 12H17"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M7 16H12"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                    </svg>
-                </span>
-
-                Assets
-            </a>
-
-            <a href="{% url 'department_manager_asset_allocation' %}" class="nav-link">
-
-                <span class="nav-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path
-                            d="M4 7H20"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M4 12H20"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M4 17H20"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <circle
-                            cx="8"
-                            cy="7"
-                            r="2"
-                            fill="currentColor"
-                        />
-                        <circle
-                            cx="15"
-                            cy="12"
-                            r="2"
-                            fill="currentColor"
-                        />
-                        <circle
-                            cx="10"
-                            cy="17"
-                            r="2"
-                            fill="currentColor"
-                        />
-                    </svg>
-                </span>
-
-                Asset Allocation
-            </a>
-
-            <a href="{% url 'department_manager_asset_requests' %}" class="nav-link active">
-
-                <span class="nav-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path
-                            d="M5 4H19C20.1 4 21 4.9 21 6V18C21 19.1 20.1 20 19 20H5C3.9 20 3 19.1 3 18V6C3 4.9 3.9 4 5 4Z"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                        />
-                        <path
-                            d="M7 8H17"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M7 12H14"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M7 16H11"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                    </svg>
-                </span>
-
-                Asset Requests
-            </a>
-
-            <a href="{% url 'department_manager_create_asset_request' %}" class="nav-link active">
-
-                <span class="nav-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <circle
-                            cx="12"
-                            cy="12"
-                            r="8.5"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                        />
-                        <path
-                            d="M12 8V16"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M8 12H16"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
-                    </svg>
-                </span>
-
-                Create Request
-            </a>
-
-        </div>
-
-        <div class="sidebar-bottom">
-
-            <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
 
-                <button type="submit" class="logout-btn">
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
 
-                    <span class="nav-icon">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M10 17L15 12L10 7"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            />
-                            <path
-                                d="M15 12H3"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                            />
-                            <path
-                                d="M20 19V5C20 4.4 19.6 4 19 4H14"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                            />
-                        </svg>
+                    <span>
+                        ↪
                     </span>
 
                     Logout
 
                 </button>
+
             </form>
 
         </div>
 
     </aside>
 
-    <!-- =========================
-         MAIN WRAPPER
-    ========================== -->
-    <div class="main-wrapper">
 
-        <!-- Topbar -->
-        <header class="topbar">
+    <!-- =========================================================
+         MAIN AREA
+    ========================================================== -->
 
-            <div class="topbar-left">
+    <div class="main-area">
+
+
+        <!-- =====================================================
+             MAIN HEADER
+        ====================================================== -->
+
+        <header class="main-header">
+
+            <div class="header-left">
 
                 <button
                     type="button"
-                    class="mobile-menu-btn"
-                    id="mobileMenuBtn"
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
                     aria-label="Open navigation"
                 >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path
-                            d="M4 6H20"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M4 12H20"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                        />
-                        <path
-                            d="M4 18H20"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                        />
-                    </svg>
+                    ☰
                 </button>
 
-                <div class="page-context">
-                    Department Manager / <strong>Create Asset Request</strong>
+
+                <div>
+
+                    <h1 class="header-title">
+                        Create Asset Request
+                    </h1>
+
+                    <p class="header-subtitle">
+                        Submit an asset request on behalf of an employee.
+                    </p>
+
                 </div>
 
             </div>
 
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
 
-                <button type="submit" class="topbar-logout">
-                    Logout
-                </button>
-            </form>
+            <div class="header-status">
+
+                <span class="status-dot"></span>
+
+                Department Manager
+
+            </div>
 
         </header>
 
-        <!-- Main Content -->
+
+        <!-- =====================================================
+             CONTENT
+        ====================================================== -->
+
         <main class="content">
 
-            <!-- Page Header -->
+
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
+
             <section class="page-header">
 
-                <div class="page-header-inner">
+                <div class="page-heading">
 
-                    <div>
-                        <h1>Create Asset Request</h1>
+                    <div class="eyebrow">
 
-                        <p>
-                            Submit an asset request on behalf of an employee.
-                        </p>
+                        <span class="eyebrow-dot"></span>
+
+                        Department Manager / Asset Requests
+
                     </div>
+
+
+                    <h2 class="page-title">
+                        Create Asset Request
+                    </h2>
+
+
+                    <p class="page-subtitle">
+                        Submit an asset request on behalf of an employee.
+                    </p>
+
+                </div>
+
+
+                <div class="header-actions">
 
                     <a
                         href="{% url 'department_manager_asset_requests' %}"
-                        class="btn btn-outline"
+                        class="header-button"
                     >
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M19 12H5"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                            />
-                            <path
-                                d="M11 18L5 12L11 6"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            />
-                        </svg>
 
-                        Back to Requests
+                        <span>
+                            &larr;
+                        </span>
+
+                        <span>
+                            Back to Requests
+                        </span>
+
                     </a>
 
                 </div>
 
             </section>
 
-            <!-- Error Messages -->
+
+            <!-- =================================================
+                 ERROR MESSAGES
+            ================================================== -->
+
             {% if errors %}
 
-                <div class="alert alert-danger">
+                <section class="workspace">
 
-                    <strong>Please correct the following errors:</strong>
+                    <div class="alert alert-danger">
 
-                    <ul>
-                        {% for field, message in errors.items %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
+                        <strong>
+                            Please correct the following errors:
+                        </strong>
 
-                </div>
+                        <ul>
 
-            {% endif %}
+                            {% for field, message in errors.items %}
 
-            <!-- Form Card -->
-            <section class="form-card">
+                                <li>
+                                    {{ message }}
+                                </li>
 
-                <div class="card-header">
-                    <h2 class="card-header-title">
-                        Request Information
-                    </h2>
-                </div>
+                            {% endfor %}
 
-                <div class="card-body">
-
-                    <!-- Department Information -->
-                    <div class="alert alert-info department-info">
-
-                        <strong>Department:</strong>
-                        {{ department.name }}
-
-                        {% if department.code %}
-                            ({{ department.code }})
-                        {% endif %}
-
-                        <small>
-                            Only active employees belonging to this department can be selected.
-                        </small>
+                        </ul>
 
                     </div>
 
-                    <form method="post" novalidate>
+                </section>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 REQUEST FORM
+            ================================================== -->
+
+            <section class="workspace">
+
+
+                <!-- WORKSPACE HEADER -->
+
+                <div class="workspace-header">
+
+                    <div class="workspace-title-wrap">
+
+                        <div class="section-icon">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                            >
+
+                                <path
+                                    d="M5 4H19V20H5V4Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linejoin="round"
+                                />
+
+                                <path
+                                    d="M8 8H16"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                />
+
+                                <path
+                                    d="M8 12H16"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                />
+
+                                <path
+                                    d="M8 16H13"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                />
+
+                            </svg>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3 class="workspace-title">
+                                Request Information
+                            </h3>
+
+                            <p class="workspace-subtitle">
+                                Provide the details required for the asset request.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- WORKSPACE BODY -->
+
+                <div class="form-content">
+
+
+                    <!-- DEPARTMENT INFORMATION -->
+
+                    <div class="department-info">
+
+                        <div class="info-banner-icon">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                            >
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="9"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                />
+
+                                <path
+                                    d="M12 10V16"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="7"
+                                    r="1"
+                                    fill="currentColor"
+                                />
+
+                            </svg>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="info-banner-title">
+
+                                Department:
+
+                                <strong>
+                                    {{ department.name }}
+
+                                    {% if department.code %}
+                                        ({{ department.code }})
+                                    {% endif %}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-banner-text">
+                                Only active employees belonging to this department can be selected.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FORM -->
+
+                    <form
+                        method="post"
+                        novalidate
+                        class="request-form"
+                    >
 
                         {% csrf_token %}
 
+
                         <div class="form-grid">
 
-                            <!-- Employee -->
+
+                            <!-- EMPLOYEE -->
+
                             <div class="form-group">
 
                                 <label
@@ -1086,6 +518,7 @@
                                 >
                                     Employee
                                 </label>
+
 
                                 <select
                                     id="employee_id"
@@ -1098,6 +531,7 @@
                                         Select employee
                                     </option>
 
+
                                     {% for employee in employees %}
 
                                         <option
@@ -1106,13 +540,16 @@
                                                 selected
                                             {% endif %}
                                         >
+
                                             {{ employee.employee_id }} —
                                             {{ employee.user.get_full_name|default:employee.user.username }}
+
                                         </option>
 
                                     {% endfor %}
 
                                 </select>
+
 
                                 <div class="form-text">
                                     The employee is restricted server-side to your department.
@@ -1120,7 +557,9 @@
 
                             </div>
 
-                            <!-- Asset Category -->
+
+                            <!-- ASSET CATEGORY -->
+
                             <div class="form-group">
 
                                 <label
@@ -1129,6 +568,7 @@
                                 >
                                     Asset Category
                                 </label>
+
 
                                 <input
                                     type="text"
@@ -1140,13 +580,16 @@
                                     required
                                 >
 
+
                                 <div class="form-text">
                                     Example: Laptop, Monitor, Printer, Networking Equipment.
                                 </div>
 
                             </div>
 
-                            <!-- Asset Name -->
+
+                            <!-- ASSET NAME -->
+
                             <div class="form-group">
 
                                 <label
@@ -1155,6 +598,7 @@
                                 >
                                     Asset Name
                                 </label>
+
 
                                 <input
                                     type="text"
@@ -1165,13 +609,16 @@
                                     maxlength="150"
                                 >
 
+
                                 <div class="form-text">
                                     Optional specific asset/model requested.
                                 </div>
 
                             </div>
 
-                            <!-- Quantity -->
+
+                            <!-- QUANTITY -->
+
                             <div class="form-group">
 
                                 <label
@@ -1180,6 +627,7 @@
                                 >
                                     Quantity
                                 </label>
+
 
                                 <input
                                     type="number"
@@ -1193,7 +641,9 @@
 
                             </div>
 
-                            <!-- Priority -->
+
+                            <!-- PRIORITY -->
+
                             <div class="form-group">
 
                                 <label
@@ -1202,6 +652,7 @@
                                 >
                                     Priority
                                 </label>
+
 
                                 <select
                                     id="priority"
@@ -1219,6 +670,7 @@
                                         Low
                                     </option>
 
+
                                     <option
                                         value="MEDIUM"
                                         {% if not form_data.priority or form_data.priority == "MEDIUM" %}
@@ -1228,6 +680,7 @@
                                         Medium
                                     </option>
 
+
                                     <option
                                         value="HIGH"
                                         {% if form_data.priority == "HIGH" %}
@@ -1236,6 +689,7 @@
                                     >
                                         High
                                     </option>
+
 
                                     <option
                                         value="URGENT"
@@ -1250,7 +704,9 @@
 
                             </div>
 
-                            <!-- Request Reason -->
+
+                            <!-- REQUEST REASON -->
+
                             <div class="form-group full">
 
                                 <label
@@ -1260,6 +716,7 @@
                                     Request Reason
                                 </label>
 
+
                                 <textarea
                                     id="reason"
                                     name="reason"
@@ -1267,6 +724,7 @@
                                     rows="5"
                                     required
                                 >{{ form_data.reason|default:'' }}</textarea>
+
 
                                 <div class="form-text">
                                     Explain why the employee requires this asset.
@@ -1276,23 +734,36 @@
 
                         </div>
 
-                        <hr class="form-divider">
 
-                        <!-- Form Actions -->
+                        <!-- FORM DIVIDER -->
+
+                        <div class="form-divider"></div>
+
+
+                        <!-- FORM ACTIONS -->
+
                         <div class="form-actions">
 
                             <a
                                 href="{% url 'department_manager_asset_requests' %}"
-                                class="btn btn-secondary"
+                                class="header-button"
                             >
                                 Cancel
                             </a>
 
+
                             <button
                                 type="submit"
-                                class="btn btn-primary"
+                                class="header-button primary"
                             >
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+
+                                <svg
+                                    width="17"
+                                    height="17"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                >
+
                                     <path
                                         d="M5 12L10 17L19 7"
                                         stroke="currentColor"
@@ -1300,9 +771,11 @@
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
                                     />
+
                                 </svg>
 
                                 Submit Asset Request
+
                             </button>
 
                         </div>
@@ -1313,45 +786,127 @@
 
             </section>
 
+
+            <!-- =================================================
+                 PAGE FOOTER
+            ================================================== -->
+
+            <footer class="page-footer">
+
+                <span>
+                    ITARMS
+                </span>
+
+                <span>
+                    Department Manager Portal
+                </span>
+
+            </footer>
+
+
         </main>
 
     </div>
 
-    <!-- =========================
-         MOBILE SIDEBAR JS
-    ========================== -->
+
+    <!-- =========================================================
+         MOBILE SIDEBAR SCRIPT
+    ========================================================== -->
+
     <script>
-        const sidebar = document.getElementById("sidebar");
-        const overlay = document.getElementById("sidebarOverlay");
-        const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+        const mobileMenuButton =
+            document.getElementById("mobileMenuButton");
+
 
         function openSidebar() {
+
             sidebar.classList.add("open");
+
             overlay.classList.add("active");
+
+            document.body.style.overflow = "hidden";
+
         }
+
 
         function closeSidebar() {
+
             sidebar.classList.remove("open");
+
             overlay.classList.remove("active");
+
+            document.body.style.overflow = "";
+
         }
 
-        mobileMenuBtn.addEventListener("click", openSidebar);
-        overlay.addEventListener("click", closeSidebar);
 
-        document.querySelectorAll(".nav-link").forEach(link => {
-            link.addEventListener("click", () => {
-                if (window.innerWidth <= 900) {
-                    closeSidebar();
+        if (mobileMenuButton) {
+
+            mobileMenuButton.addEventListener(
+                "click",
+                openSidebar
+            );
+
+        }
+
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+        }
+
+
+        document.querySelectorAll(
+            ".sidebar-link"
+        ).forEach(function (link) {
+
+            link.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        window.innerWidth <= 850
+                    ) {
+
+                        closeSidebar();
+
+                    }
+
                 }
-            });
+            );
+
         });
 
-        window.addEventListener("resize", () => {
-            if (window.innerWidth > 900) {
-                closeSidebar();
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (
+                    window.innerWidth > 850
+                ) {
+
+                    closeSidebar();
+
+                }
+
             }
-        });
+        );
+
     </script>
 
+
 </body>
+
 </html>
