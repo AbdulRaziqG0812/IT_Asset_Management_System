@@ -5,7 +5,6 @@ from .views import (
     create_asset_request,
 )
 
-
 urlpatterns = [
     path(
         "",

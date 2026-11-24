@@ -1,0 +1,572 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Damaged / Lost Assets - ITARMS</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/employee_portal.css' %}"
+    >
+
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-mark">
+                IT
+            </div>
+
+            <div class="brand-info">
+
+                <div class="brand-title">
+                    ITARMS
+                </div>
+
+                <div class="brand-subtitle">
+                    Employee Portal
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                Employee
+            </div>
+
+            <a
+                href="{% url 'employee_dashboard' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a
+                href="{% url 'employee_assigned_assets' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">▣</span>
+                <span>My Assigned Assets</span>
+            </a>
+
+            <a
+                href="{% url 'employee_asset_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">＋</span>
+                <span>Asset Requests</span>
+            </a>
+
+            <a
+                href="{% url 'employee_maintenance_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">⚙</span>
+                <span>Maintenance &amp; Repair</span>
+            </a>
+
+            <a
+                href="{% url 'employee_asset_incident_list' %}"
+                class="nav-link active"
+            >
+                <span class="nav-icon">⚠</span>
+                <span>Damaged / Lost Assets</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <span class="nav-icon">↪</span>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <div class="content-wrapper">
+
+
+            <!-- TOPBAR -->
+
+            <header class="topbar">
+
+                <div class="topbar-title">
+                    Damaged / Lost Assets
+                </div>
+
+                <div class="welcome-user">
+
+                    {{ request.user.get_full_name|default:request.user.username }}
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE HEADER -->
+
+            <section class="page-header">
+
+                <div>
+
+                    <p class="eyebrow">
+                        Asset Incident Reports
+                    </p>
+
+                    <h1>
+                        Damaged / Lost Assets
+                    </h1>
+
+                    <p>
+                        View and track the damaged or lost asset
+                        reports you have submitted.
+                    </p>
+
+                </div>
+
+                <a
+                    href="{% url 'employee_asset_incident_create' %}"
+                    class="request-create-button"
+                >
+                    <span class="request-plus-icon">+</span>
+                    Report Asset
+                </a>
+
+            </section>
+
+
+            <!-- SEARCH / FILTER TOOLBAR -->
+
+            <section class="incident-toolbar">
+
+                <form
+                    method="get"
+                    class="incident-search-form"
+                >
+
+                    <div class="incident-search-wrapper">
+
+                        <span class="incident-search-icon">
+                            ⌕
+                        </span>
+
+                        <input
+                            type="search"
+                            name="q"
+                            value="{{ search_query }}"
+                            class="incident-search-input"
+                            placeholder="Search by asset ID, asset name or description..."
+                            autocomplete="off"
+                        >
+
+                        {% if search_query %}
+                            <a
+                                href="{% url 'employee_asset_incident_list' %}"
+                                class="incident-clear-search"
+                                aria-label="Clear search"
+                            >
+                                ×
+                            </a>
+                        {% endif %}
+
+                    </div>
+
+
+                    <select
+                        name="type"
+                        class="incident-filter-select"
+                    >
+
+                        <option value="">
+                            All Types
+                        </option>
+
+                        {% for value, label in incident_types %}
+
+                            <option
+                                value="{{ value }}"
+                                {% if selected_type == value %}selected{% endif %}
+                            >
+                                {{ label }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <select
+                        name="status"
+                        class="incident-filter-select"
+                    >
+
+                        <option value="">
+                            All Statuses
+                        </option>
+
+                        {% for value, label in statuses %}
+
+                            <option
+                                value="{{ value }}"
+                                {% if selected_status == value %}selected{% endif %}
+                            >
+                                {{ label }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <button
+                        type="submit"
+                        class="incident-search-button"
+                    >
+                        Search
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- SUMMARY -->
+
+            <section class="incident-summary">
+
+                <div>
+
+                    <span class="incident-summary-label">
+                        Your Reports
+                    </span>
+
+                    <strong class="incident-summary-value">
+                        {{ incidents|length }}
+                    </strong>
+
+                </div>
+
+                <div class="incident-summary-note">
+                    Only your submitted reports are shown.
+                </div>
+
+            </section>
+
+
+            <!-- REPORT TABLE -->
+
+            <section class="incident-table-card">
+
+                <div class="incident-table-header">
+
+                    <div>
+
+                        <p class="panel-label">
+                            Incident History
+                        </p>
+
+                        <h2 class="incident-table-heading">
+                            Submitted Reports
+                        </h2>
+
+                    </div>
+
+                    <div class="incident-table-icon">
+                        ⚠
+                    </div>
+
+                </div>
+
+
+                {% if incidents %}
+
+                    <div class="incident-table-scroll">
+
+                        <table class="incident-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Incident
+                                    </th>
+
+                                    <th>
+                                        Asset
+                                    </th>
+
+                                    <th>
+                                        Type
+                                    </th>
+
+                                    <th>
+                                        Description
+                                    </th>
+
+                                    <th>
+                                        Reported
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for incident in incidents %}
+
+                                    <tr>
+
+                                        <td>
+
+                                            <span class="incident-id">
+                                                #{{ incident.id }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="incident-asset-name">
+                                                {{ incident.asset.asset_name }}
+                                            </div>
+
+                                            <div class="incident-asset-id">
+                                                {{ incident.asset.asset_id }}
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if incident.incident_type == "DAMAGED" %}
+
+                                                <span class="incident-type-badge incident-type-damaged">
+                                                    Damaged
+                                                </span>
+
+                                            {% elif incident.incident_type == "LOST" %}
+
+                                                <span class="incident-type-badge incident-type-lost">
+                                                    Lost
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="incident-type-badge">
+                                                    {{ incident.get_incident_type_display }}
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="incident-description">
+                                                {{ incident.description|truncatechars:90 }}
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="incident-date">
+                                                {{ incident.reported_at|date:"d M Y" }}
+                                            </span>
+
+                                            <span class="incident-time">
+                                                {{ incident.reported_at|date:"h:i A" }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if incident.status == "PENDING" %}
+
+                                                <span class="incident-status-badge incident-status-pending">
+                                                    Pending
+                                                </span>
+
+                                            {% elif incident.status == "APPROVED" %}
+
+                                                <span class="incident-status-badge incident-status-approved">
+                                                    Approved
+                                                </span>
+
+                                            {% elif incident.status == "REJECTED" %}
+
+                                                <span class="incident-status-badge incident-status-rejected">
+                                                    Rejected
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="incident-status-badge">
+                                                    {{ incident.get_status_display }}
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="incident-empty-state">
+
+                        <div class="incident-empty-icon">
+                            ✓
+                        </div>
+
+                        <h3>
+                            No Asset Reports Found
+                        </h3>
+
+                        <p>
+
+                            {% if search_query or selected_type or selected_status %}
+
+                                No reports match your current search or filters.
+
+                            {% else %}
+
+                                You have not submitted any damaged or lost
+                                asset reports yet.
+
+                            {% endif %}
+
+                        </p>
+
+                        <a
+                            href="{% url 'employee_asset_incident_create' %}"
+                            class="empty-action-button"
+                        >
+                            Report Damaged / Lost Asset
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- INFORMATION NOTE -->
+
+            <section class="incident-information-card">
+
+                <div class="incident-information-icon">
+                    i
+                </div>
+
+                <div>
+
+                    <h3>
+                        Report Review
+                    </h3>
+
+                    <p>
+                        New damaged or lost asset reports remain
+                        <strong>Pending</strong> until reviewed by
+                        an authorized administrator. Once processed,
+                        the updated status will appear here.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- FOOTER -->
+
+            <footer class="employee-footer">
+
+                <span>
+                    ITARMS
+                </span>
+
+                <span>
+                    IT Asset &amp; Resource Management System
+                </span>
+
+            </footer>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

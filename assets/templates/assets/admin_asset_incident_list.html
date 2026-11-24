@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Damaged / Lost Reports | ITARMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    {% load static %}
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
+    <style>
+
+        /* =========================================================
+           INCIDENT PAGE
+        ========================================================= */
+
+        .incident-content {
+            width: 100%;
+        }
+
+
+        /* =========================================================
+           PAGE INTRO
+        ========================================================= */
+
+        .incident-page-header {
+            background: linear-gradient(
+                135deg,
+                #ffffff 0%,
+                #f8fafc 100%
+            );
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 18px;
+
+            padding: 28px 30px;
+
+            margin-bottom: 24px;
+
+            box-shadow:
+                0 8px 25px rgba(15, 23, 42, 0.05);
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        .incident-header-left {
+            min-width: 0;
+        }
+
+
+        .incident-badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 7px 12px;
+
+            border-radius: 999px;
+
+            background: #fff7ed;
+
+            color: #c2410c;
+
+            border: 1px solid #fed7aa;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            margin-bottom: 12px;
+        }
+
+
+        .incident-page-header h2 {
+            margin: 0;
+
+            color: #0f172a;
+
+            font-size: 25px;
+
+            font-weight: 750;
+
+            letter-spacing: -0.3px;
+        }
+
+
+        .incident-page-header p {
+            margin: 7px 0 0;
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+
+        .incident-header-icon {
+            width: 64px;
+
+            height: 64px;
+
+            min-width: 64px;
+
+            border-radius: 16px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #fff1f2;
+
+            color: #dc2626;
+
+            font-size: 27px;
+
+            border: 1px solid #fecdd3;
+        }
+
+
+        /* =========================================================
+           SUMMARY
+        ========================================================= */
+
+        .incident-summary-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 16px;
+
+            margin-bottom: 24px;
+        }
+
+
+        .incident-summary-card {
+            background: #ffffff;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 15px;
+
+            padding: 18px 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            box-shadow:
+                0 5px 18px rgba(15, 23, 42, 0.04);
+        }
+
+
+        .summary-icon {
+            width: 44px;
+
+            height: 44px;
+
+            min-width: 44px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 19px;
+        }
+
+
+        .summary-total {
+            background: #eff6ff;
+
+            color: #2563eb;
+        }
+
+
+        .summary-pending {
+            background: #fffbeb;
+
+            color: #d97706;
+        }
+
+
+        .summary-processed {
+            background: #f0fdf4;
+
+            color: #16a34a;
+        }
+
+
+        .summary-content {
+            min-width: 0;
+        }
+
+
+        .summary-label {
+            color: #64748b;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            margin-bottom: 3px;
+        }
+
+
+        .summary-value {
+            color: #0f172a;
+
+            font-size: 22px;
+
+            font-weight: 750;
+
+            line-height: 1.2;
+        }
+
+
+        /* =========================================================
+           FILTER PANEL
+        ========================================================= */
+
+        .incident-filter-panel {
+            background: #ffffff;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 17px;
+
+            padding: 21px;
+
+            margin-bottom: 24px;
+
+            box-shadow:
+                0 6px 20px rgba(15, 23, 42, 0.04);
+        }
+
+
+        .filter-title-row {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 12px;
+
+            margin-bottom: 16px;
+        }
+
+
+        .filter-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            color: #0f172a;
+
+            font-size: 15px;
+
+            font-weight: 700;
+        }
+
+
+        .filter-title i {
+            color: #475569;
+        }
+
+
+        .filter-grid {
+            display: grid;
+
+            grid-template-columns:
+                minmax(220px, 2fr)
+                minmax(160px, 1fr)
+                minmax(160px, 1fr)
+                auto;
+
+            gap: 12px;
+
+            align-items: end;
+        }
+
+
+        .filter-field label {
+            display: block;
+
+            color: #475569;
+
+            font-size: 12px;
+
+            font-weight: 650;
+
+            margin-bottom: 7px;
+        }
+
+
+        .filter-field input,
+        .filter-field select {
+            width: 100%;
+
+            min-height: 43px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 10px;
+
+            background: #ffffff;
+
+            color: #0f172a;
+
+            padding: 9px 12px;
+
+            font-size: 13px;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .filter-field input:focus,
+        .filter-field select:focus {
+            border-color: #64748b;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    100,
+                    116,
+                    139,
+                    0.12
+                );
+        }
+
+
+        .filter-actions {
+            display: flex;
+
+            gap: 8px;
+        }
+
+
+        .filter-button,
+        .clear-filter-button {
+            min-height: 43px;
+
+            border-radius: 10px;
+
+            padding: 9px 16px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            text-decoration: none;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            border: none;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+        }
+
+
+        .filter-button {
+            background: #0f172a;
+
+            color: #ffffff;
+        }
+
+
+        .filter-button:hover {
+            background: #1e293b;
+
+            color: #ffffff;
+        }
+
+
+        .clear-filter-button {
+            background: #f1f5f9;
+
+            color: #475569;
+
+            border: 1px solid #e2e8f0;
+        }
+
+
+        .clear-filter-button:hover {
+            background: #e2e8f0;
+
+            color: #0f172a;
+        }
+
+
+        /* =========================================================
+           TABLE PANEL
+        ========================================================= */
+
+        .incident-table-panel {
+            background: #ffffff;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 17px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 7px 22px rgba(15, 23, 42, 0.05);
+        }
+
+
+        .incident-table-header {
+            padding: 20px 22px;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+        }
+
+
+        .table-heading {
+            min-width: 0;
+        }
+
+
+        .table-heading h3 {
+            margin: 0;
+
+            color: #0f172a;
+
+            font-size: 17px;
+
+            font-weight: 750;
+        }
+
+
+        .table-heading p {
+            margin: 4px 0 0;
+
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+
+        .record-count {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 6px 11px;
+
+            border-radius: 999px;
+
+            background: #f1f5f9;
+
+            color: #475569;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        .incident-table-wrapper {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+
+        .incident-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1050px;
+        }
+
+
+        .incident-table thead th {
+            background: #f8fafc;
+
+            color: #475569;
+
+            font-size: 11px;
+
+            font-weight: 750;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.45px;
+
+            padding: 13px 16px;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            white-space: nowrap;
+
+            text-align: left;
+        }
+
+
+        .incident-table tbody td {
+            padding: 16px;
+
+            border-bottom: 1px solid #f1f5f9;
+
+            vertical-align: top;
+
+            color: #334155;
+
+            font-size: 13px;
+        }
+
+
+        .incident-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        .incident-table tbody tr:hover {
+            background: #fafcff;
+        }
+
+
+        .incident-id {
+            font-weight: 750;
+
+            color: #0f172a;
+
+            white-space: nowrap;
+        }
+
+
+        .incident-date {
+            color: #64748b;
+
+            font-size: 12px;
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================================================
+           ASSET / EMPLOYEE INFO
+        ========================================================= */
+
+        .asset-info,
+        .employee-info {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 3px;
+
+            min-width: 150px;
+        }
+
+
+        .primary-info {
+            color: #0f172a;
+
+            font-weight: 700;
+        }
+
+
+        .secondary-info {
+            color: #64748b;
+
+            font-size: 11px;
+        }
+
+
+        .incident-description {
+            max-width: 260px;
+
+            color: #475569;
+
+            line-height: 1.5;
+
+            word-break: break-word;
+        }
+
+
+        /* =========================================================
+           BADGES
+        ========================================================= */
+
+        .incident-type-badge,
+        .status-badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            border-radius: 999px;
+
+            padding: 6px 10px;
+
+            font-size: 11px;
+
+            font-weight: 750;
+
+            white-space: nowrap;
+        }
+
+
+        .type-damaged {
+            background: #fff7ed;
+
+            color: #c2410c;
+
+            border: 1px solid #fed7aa;
+        }
+
+
+        .type-lost {
+            background: #fef2f2;
+
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+        }
+
+
+        .status-pending {
+            background: #fffbeb;
+
+            color: #b45309;
+
+            border: 1px solid #fde68a;
+        }
+
+
+        .status-approved {
+            background: #f0fdf4;
+
+            color: #15803d;
+
+            border: 1px solid #bbf7d0;
+        }
+
+
+        .status-rejected {
+            background: #fef2f2;
+
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+        }
+
+
+        /* =========================================================
+           PROCESS AREA
+        ========================================================= */
+
+        .process-form {
+            min-width: 235px;
+
+            max-width: 290px;
+        }
+
+
+        .process-form textarea {
+            width: 100%;
+
+            min-height: 66px;
+
+            resize: vertical;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 9px;
+
+            padding: 8px 10px;
+
+            color: #0f172a;
+
+            font-size: 12px;
+
+            outline: none;
+
+            margin-bottom: 8px;
+        }
+
+
+        .process-form textarea:focus {
+            border-color: #64748b;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    100,
+                    116,
+                    139,
+                    0.10
+                );
+        }
+
+
+        .process-actions {
+            display: flex;
+
+            gap: 7px;
+        }
+
+
+        .process-button {
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 7px 11px;
+
+            font-size: 11px;
+
+            font-weight: 750;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 5px;
+
+            cursor: pointer;
+        }
+
+
+        .approve-button {
+            background: #16a34a;
+
+            color: #ffffff;
+        }
+
+
+        .approve-button:hover {
+            background: #15803d;
+        }
+
+
+        .reject-button {
+            background: #dc2626;
+
+            color: #ffffff;
+        }
+
+
+        .reject-button:hover {
+            background: #b91c1c;
+        }
+
+
+        .processed-info {
+            min-width: 170px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+
+        .processed-by {
+            color: #0f172a;
+
+            font-weight: 700;
+
+            font-size: 12px;
+        }
+
+
+        .processed-date {
+            color: #64748b;
+
+            font-size: 11px;
+        }
+
+
+        .admin-note {
+            margin-top: 7px;
+
+            padding: 7px 9px;
+
+            background: #f8fafc;
+
+            border-left: 3px solid #cbd5e1;
+
+            border-radius: 5px;
+
+            color: #475569;
+
+            font-size: 11px;
+
+            line-height: 1.45;
+
+            max-width: 240px;
+
+            word-break: break-word;
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .incident-empty {
+            padding: 70px 25px;
+
+            text-align: center;
+        }
+
+
+        .incident-empty-icon {
+            width: 62px;
+
+            height: 62px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 16px;
+
+            background: #f1f5f9;
+
+            color: #64748b;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 26px;
+        }
+
+
+        .incident-empty h4 {
+            margin: 0 0 6px;
+
+            color: #0f172a;
+
+            font-size: 16px;
+
+            font-weight: 750;
+        }
+
+
+        .incident-empty p {
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1100px) {
+
+            .filter-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+
+            .filter-actions {
+                grid-column: 1 / -1;
+            }
+
+
+            .incident-summary-grid {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 760px) {
+
+            .incident-page-header {
+                padding: 22px;
+
+                align-items: flex-start;
+            }
+
+
+            .incident-header-icon {
+                width: 52px;
+
+                height: 52px;
+
+                min-width: 52px;
+
+                font-size: 22px;
+            }
+
+
+            .incident-page-header h2 {
+                font-size: 21px;
+            }
+
+
+            .incident-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .filter-actions {
+                grid-column: auto;
+            }
+
+
+            .filter-button,
+            .clear-filter-button {
+                flex: 1;
+            }
+
+
+            .incident-table-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .incident-page-header {
+                padding: 18px;
+            }
+
+
+            .incident-page-header p {
+                font-size: 13px;
+            }
+
+
+            .incident-header-icon {
+                display: none;
+            }
+
+
+            .filter-actions {
+                flex-direction: column;
+            }
+
+
+            .incident-table-header {
+                padding: 17px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ============================================================
+         SIDEBAR
+    ============================================================= -->
+
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <i class="bi bi-cpu-fill"></i>
+            </div>
+
+            <div class="brand-content">
+
+                <h1 class="brand-title">
+                    ITARMS
+                </h1>
+
+                <div class="brand-subtitle">
+                    Super Admin Panel
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-user">
+
+            <div class="sidebar-user-inner">
+
+                <div class="user-avatar">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+
+                <div class="user-details">
+
+                    <div class="user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Super Administrator
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-section-title">
+            Main
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+
+            <a
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+
+            {% url 'asset_list' as asset_list_url %}
+
+            {% if asset_list_url %}
+
+                <a
+                    href="{{ asset_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+            {% endif %}
+
+
+            {% url 'admin_asset_requests' as asset_requests_url %}
+
+            {% if asset_requests_url %}
+
+                <a
+                    href="{{ asset_requests_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+            {% endif %}
+
+
+            <a
+                href="{% url 'admin_asset_incident_list' %}"
+                class="sidebar-link active"
+            >
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>Damaged / Lost</span>
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-section-title">
+            Management
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+
+            {% url 'maintenance_list' as maintenance_url %}
+
+            {% if maintenance_url %}
+
+                <a
+                    href="{{ maintenance_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance</span>
+                </a>
+
+            {% endif %}
+
+
+            {% url 'department_list' as departments_url %}
+
+            {% if departments_url %}
+
+                <a
+                    href="{{ departments_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-diagram-3-fill"></i>
+                    <span>Departments</span>
+                </a>
+
+            {% endif %}
+
+
+            {% url 'reports_home' as reports_url %}
+
+            {% if reports_url %}
+
+                <a
+                    href="{{ reports_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Reports & Analytics</span>
+                </a>
+
+            {% endif %}
+
+
+            {% url 'notifications' as notifications_url %}
+
+            {% if notifications_url %}
+
+                <a
+                    href="{{ notifications_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+            {% endif %}
+
+
+        </nav>
+
+
+        <div class="sidebar-section-title">
+            System
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+
+            {% url 'audit_log_list' as audit_logs_url %}
+
+            {% if audit_logs_url %}
+
+                <a
+                    href="{{ audit_logs_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-journal-text"></i>
+                    <span>Audit Logs</span>
+                </a>
+
+            {% endif %}
+
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- SIDEBAR OVERLAY -->
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- ============================================================
+         MAIN
+    ============================================================= -->
+
+    <main class="admin-main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    type="button"
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
+                    aria-label="Open navigation"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+
+                <div class="page-heading">
+
+                    <h1>
+                        Damaged / Lost Reports
+                    </h1>
+
+                    <p>
+                        Review and process employee asset incident reports
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="system-status">
+
+                    <span class="status-dot"></span>
+
+                    System Active
+
+                </div>
+
+
+                <div class="topbar-avatar">
+
+                    <i class="bi bi-shield-check"></i>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ========================================================
+             CONTENT
+        ========================================================= -->
+
+        <section class="dashboard-content incident-content">
+
+
+            <!-- PAGE HEADER -->
+
+            <div class="incident-page-header">
+
+                <div class="incident-header-left">
+
+                    <div class="incident-badge">
+
+                        <i class="bi bi-shield-exclamation"></i>
+
+                        Asset Incident Management
+
+                    </div>
+
+
+                    <h2>
+                        Damaged & Lost Asset Reports
+                    </h2>
+
+
+                    <p>
+                        Review employee-submitted reports and take the
+                        appropriate administrative action after verification.
+                    </p>
+
+                </div>
+
+
+                <div class="incident-header-icon">
+
+                    <i class="bi bi-exclamation-diamond-fill"></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- SUMMARY -->
+
+            <div class="incident-summary-grid">
+
+
+                <div class="incident-summary-card">
+
+                    <div class="summary-icon summary-total">
+
+                        <i class="bi bi-clipboard-data-fill"></i>
+
+                    </div>
+
+                    <div class="summary-content">
+
+                        <div class="summary-label">
+                            Total Reports
+                        </div>
+
+                        <div class="summary-value">
+                            {{ incidents|length }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="incident-summary-card">
+
+                    <div class="summary-icon summary-pending">
+
+                        <i class="bi bi-hourglass-split"></i>
+
+                    </div>
+
+                    <div class="summary-content">
+
+                        <div class="summary-label">
+                            Pending Review
+                        </div>
+
+                        <div class="summary-value">
+
+                            {{ incidents|length }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="incident-summary-card">
+
+                    <div class="summary-icon summary-processed">
+
+                        <i class="bi bi-shield-check"></i>
+
+                    </div>
+
+                    <div class="summary-content">
+
+                        <div class="summary-label">
+                            Filtered Results
+                        </div>
+
+                        <div class="summary-value">
+                            {{ incidents|length }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- FILTERS -->
+
+            <div class="incident-filter-panel">
+
+                <div class="filter-title-row">
+
+                    <div class="filter-title">
+
+                        <i class="bi bi-funnel-fill"></i>
+
+                        Search & Filter Reports
+
+                    </div>
+
+                </div>
+
+
+                <form method="get">
+
+                    <div class="filter-grid">
+
+
+                        <div class="filter-field">
+
+                            <label for="incidentSearch">
+                                Search
+                            </label>
+
+                            <input
+                                type="text"
+                                id="incidentSearch"
+                                name="q"
+                                value="{{ search_query }}"
+                                placeholder="Asset ID, asset name, employee or description..."
+                            >
+
+                        </div>
+
+
+                        <div class="filter-field">
+
+                            <label for="incidentStatus">
+                                Status
+                            </label>
+
+                            <select
+                                id="incidentStatus"
+                                name="status"
+                            >
+
+                                <option value="">
+                                    All Statuses
+                                </option>
+
+                                {% for value, label in statuses %}
+
+                                    <option
+                                        value="{{ value }}"
+                                        {% if selected_status == value %}selected{% endif %}
+                                    >
+                                        {{ label }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="filter-field">
+
+                            <label for="incidentType">
+                                Incident Type
+                            </label>
+
+                            <select
+                                id="incidentType"
+                                name="type"
+                            >
+
+                                <option value="">
+                                    All Types
+                                </option>
+
+                                {% for value, label in incident_types %}
+
+                                    <option
+                                        value="{{ value }}"
+                                        {% if selected_type == value %}selected{% endif %}
+                                    >
+                                        {{ label }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="filter-actions">
+
+                            <button
+                                type="submit"
+                                class="filter-button"
+                            >
+                                <i class="bi bi-search"></i>
+                                Search
+                            </button>
+
+
+                            <a
+                                href="{% url 'admin_asset_incident_list' %}"
+                                class="clear-filter-button"
+                            >
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                                Reset
+                            </a>
+
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- INCIDENT TABLE -->
+
+            <div class="incident-table-panel">
+
+
+                <div class="incident-table-header">
+
+                    <div class="table-heading">
+
+                        <h3>
+                            Asset Incident Reports
+                        </h3>
+
+                        <p>
+                            Review damaged and lost asset reports submitted by employees.
+                        </p>
+
+                    </div>
+
+
+                    <div class="record-count">
+
+                        {{ incidents|length }} Report{{ incidents|length|pluralize }}
+
+                    </div>
+
+                </div>
+
+
+                {% if incidents %}
+
+                    <div class="incident-table-wrapper">
+
+                        <table class="incident-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Incident
+                                    </th>
+
+                                    <th>
+                                        Type
+                                    </th>
+
+                                    <th>
+                                        Asset
+                                    </th>
+
+                                    <th>
+                                        Employee
+                                    </th>
+
+                                    <th>
+                                        Description
+                                    </th>
+
+                                    <th>
+                                        Reported
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for incident in incidents %}
+
+                                    <tr>
+
+
+                                        <!-- INCIDENT -->
+
+                                        <td>
+
+                                            <div class="incident-id">
+                                                #{{ incident.id }}
+                                            </div>
+
+                                            <div class="secondary-info">
+                                                Asset Incident
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- TYPE -->
+
+                                        <td>
+
+                                            {% if incident.incident_type == "DAMAGED" %}
+
+                                                <span class="incident-type-badge type-damaged">
+
+                                                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                                                    {{ incident.get_incident_type_display }}
+
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="incident-type-badge type-lost">
+
+                                                    <i class="bi bi-question-circle-fill"></i>
+
+                                                    {{ incident.get_incident_type_display }}
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <!-- ASSET -->
+
+                                        <td>
+
+                                            <div class="asset-info">
+
+                                                <span class="primary-info">
+                                                    {{ incident.asset.asset_name }}
+                                                </span>
+
+                                                <span class="secondary-info">
+                                                    {{ incident.asset.asset_id }}
+                                                </span>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- EMPLOYEE -->
+
+                                        <td>
+
+                                            <div class="employee-info">
+
+                                                <span class="primary-info">
+
+                                                    {{ incident.employee.user.get_full_name|default:incident.employee.user.username }}
+
+                                                </span>
+
+                                                <span class="secondary-info">
+
+                                                    {{ incident.employee.employee_id }}
+
+                                                </span>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- DESCRIPTION -->
+
+                                        <td>
+
+                                            <div class="incident-description">
+
+                                                {{ incident.description|default:"No description provided." }}
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- DATE -->
+
+                                        <td>
+
+                                            <div class="incident-date">
+
+                                                {{ incident.reported_at|date:"d M Y" }}
+
+                                                <br>
+
+                                                {{ incident.reported_at|date:"h:i A" }}
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- STATUS -->
+
+                                        <td>
+
+                                            {% if incident.status == "PENDING" %}
+
+                                                <span class="status-badge status-pending">
+
+                                                    <i class="bi bi-hourglass-split"></i>
+
+                                                    {{ incident.get_status_display }}
+
+                                                </span>
+
+                                            {% elif incident.status == "APPROVED" %}
+
+                                                <span class="status-badge status-approved">
+
+                                                    <i class="bi bi-check-circle-fill"></i>
+
+                                                    {{ incident.get_status_display }}
+
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="status-badge status-rejected">
+
+                                                    <i class="bi bi-x-circle-fill"></i>
+
+                                                    {{ incident.get_status_display }}
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <!-- ACTION -->
+
+                                        <td>
+
+
+                                            {% if incident.status == "PENDING" %}
+
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'admin_asset_incident_process' incident.id %}"
+                                                    class="process-form"
+                                                >
+
+                                                    {% csrf_token %}
+
+
+                                                    <textarea
+                                                        name="admin_notes"
+                                                        maxlength="5000"
+                                                        placeholder="Optional admin notes..."
+                                                    ></textarea>
+
+
+                                                    <div class="process-actions">
+
+                                                        <button
+                                                            type="submit"
+                                                            name="decision"
+                                                            value="APPROVED"
+                                                            class="process-button approve-button"
+                                                        >
+                                                            <i class="bi bi-check-lg"></i>
+                                                            Approve
+                                                        </button>
+
+
+                                                        <button
+                                                            type="submit"
+                                                            name="decision"
+                                                            value="REJECTED"
+                                                            class="process-button reject-button"
+                                                        >
+                                                            <i class="bi bi-x-lg"></i>
+                                                            Reject
+                                                        </button>
+
+                                                    </div>
+
+                                                </form>
+
+
+                                            {% else %}
+
+                                                <div class="processed-info">
+
+                                                    {% if incident.processed_by %}
+
+                                                        <div class="processed-by">
+
+                                                            <i class="bi bi-person-check-fill"></i>
+
+                                                            {{ incident.processed_by.get_full_name|default:incident.processed_by.username }}
+
+                                                        </div>
+
+                                                    {% endif %}
+
+
+                                                    {% if incident.processed_at %}
+
+                                                        <div class="processed-date">
+
+                                                            {{ incident.processed_at|date:"d M Y, h:i A" }}
+
+                                                        </div>
+
+                                                    {% endif %}
+
+
+                                                    {% if incident.admin_notes %}
+
+                                                        <div class="admin-note">
+
+                                                            <strong>
+                                                                Admin Note:
+                                                            </strong>
+
+                                                            {{ incident.admin_notes }}
+
+                                                        </div>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                            {% endif %}
+
+
+                                        </td>
+
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <!-- EMPTY STATE -->
+
+                    <div class="incident-empty">
+
+                        <div class="incident-empty-icon">
+
+                            <i class="bi bi-shield-check"></i>
+
+                        </div>
+
+
+                        <h4>
+                            No Incident Reports Found
+                        </h4>
+
+
+                        <p>
+                            There are no damaged or lost asset reports
+                            matching the current search and filters.
+                        </p>
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            ITARMS &copy; {% now "Y" %}
+
+            &nbsp;•&nbsp;
+
+            IT Asset & Resource Management System
+
+            &nbsp;•&nbsp;
+
+            Super Admin Portal
+
+        </footer>
+
+
+    </main>
+
+
+    <!-- ============================================================
+         JAVASCRIPT
+    ============================================================= -->
+
+    <script>
+
+        const sidebar =
+            document.getElementById("adminSidebar");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+        const menuButton =
+            document.getElementById("mobileMenuButton");
+
+
+        function openSidebar() {
+
+            sidebar.classList.add(
+                "mobile-open"
+            );
+
+            overlay.classList.add(
+                "active"
+            );
+
+        }
+
+
+        function closeSidebar() {
+
+            sidebar.classList.remove(
+                "mobile-open"
+            );
+
+            overlay.classList.remove(
+                "active"
+            );
+
+        }
+
+
+        if (menuButton) {
+
+            menuButton.addEventListener(
+                "click",
+                openSidebar
+            );
+
+        }
+
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(".sidebar-link")
+            .forEach(function(link) {
+
+                link.addEventListener(
+                    "click",
+                    function() {
+
+                        if (
+                            window.innerWidth <= 1000
+                        ) {
+
+                            closeSidebar();
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+        window.addEventListener(
+            "resize",
+            function() {
+
+                if (
+                    window.innerWidth > 1000
+                ) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>

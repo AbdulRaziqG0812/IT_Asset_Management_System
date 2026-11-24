@@ -6,9 +6,11 @@ from .views import (
     complete_employee_exit,
     edit_employee,
     edit_user,
+    employee_assigned_assets,
     employee_detail,
     employee_dashboard,
     employee_management,
+    super_admin_dashboard,
     login_view,
     logout_view,
     start_employee_resignation,
@@ -19,6 +21,16 @@ from .views import (
 
 
 urlpatterns = [
+
+        # ------------------------------------------------------------------
+    # Super Admin Dashboard
+    # ------------------------------------------------------------------
+
+    path(
+        "super-admin-dashboard/",
+        super_admin_dashboard,
+        name="super_admin_dashboard",
+    ),
     # ------------------------------------------------------------------
     # Employee
     # ------------------------------------------------------------------
@@ -27,6 +39,12 @@ urlpatterns = [
         "employee-dashboard/",
         employee_dashboard,
         name="employee_dashboard",
+    ),
+
+    path(
+        "employee/assigned-assets/",
+        employee_assigned_assets,
+        name="employee_assigned_assets",
     ),
 
     # ------------------------------------------------------------------

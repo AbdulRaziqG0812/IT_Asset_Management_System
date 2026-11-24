@@ -1,0 +1,767 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ asset.asset_id }} | ITARMS
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/employee_portal.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-mark">
+                IT
+            </div>
+
+            <div class="brand-info">
+
+                <div class="brand-title">
+                    ITARMS
+                </div>
+
+                <div class="brand-subtitle">
+                    Employee Portal
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                Employee Portal
+            </div>
+
+
+            <a
+                href="{% url 'employee_dashboard' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">
+                    ⌂
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_assigned_assets' %}"
+                class="nav-link active"
+            >
+                <span class="nav-icon">
+                    ▣
+                </span>
+
+                <span>
+                    My Assigned Assets
+                </span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_asset_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">
+                    ▤
+                </span>
+
+                <span>
+                    Asset Requests
+                </span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_maintenance_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">
+                    ⚙
+                </span>
+
+                <span>
+                    Maintenance &amp; Repair
+                </span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+
+                    <span class="nav-icon">
+                        ↪
+                    </span>
+
+                    <span>
+                        Logout
+                    </span>
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+        <div class="content-wrapper">
+
+
+            <!-- =================================================
+                 TOPBAR
+            ================================================== -->
+
+            <header class="topbar">
+
+                <div class="topbar-title">
+                    My Assigned Assets
+                </div>
+
+                <div class="welcome-user">
+
+                    Welcome,
+
+                    {{ request.user.get_full_name|default:request.user.email }}
+
+                </div>
+
+            </header>
+
+
+
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
+
+            <div class="page-header asset-detail-page-header">
+
+                <div>
+
+                    <a
+                        href="{% url 'employee_assigned_assets' %}"
+                        class="asset-detail-back-link"
+                    >
+                        <span>←</span>
+
+                        <span>
+                            Back to My Assigned Assets
+                        </span>
+                    </a>
+
+
+                    <div class="eyebrow">
+
+                        <span class="eyebrow-dot"></span>
+
+                        Asset Details
+
+                    </div>
+
+
+                    <h1>
+                        Asset Details
+                    </h1>
+
+
+                    <p>
+                        View the details of your currently assigned IT asset.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ASSET HERO
+            ================================================== -->
+
+            <section class="asset-detail-hero">
+
+                <div class="asset-detail-hero-content">
+
+
+                    <div class="asset-detail-identity">
+
+
+                        <div class="asset-detail-id">
+                            {{ asset.asset_id }}
+                        </div>
+
+
+                        <h2 class="asset-detail-name">
+                            {{ asset.asset_name }}
+                        </h2>
+
+
+                        <p class="asset-detail-model">
+
+                            {% if asset.brand_model %}
+
+                                {{ asset.brand_model }}
+
+                            {% else %}
+
+                                No brand/model information available
+
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="asset-detail-status-area">
+
+                        <span class="asset-detail-status-badge">
+                            {{ asset.get_status_display }}
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ASSET INFORMATION
+            ================================================== -->
+
+            <section class="asset-detail-card">
+
+
+                <div class="asset-detail-card-header">
+
+                    <div>
+
+                        <div class="asset-detail-card-label">
+                            ASSET INFORMATION
+                        </div>
+
+                        <h2 class="asset-detail-card-title">
+                            Asset Information
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="asset-detail-card-body">
+
+
+                    <div class="asset-detail-grid">
+
+
+                        <!-- ASSET ID -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Asset ID
+                            </span>
+
+                            <div class="asset-detail-value">
+                                {{ asset.asset_id }}
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- ASSET NAME -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Asset Name
+                            </span>
+
+                            <div class="asset-detail-value">
+                                {{ asset.asset_name }}
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- CATEGORY -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Category
+                            </span>
+
+                            <div class="asset-detail-value">
+                                {{ asset.get_category_display }}
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- BRAND / MODEL -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Brand / Model
+                            </span>
+
+                            <div class="asset-detail-value">
+
+                                {% if asset.brand_model %}
+
+                                    {{ asset.brand_model }}
+
+                                {% else %}
+
+                                    <span class="asset-detail-empty">
+                                        Not specified
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- SERIAL NUMBER -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Serial Number
+                            </span>
+
+                            <div class="asset-detail-value">
+
+                                {% if asset.serial_number %}
+
+                                    {{ asset.serial_number }}
+
+                                {% else %}
+
+                                    <span class="asset-detail-empty">
+                                        Not specified
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- CONDITION -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Condition
+                            </span>
+
+                            <div class="asset-detail-value">
+
+                                {{ asset.get_condition_display }}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- STATUS -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Status
+                            </span>
+
+                            <div class="asset-detail-value">
+
+                                {{ asset.get_status_display }}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- DEPARTMENT -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Department
+                            </span>
+
+                            <div class="asset-detail-value">
+
+                                {% if asset.department %}
+
+                                    {{ asset.department.name }}
+
+                                {% else %}
+
+                                    <span class="asset-detail-empty">
+                                        Not assigned to a department
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- LOCATION -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Location
+                            </span>
+
+                            <div class="asset-detail-value">
+
+                                {% if asset.location %}
+
+                                    {{ asset.location }}
+
+                                {% else %}
+
+                                    <span class="asset-detail-empty">
+                                        Not specified
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ASSIGNMENT INFORMATION
+            ================================================== -->
+
+            <section class="asset-detail-card">
+
+
+                <div class="asset-detail-card-header">
+
+                    <div>
+
+                        <div class="asset-detail-card-label">
+                            ASSIGNMENT INFORMATION
+                        </div>
+
+                        <h2 class="asset-detail-card-title">
+                            My Assignment
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="asset-detail-card-body">
+
+
+                    <div class="asset-detail-grid">
+
+
+                        <!-- EMPLOYEE -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Employee
+                            </span>
+
+                            <div class="asset-detail-value">
+
+                                {% if employee.user.get_full_name %}
+
+                                    {{ employee.user.get_full_name }}
+
+                                {% else %}
+
+                                    {{ employee.user.email }}
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- ASSIGNED DATE -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Assigned Date
+                            </span>
+
+                            <div class="asset-detail-value">
+
+                                {% if assignment.assigned_date %}
+
+                                    {{ assignment.assigned_date|date:"d M Y" }}
+
+                                {% else %}
+
+                                    <span class="asset-detail-empty">
+                                        Not available
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- ASSIGNMENT STATUS -->
+
+                        <div class="asset-detail-item">
+
+                            <span class="asset-detail-label">
+                                Assignment Status
+                            </span>
+
+                            <div class="asset-detail-value">
+
+                                {% if assignment.is_active %}
+
+                                    <span class="asset-detail-active-status">
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="asset-detail-inactive-status">
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    {% if assignment.assignment_notes %}
+
+                        <div class="asset-detail-notes-section">
+
+                            <span class="asset-detail-label">
+                                Assignment Notes
+                            </span>
+
+
+                            <div class="asset-detail-notes-box">
+                                {{ assignment.assignment_notes }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 DESCRIPTION
+            ================================================== -->
+
+            {% if asset.description %}
+
+                <section class="asset-detail-card">
+
+
+                    <div class="asset-detail-card-header">
+
+                        <div>
+
+                            <div class="asset-detail-card-label">
+                                ADDITIONAL INFORMATION
+                            </div>
+
+                            <h2 class="asset-detail-card-title">
+                                Description
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="asset-detail-card-body">
+
+                        <div class="asset-detail-description-box">
+                            {{ asset.description }}
+                        </div>
+
+                    </div>
+
+                </section>
+
+            {% endif %}
+
+
+
+            <!-- =================================================
+                 ASSET IMAGE
+            ================================================== -->
+
+            {% if asset.image %}
+
+                <section class="asset-detail-card">
+
+
+                    <div class="asset-detail-card-header">
+
+                        <div>
+
+                            <div class="asset-detail-card-label">
+                                ASSET MEDIA
+                            </div>
+
+                            <h2 class="asset-detail-card-title">
+                                Asset Image
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="asset-detail-card-body">
+
+                        <div class="asset-detail-image-container">
+
+                            <img
+                                src="{{ asset.image.url }}"
+                                alt="{{ asset.asset_name }}"
+                                class="asset-detail-image"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            {% endif %}
+
+
+        </div>
+
+
+
+        <!-- =====================================================
+             FOOTER
+        ====================================================== -->
+
+        <footer class="footer">
+
+            IT Asset &amp; Resource Management System
+            &nbsp;•&nbsp;
+            Employee Portal
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

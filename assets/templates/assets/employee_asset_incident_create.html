@@ -1,0 +1,418 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        ITARMS - Report Damaged / Lost Asset
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/employee_portal.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app-layout">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-mark">
+                IT
+            </div>
+
+            <div class="brand-info">
+
+                <div class="brand-title">
+                    ITARMS
+                </div>
+
+                <div class="brand-subtitle">
+                    Employee Portal
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                Employee Portal
+            </div>
+
+
+            <a
+                href="{% url 'employee_dashboard' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_assigned_assets' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">▣</span>
+                <span>My Assigned Assets</span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_asset_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">▤</span>
+                <span>Asset Requests</span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_maintenance_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">⚙</span>
+                <span>Maintenance &amp; Repair</span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_asset_incident_list' %}"
+                class="nav-link active"
+            >
+                <span class="nav-icon">!</span>
+                <span>Damaged / Lost Assets</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <span class="nav-icon">↪</span>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <div class="content-wrapper">
+
+
+            <!-- =========================
+                 TOP BAR
+            ========================== -->
+
+            <header class="topbar">
+
+                <div class="topbar-title">
+                    Damaged / Lost Asset
+                </div>
+
+                <div class="welcome-user">
+
+                    Welcome,
+                    {{ request.user.get_full_name|default:request.user.username }}
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 PAGE HEADER
+            ========================== -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <div class="eyebrow">
+
+                        <span class="eyebrow-dot"></span>
+
+                        Employee Portal
+
+                    </div>
+
+                    <h1>
+                        Report Damaged / Lost Asset
+                    </h1>
+
+                    <p>
+                        Report an IT asset that has been damaged or lost.
+                        Your report will be reviewed by the IT administration team.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 INFORMATION CARD
+            ========================== -->
+
+            <section class="panel incident-form-information">
+
+                <div class="panel-top">
+
+                    <div>
+
+                        <div class="panel-label">
+                            REPORT INFORMATION
+                        </div>
+
+                        <h2 class="panel-heading">
+                            Before You Submit
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="incident-form-notice">
+
+                    <div class="incident-form-notice-icon">
+                        !
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Please provide accurate information
+                        </h3>
+
+                        <p>
+                            Select only the asset currently assigned to you
+                            and provide clear details about the incident.
+                            Submitted reports are sent to administrators
+                            for review.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 REPORT FORM
+            ========================== -->
+
+            <section class="panel incident-form-panel">
+
+                <div class="panel-top">
+
+                    <div>
+
+                        <div class="panel-label">
+                            ASSET INCIDENT
+                        </div>
+
+                        <h2 class="panel-heading">
+                            Incident Details
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    method="post"
+                    class="incident-report-form"
+                >
+
+                    {% csrf_token %}
+
+
+                    {% if form.non_field_errors %}
+
+                        <div class="form-error-summary">
+
+                            {% for error in form.non_field_errors %}
+
+                                <div>
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- =========================
+                         FORM FIELDS
+                    ========================== -->
+
+                    <div class="incident-form-fields">
+
+                        {% for field in form %}
+
+                            <div class="incident-form-field">
+
+                                <label
+                                    for="{{ field.id_for_label }}"
+                                    class="incident-form-label"
+                                >
+                                    {{ field.label }}
+
+                                    {% if field.field.required %}
+                                        <span class="required-mark">*</span>
+                                    {% endif %}
+
+                                </label>
+
+
+                                {% if field.help_text %}
+
+                                    <div class="incident-form-help">
+                                        {{ field.help_text }}
+                                    </div>
+
+                                {% endif %}
+
+
+                                {{ field }}
+
+
+                                {% if field.errors %}
+
+                                    <div class="incident-field-errors">
+
+                                        {% for error in field.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- =========================
+                         ACTIONS
+                    ========================== -->
+
+                    <div class="incident-form-actions">
+
+                        <a
+                            href="{% url 'employee_asset_incident_list' %}"
+                            class="secondary-button"
+                        >
+                            Cancel
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="primary-button"
+                        >
+                            Submit Report
+                        </button>
+
+                    </div>
+
+
+                    <div class="incident-form-security">
+
+                        <span class="incident-security-icon">
+                            ✓
+                        </span>
+
+                        <span>
+                            Your report will be submitted securely for administrator review.
+                        </span>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
+
+        <footer class="employee-footer">
+
+            <span>
+                ITARMS
+            </span>
+
+            <span>
+                IT Asset &amp; Resource Management System
+            </span>
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,742 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        ITARMS - My Assigned Assets
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/employee_portal.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-mark">
+                IT
+            </div>
+
+            <div class="brand-info">
+
+                <div class="brand-title">
+                    ITARMS
+                </div>
+
+                <div class="brand-subtitle">
+                    Employee Portal
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                Employee Portal
+            </div>
+
+
+            <a
+                href="{% url 'employee_dashboard' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">
+                    ⌂
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_assigned_assets' %}"
+                class="nav-link active"
+            >
+                <span class="nav-icon">
+                    ▣
+                </span>
+
+                <span>
+                    My Assigned Assets
+                </span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_asset_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">
+                    ▤
+                </span>
+
+                <span>
+                    Asset Requests
+                </span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_maintenance_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">
+                    ⚙
+                </span>
+
+                <span>
+                    Maintenance &amp; Repair
+                </span>
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+
+                    <span class="nav-icon">
+                        ↪
+                    </span>
+
+                    <span>
+                        Logout
+                    </span>
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+        <div class="content-wrapper">
+
+
+            <!-- TOPBAR -->
+
+            <header class="topbar">
+
+                <div class="topbar-title">
+                    My Assigned Assets
+                </div>
+
+                <div class="welcome-user">
+
+                    Welcome,
+
+                    {{ request.user.get_full_name|default:request.user.username }}
+
+                </div>
+
+            </header>
+
+
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <div class="eyebrow">
+
+                        <span class="eyebrow-dot"></span>
+
+                        Employee Portal
+
+                    </div>
+
+
+                    <h1>
+                        My Assigned Assets
+                    </h1>
+
+
+                    <p>
+                        View the IT assets currently assigned to you.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SEARCH PANEL
+            ================================================== -->
+
+            <section class="assigned-search-panel">
+
+
+                <div class="assigned-search-header">
+
+                    <div>
+
+                        <div class="assigned-section-label">
+                            ASSET SEARCH
+                        </div>
+
+                        <h2 class="assigned-section-title">
+                            Find Assigned Assets
+                        </h2>
+
+                    </div>
+
+
+                    <div class="assigned-count">
+
+                        <strong>
+                            {{ page_obj.paginator.count }}
+                        </strong>
+
+                        assigned asset{{ page_obj.paginator.count|pluralize }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="assigned-search-body">
+
+                    <form
+                        method="get"
+                        action="{% url 'employee_assigned_assets' %}"
+                        class="assigned-search-form"
+                        id="assetSearchForm"
+                    >
+
+                        <div class="assigned-search-input-wrapper">
+
+                            <span class="assigned-search-icon">
+                                🔎
+                            </span>
+
+
+                            <input
+                                type="search"
+                                name="q"
+                                id="assetSearchInput"
+                                class="assigned-search-input"
+                                value="{{ search_query }}"
+                                placeholder="Search by asset ID, name, category, serial number, brand, model or location..."
+                                autocomplete="off"
+                                aria-label="Search assigned assets"
+                            >
+
+
+                            {% if search_query %}
+
+                                <a
+                                    href="{% url 'employee_assigned_assets' %}"
+                                    class="assigned-clear-search"
+                                    aria-label="Clear search"
+                                >
+                                    ×
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="assigned-search-button"
+                        >
+                            Search
+                        </button>
+
+                    </form>
+
+
+                    {% if search_query %}
+
+                        <div class="assigned-search-result">
+
+                            Search results for:
+
+                            <strong>
+                                "{{ search_query }}"
+                            </strong>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ASSET TABLE
+            ================================================== -->
+
+            {% if assignments %}
+
+                <section class="assigned-assets-panel">
+
+
+                    <div class="assigned-assets-header">
+
+                        <div>
+
+                            <div class="assigned-section-label">
+                                ASSET INVENTORY
+                            </div>
+
+                            <h2 class="assigned-section-title">
+                                Assigned Asset List
+                            </h2>
+
+                            <p class="assigned-section-description">
+                                Assets currently assigned to your employee profile.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="assigned-table-wrapper">
+
+                        <table class="assigned-assets-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Asset ID</th>
+
+                                    <th>Asset Name</th>
+
+                                    <th>Category</th>
+
+                                    <th>Brand / Model</th>
+
+                                    <th>Serial Number</th>
+
+                                    <th>Assigned Date</th>
+
+                                    <th>Condition</th>
+
+                                    <th>Status</th>
+
+                                    <th>Location</th>
+
+                                    <th>Action</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for assignment in assignments %}
+
+                                    <tr>
+
+
+                                        <td>
+
+                                            <span class="assigned-asset-id">
+                                                {{ assignment.asset.asset_id }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="assigned-asset-name">
+                                                {{ assignment.asset.asset_name }}
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="assigned-category">
+                                                {{ assignment.asset.get_category_display }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="assigned-brand-model">
+                                                {{ assignment.asset.brand_model|default:"—" }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="assigned-serial">
+                                                {{ assignment.asset.serial_number|default:"—" }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="assigned-date">
+
+                                                {% if assignment.assigned_date %}
+
+                                                    {{ assignment.assigned_date|date:"d M Y" }}
+
+                                                {% else %}
+
+                                                    —
+
+                                                {% endif %}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="assigned-condition-badge">
+                                                {{ assignment.asset.get_condition_display }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="assigned-status-badge">
+                                                {{ assignment.asset.get_status_display }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="assigned-location">
+                                                {{ assignment.asset.asset_location|default:"—" }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <a
+                                                href="{% url 'employee_asset_detail' assignment.asset.id %}"
+                                                class="assigned-view-button"
+                                            >
+                                                View Details
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+
+                    <!-- PAGINATION -->
+
+                    {% if page_obj.paginator.num_pages > 1 %}
+
+                        <div class="assigned-pagination">
+
+
+                            <div class="assigned-pagination-info">
+
+                                Page
+
+                                <strong>
+                                    {{ page_obj.number }}
+                                </strong>
+
+                                of
+
+                                <strong>
+                                    {{ page_obj.paginator.num_pages }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="assigned-pagination-links">
+
+
+                                {% if page_obj.has_previous %}
+
+                                    <a
+                                        href="?page={{ page_obj.previous_page_number }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}"
+                                        class="assigned-page-link"
+                                    >
+                                        Previous
+                                    </a>
+
+                                {% else %}
+
+                                    <span class="assigned-page-link disabled">
+                                        Previous
+                                    </span>
+
+                                {% endif %}
+
+
+
+                                {% for page_number in page_obj.paginator.page_range %}
+
+                                    {% if page_number == page_obj.number %}
+
+                                        <span class="assigned-page-link current">
+                                            {{ page_number }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <a
+                                            href="?page={{ page_number }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}"
+                                            class="assigned-page-link"
+                                        >
+                                            {{ page_number }}
+                                        </a>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+
+
+                                {% if page_obj.has_next %}
+
+                                    <a
+                                        href="?page={{ page_obj.next_page_number }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}"
+                                        class="assigned-page-link"
+                                    >
+                                        Next
+                                    </a>
+
+                                {% else %}
+
+                                    <span class="assigned-page-link disabled">
+                                        Next
+                                    </span>
+
+                                {% endif %}
+
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </section>
+
+
+            {% else %}
+
+
+                <!-- =================================================
+                     EMPTY STATE
+                ================================================== -->
+
+                <section class="assigned-empty-state">
+
+                    <div class="assigned-empty-content">
+
+
+                        <div class="assigned-empty-icon">
+                            AS
+                        </div>
+
+
+                        {% if search_query %}
+
+                            <h2>
+                                No Matching Assets
+                            </h2>
+
+
+                            <p>
+
+                                No assigned assets matched
+
+                                "<strong>
+                                    {{ search_query }}
+                                </strong>".
+
+                                Try a different search term.
+
+                            </p>
+
+
+                            <a
+                                href="{% url 'employee_assigned_assets' %}"
+                                class="assigned-empty-button"
+                            >
+                                Clear Search
+                            </a>
+
+
+                        {% else %}
+
+                            <h2>
+                                No Assets Currently Assigned
+                            </h2>
+
+
+                            <p>
+
+                                You currently do not have any active IT assets
+                                assigned to you. Once an asset is assigned, it
+                                will appear here.
+
+                            </p>
+
+
+                            <a
+                                href="{% url 'employee_dashboard' %}"
+                                class="assigned-empty-button"
+                            >
+                                Back to Dashboard
+                            </a>
+
+                        {% endif %}
+
+
+                    </div>
+
+                </section>
+
+            {% endif %}
+
+
+        </div>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="footer">
+
+            IT Asset &amp; Resource Management System
+            &nbsp;•&nbsp;
+            Employee Portal
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+    const searchInput =
+        document.getElementById("assetSearchInput");
+
+    const searchForm =
+        document.getElementById("assetSearchForm");
+
+    let searchTimer = null;
+
+
+    if (searchInput && searchForm) {
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+                clearTimeout(searchTimer);
+
+                searchTimer = setTimeout(
+                    function () {
+
+                        searchForm.submit();
+
+                    },
+                    450
+                );
+
+            }
+        );
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

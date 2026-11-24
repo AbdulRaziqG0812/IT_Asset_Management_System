@@ -1,8 +1,10 @@
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -10,185 +12,368 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>ITARMS - Employee Dashboard</title>
+    <title>
+        ITARMS - Employee Dashboard
+    </title>
 
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
+        href="{% static 'css/employee_portal.css' %}"
     >
+
 </head>
 
-<body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-dark">
-        <div class="container">
+<body>
 
-            <span class="navbar-brand fw-bold">
-                ITARMS
-            </span>
+<div class="app-layout">
 
-            <div class="d-flex align-items-center gap-3">
 
-                <span class="text-white">
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-mark">
+                IT
+            </div>
+
+            <div class="brand-info">
+
+                <div class="brand-title">
+                    ITARMS
+                </div>
+
+                <div class="brand-subtitle">
+                    Employee Portal
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                Employee Portal
+            </div>
+
+
+            <a
+                href="{% url 'employee_dashboard' %}"
+                class="nav-link active"
+            >
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_assigned_assets' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">▣</span>
+                <span>My Assigned Assets</span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_asset_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">▤</span>
+                <span>Asset Requests</span>
+            </a>
+
+
+            <a
+                href="{% url 'employee_maintenance_requests' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">⚙</span>
+                <span>Maintenance &amp; Repair</span>
+            </a>
+
+
+            <!-- =========================
+                 DAMAGED / LOST ASSETS
+            ========================== -->
+
+            <a
+                href="{% url 'employee_asset_incident_list' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">!</span>
+                <span>Damaged / Lost Assets</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <span class="nav-icon">↪</span>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <div class="content-wrapper">
+
+
+            <!-- =========================
+                 TOP BAR
+            ========================== -->
+
+            <header class="topbar">
+
+                <div class="topbar-title">
+                    Employee Dashboard
+                </div>
+
+                <div class="welcome-user">
+
                     Welcome,
                     {{ request.user.get_full_name|default:request.user.username }}
-                </span>
 
-                <form
-                    method="post"
-                    action="{% url 'logout' %}"
-                    class="m-0"
-                >
-                    {% csrf_token %}
+                </div>
 
-                    <button
-                        type="submit"
-                        class="btn btn-outline-light btn-sm"
-                    >
-                        Logout
-                    </button>
-                </form>
-
-            </div>
-
-        </div>
-    </nav>
+            </header>
 
 
-    <main class="container py-5">
+            <!-- =========================
+                 PAGE HEADER
+            ========================== -->
 
-        <!-- Employee Profile -->
+            <div class="page-header">
 
-        <div class="card shadow-sm border-0 mb-4">
+                <div>
 
-            <div class="card-body">
+                    <div class="eyebrow">
 
-                <h5 class="fw-bold mb-3">
-                    My Profile
-                </h5>
+                        <span class="eyebrow-dot"></span>
 
-                {% if profile %}
-
-                    <div class="row g-3">
-
-                        <div class="col-md-4">
-                            <strong>Employee ID</strong>
-
-                            <div class="text-muted">
-                                {{ profile.employee_id }}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <strong>Job Title</strong>
-
-                            <div class="text-muted">
-                                {{ profile.job_title|default:"—" }}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <strong>Phone</strong>
-
-                            <div class="text-muted">
-                                {{ profile.phone|default:"—" }}
-                            </div>
-                        </div>
+                        Employee Portal
 
                     </div>
 
-                {% else %}
+                    <h1>
+                        Employee Dashboard
+                    </h1>
 
-                    <p class="text-muted mb-0">
-                        Employee profile information is not available.
+                    <p>
+                        Manage your IT assets, requests and maintenance activities.
                     </p>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-
-        <!-- Dashboard Heading -->
-
-        <div class="mb-4">
-
-            <h2 class="fw-bold">
-                Employee Dashboard
-            </h2>
-
-            <p class="text-muted mb-0">
-                Manage your IT assets, requests and maintenance activities.
-            </p>
-
-        </div>
-
-
-        <!-- Dashboard Cards -->
-
-        <div class="row g-4">
-
-
-            <!-- My Assigned Assets -->
-
-            <div class="col-md-6 col-lg-4">
-
-                <div class="card shadow-sm border-0 h-100">
-
-                    <div class="card-body">
-
-                        <h5 class="fw-bold">
-                            My Assigned Assets
-                        </h5>
-
-                        <p class="text-muted">
-                            View the IT assets currently assigned to you.
-                        </p>
-
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            disabled
-                        >
-                            Coming Soon
-                        </button>
-
-                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- Asset Requests -->
+            <!-- =========================
+                 PROFILE
+            ========================== -->
 
-            <div class="col-md-6 col-lg-4">
+            <section class="panel">
 
-                <div class="card shadow-sm border-0 h-100">
+                <div class="panel-top">
 
-                    <div class="card-body">
+                    <div>
 
-                        <h5 class="fw-bold">
+                        <div class="panel-label">
+                            ACCOUNT INFORMATION
+                        </div>
+
+                        <h2 class="panel-heading">
+                            My Profile
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                {% if profile %}
+
+                    <div class="detail-row">
+
+                        <div class="detail-box">
+
+                            <div class="detail-label">
+                                Employee ID
+                            </div>
+
+                            <div class="detail-value">
+                                {{ profile.employee_id }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail-box">
+
+                            <div class="detail-label">
+                                Job Title
+                            </div>
+
+                            <div class="detail-value">
+                                {{ profile.job_title|default:"—" }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail-box">
+
+                            <div class="detail-label">
+                                Phone
+                            </div>
+
+                            <div class="detail-value">
+                                {{ profile.phone|default:"—" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <div class="empty-content">
+
+                            <div class="empty-icon">
+                                !
+                            </div>
+
+                            <h3>
+                                Profile Information Unavailable
+                            </h3>
+
+                            <p>
+                                Employee profile information is not available.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- =========================
+                 DASHBOARD SERVICES
+            ========================== -->
+
+            <section class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <div class="panel-label">
+                            EMPLOYEE SERVICES
+                        </div>
+
+                        <h2 class="panel-heading">
+                            IT Services
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-grid">
+
+
+                    <!-- =========================
+                         ASSIGNED ASSETS
+                    ========================== -->
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            ▣
+                        </div>
+
+                        <h3>
+                            My Assigned Assets
+                        </h3>
+
+                        <p>
+                            View the IT assets currently assigned to you.
+                        </p>
+
+                        <a
+                            href="{% url 'employee_assigned_assets' %}"
+                            class="primary-button"
+                        >
+                            View Assigned Assets
+                        </a>
+
+                    </div>
+
+
+                    <!-- =========================
+                         ASSET REQUESTS
+                    ========================== -->
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            ▤
+                        </div>
+
+                        <h3>
                             Asset Requests
-                        </h5>
+                        </h3>
 
-                        <p class="text-muted">
+                        <p>
                             Submit and track your IT asset requests.
                         </p>
 
-                        <div class="d-flex gap-2 flex-wrap">
+                        <div class="service-actions">
 
                             <a
                                 href="{% url 'employee_asset_requests' %}"
-                                class="btn btn-primary"
+                                class="primary-button"
                             >
                                 View Requests
                             </a>
 
                             <a
                                 href="{% url 'create_asset_request' %}"
-                                class="btn btn-outline-primary"
+                                class="secondary-button"
                             >
                                 Request Asset
                             </a>
@@ -197,39 +382,37 @@
 
                     </div>
 
-                </div>
 
-            </div>
+                    <!-- =========================
+                         MAINTENANCE
+                    ========================== -->
 
+                    <div class="service-card">
 
-            <!-- Maintenance & Repair -->
+                        <div class="service-icon">
+                            ⚙
+                        </div>
 
-            <div class="col-md-6 col-lg-4">
+                        <h3>
+                            Maintenance &amp; Repair
+                        </h3>
 
-                <div class="card shadow-sm border-0 h-100">
-
-                    <div class="card-body">
-
-                        <h5 class="fw-bold">
-                            Maintenance & Repair
-                        </h5>
-
-                        <p class="text-muted">
+                        <p>
                             Report damaged assets and request maintenance.
                         </p>
 
-                        <div class="d-flex gap-2 flex-wrap">
+                        <div class="service-actions">
 
                             <a
                                 href="{% url 'employee_maintenance_requests' %}"
-                                class="btn btn-primary"
+                                class="primary-button"
                             >
                                 View Requests
                             </a>
 
                             <a
                                 href="{% url 'create_maintenance_request' %}"
-                                class="btn btn-outline-primary"
+                                class="secondary-button"
                             >
                                 Request Maintenance
                             </a>
@@ -238,112 +421,96 @@
 
                     </div>
 
-                </div>
 
-            </div>
+                    <!-- =========================
+                        DAMAGED / LOST
+                    ========================== -->
 
+                    <div class="service-card">
 
-            <!-- Request Status -->
+                        <div class="service-icon">
+                            !
+                        </div>
 
-            <div class="col-md-6 col-lg-4">
-
-                <div class="card shadow-sm border-0 h-100">
-
-                    <div class="card-body">
-
-                        <h5 class="fw-bold">
-                            Request Status
-                        </h5>
-
-                        <p class="text-muted">
-                            Check the status of your submitted requests.
-                        </p>
-
-                        <a
-                            href="{% url 'employee_asset_requests' %}"
-                            class="btn btn-primary"
-                        >
-                            View Status
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- Damaged / Lost Asset -->
-
-            <div class="col-md-6 col-lg-4">
-
-                <div class="card shadow-sm border-0 h-100">
-
-                    <div class="card-body">
-
-                        <h5 class="fw-bold">
+                        <h3>
                             Damaged / Lost Asset
-                        </h5>
+                        </h3>
 
-                        <p class="text-muted">
+                        <p>
                             Report an asset that has been damaged or lost.
                         </p>
 
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            disabled
-                        >
-                            Coming Soon
-                        </button>
+                        <div class="service-card-actions">
+
+                            <a
+                                href="{% url 'employee_asset_incident_list' %}"
+                                class="primary-button"
+                            >
+                                Report Damaged / Lost
+                            </a>
+
+                            <a
+                                href="{% url 'employee_asset_incident_create' %}"
+                                class="secondary-button"
+                            >
+                                Request Damaged / Lost
+                            </a>
+
+                        </div>
 
                     </div>
 
-                </div>
 
-            </div>
+                    <!-- =========================
+                         ASSIGNMENT HISTORY
+                    ========================== -->
 
+                    <div class="service-card">
 
-            <!-- Assignment History -->
+                        <div class="service-icon">
+                            ◷
+                        </div>
 
-            <div class="col-md-6 col-lg-4">
-
-                <div class="card shadow-sm border-0 h-100">
-
-                    <div class="card-body">
-
-                        <h5 class="fw-bold">
+                        <h3>
                             Assignment History
-                        </h5>
+                        </h3>
 
-                        <p class="text-muted">
+                        <p>
                             View your previous asset assignment history.
                         </p>
 
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            disabled
-                        >
+                        <span class="disabled-button">
                             Coming Soon
-                        </button>
+                        </span>
 
                     </div>
 
+
                 </div>
 
-            </div>
+            </section>
 
 
         </div>
 
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
+
+        <footer class="footer">
+
+            IT Asset &amp; Resource Management System
+            &nbsp;•&nbsp;
+            Employee Portal
+
+        </footer>
+
+
     </main>
 
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
+</div>
 
 </body>
 
-</html>
+</html> 

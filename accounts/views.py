@@ -14,6 +14,10 @@ from notifications.models import Notification
 
 from .models import EmployeeProfile, User
 
+from assets.models import Asset
+from asset_requests.models import AssetRequest
+from software_licenses.models import SoftwareLicense
+
 
 # ============================================================================
 # COMMON HELPERS
@@ -120,6 +124,106 @@ def employee_dashboard(request):
         "accounts/employee_dashboard.html",
         {
             "profile": profile,
+        },
+    )
+
+
+@login_required
+@user_passes_test(is_super_admin)
+def super_admin_dashboard(request):
+    """
+    Dedicated landing dashboard for Super Admin.
+
+    Dashboard statistics are calculated directly from the
+    current database records.
+    """
+
+    today = timezone.localdate()
+
+    total_users = User.objects.count()
+
+    total_assets = Asset.objects.count()
+
+    available_assets = Asset.objects.filter(
+        status=Asset.Status.AVAILABLE
+    ).count()
+
+    assigned_assets = Asset.objects.filter(
+        status=Asset.Status.ASSIGNED
+    ).count()
+
+    maintenance_assets = Asset.objects.filter(
+        status=Asset.Status.UNDER_MAINTENANCE
+    ).count()
+
+    damaged_assets = Asset.objects.filter(
+        status=Asset.Status.DAMAGED
+    ).count()
+
+    pending_requests = AssetRequest.objects.filter(
+        status=AssetRequest.Status.PENDING
+    ).count()
+
+    expiring_licenses = SoftwareLicense.objects.filter(
+        status=SoftwareLicense.Status.EXPIRING_SOON
+    ).count()
+
+    return render(
+        request,
+        "accounts/super_admin_dashboard.html",
+        {
+            "user": request.user,
+
+            "total_users": total_users,
+            "total_assets": total_assets,
+            "available_assets": available_assets,
+            "assigned_assets": assigned_assets,
+            "maintenance_assets": maintenance_assets,
+            "damaged_assets": damaged_assets,
+            "pending_requests": pending_requests,
+            "expiring_licenses": expiring_licenses,
+        },
+    )
+
+
+# ============================================================================
+# EMPLOYEE - MY ASSIGNED ASSETS
+# ============================================================================
+
+
+@login_required
+def employee_assigned_assets(request):
+    """
+    Display the assets currently assigned to the authenticated employee.
+
+    Employees can only access their own active assignments.
+    No other employee's assignment records are exposed.
+    """
+
+    if request.user.role != User.Role.EMPLOYEE:
+        return redirect("login")
+
+    employee = getattr(
+        request.user,
+        "employee_profile",
+        None,
+    )
+
+    if employee is None:
+        raise PermissionDenied(
+            "Your employee profile is not available."
+        )
+
+    assignments = get_employee_active_assignments(
+        employee
+    )
+
+    return render(
+        request,
+        "accounts/employee_assigned_assets.html",
+        {
+            "employee": employee,
+            "assignments": assignments,
         },
     )
 
@@ -981,7 +1085,7 @@ def get_role_redirect(user):
     """
 
     if user.role == User.Role.SUPER_ADMIN:
-        return "user_management"
+        return "super_admin_dashboard"
 
     if user.role == User.Role.IT_ADMIN:
         return "dashboard:home"

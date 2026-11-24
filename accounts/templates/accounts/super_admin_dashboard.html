@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Super Admin Dashboard | ITARMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    {% load static %}
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ============================================================
+         SIDEBAR
+    ============================================================= -->
+
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <i class="bi bi-cpu-fill"></i>
+            </div>
+
+            <div class="brand-content">
+
+                <h1 class="brand-title">
+                    ITARMS
+                </h1>
+
+                <div class="brand-subtitle">
+                    Super Admin Panel
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CURRENT USER -->
+
+        <div class="sidebar-user">
+
+            <div class="sidebar-user-inner">
+
+                <div class="user-avatar">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+
+                <div class="user-details">
+
+                    <div class="user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Super Administrator
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MAIN NAVIGATION -->
+
+        <div class="sidebar-section-title">
+            Main
+        </div>
+
+        <nav class="sidebar-nav">
+
+
+            <a
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link active"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+
+            {% url 'asset_list' as asset_list_url %}
+
+            {% if asset_list_url %}
+
+                <a
+                    href="{{ asset_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+            {% endif %}
+
+
+            {% url 'admin_asset_requests' as asset_requests_url %}
+
+            {% if asset_requests_url %}
+
+                <a
+                    href="{{ asset_requests_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+            {% endif %}
+
+
+            {% url 'admin_asset_incident_list' as incident_url %}
+
+            {% if incident_url %}
+
+                <a
+                    href="{{ incident_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+            {% endif %}
+
+
+        </nav>
+
+
+        <!-- MANAGEMENT -->
+
+        <div class="sidebar-section-title">
+            Management
+        </div>
+
+        <nav class="sidebar-nav">
+
+
+            {% url 'maintenance_list' as maintenance_url %}
+
+            {% if maintenance_url %}
+
+                <a
+                    href="{{ maintenance_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance</span>
+                </a>
+
+            {% endif %}
+
+
+            {% url 'department_list' as departments_url %}
+
+            {% if departments_url %}
+
+                <a
+                    href="{{ departments_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-diagram-3-fill"></i>
+                    <span>Departments</span>
+                </a>
+
+            {% endif %}
+
+
+            {% url 'reports_home' as reports_url %}
+
+            {% if reports_url %}
+
+                <a
+                    href="{{ reports_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Reports & Analytics</span>
+                </a>
+
+            {% endif %}
+
+
+            {% url 'notifications' as notifications_url %}
+
+            {% if notifications_url %}
+
+                <a
+                    href="{{ notifications_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+            {% endif %}
+
+
+        </nav>
+
+
+        <!-- SYSTEM -->
+
+        <div class="sidebar-section-title">
+            System
+        </div>
+
+        <nav class="sidebar-nav">
+
+
+            {% url 'audit_log_list' as audit_logs_url %}
+
+            {% if audit_logs_url %}
+
+                <a
+                    href="{{ audit_logs_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-journal-text"></i>
+                    <span>Audit Logs</span>
+                </a>
+
+            {% endif %}
+
+
+        </nav>
+
+
+        <!-- LOGOUT -->
+
+        <div class="sidebar-bottom">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- SIDEBAR OVERLAY -->
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- ============================================================
+         MAIN
+    ============================================================= -->
+
+    <main class="admin-main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    type="button"
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
+                    aria-label="Open navigation"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+
+                <div class="page-heading">
+
+                    <h1>
+                        Super Admin Dashboard
+                    </h1>
+
+                    <p>
+                        IT Asset & Resource Management System
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="system-status">
+
+                    <span class="status-dot"></span>
+
+                    System Active
+
+                </div>
+
+
+                <div class="topbar-avatar">
+
+                    <i class="bi bi-shield-check"></i>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ========================================================
+             CONTENT
+        ========================================================= -->
+
+        <section class="dashboard-content">
+
+
+            <!-- WELCOME -->
+
+            <div class="welcome-card">
+
+                <div class="welcome-content">
+
+                    <div class="welcome-badge">
+
+                        <i class="bi bi-stars"></i>
+
+                        System Administration
+
+                    </div>
+
+
+                    <h2>
+
+                        Welcome back,
+                        {{ request.user.get_full_name|default:request.user.username }}.
+
+                    </h2>
+
+
+                    <p>
+
+                        Manage users, IT assets, organizational resources,
+                        approvals, maintenance, reporting and system
+                        activity from one centralized administration panel.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ====================================================
+                 SYSTEM OVERVIEW
+            ===================================================== -->
+
+            <div class="section-header">
+
+                <div>
+
+                    <h3>
+                        System Overview
+                    </h3>
+
+                </div>
+
+                <span>
+                    Current system statistics
+                </span>
+
+            </div>
+
+            <div class="stats-grid">
+
+
+                <!-- TOTAL USERS -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon icon-blue">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-title">
+                        Total Users
+                    </div>
+
+                    <div class="stat-value">
+                        {{ total_users|default:"0" }}
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL ASSETS -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon icon-purple">
+                            <i class="bi bi-pc-display"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-title">
+                        Total IT Assets
+                    </div>
+
+                    <div class="stat-value">
+                        {{ total_assets|default:"0" }}
+                    </div>
+
+                </div>
+
+
+                <!-- AVAILABLE -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon icon-green">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-title">
+                        Available Assets
+                    </div>
+
+                    <div class="stat-value">
+                        {{ available_assets|default:"0" }}
+                    </div>
+
+                </div>
+
+
+                <!-- ASSIGNED -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon icon-cyan">
+                            <i class="bi bi-person-check-fill"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-title">
+                        Assigned Assets
+                    </div>
+
+                    <div class="stat-value">
+                        {{ assigned_assets|default:"0" }}
+                    </div>
+
+                </div>
+
+
+                <!-- MAINTENANCE -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon icon-orange">
+                            <i class="bi bi-tools"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-title">
+                        Under Maintenance
+                    </div>
+
+                    <div class="stat-value">
+                        {{ maintenance_assets|default:"0" }}
+                    </div>
+
+                </div>
+
+
+                <!-- DAMAGED -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon icon-red">
+                            <i class="bi bi-exclamation-octagon-fill"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-title">
+                        Damaged Assets
+                    </div>
+
+                    <div class="stat-value">
+                        {{ damaged_assets|default:"0" }}
+                    </div>
+
+                </div>
+
+
+                <!-- REQUESTS -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon icon-yellow">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-title">
+                        Pending Requests
+                    </div>
+
+                    <div class="stat-value">
+                        {{ pending_requests|default:"0" }}
+                    </div>
+
+                </div>
+
+
+                <!-- LICENSES -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon icon-slate">
+                            <i class="bi bi-key-fill"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-title">
+                        Expiring Licenses
+                    </div>
+
+                    <div class="stat-value">
+                        {{ expiring_licenses|default:"0" }}
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ====================================================
+                 QUICK ACCESS
+            ===================================================== -->
+
+            <div class="section-header">
+
+                <div>
+
+                    <h3>
+                        Administration Modules
+                    </h3>
+
+                </div>
+
+                <span>
+                    Centralized system management
+                </span>
+
+            </div>
+
+
+            <div class="quick-grid">
+
+
+                <!-- USER MANAGEMENT -->
+
+                <a
+                    href="{% url 'user_management' %}"
+                    class="quick-card"
+                >
+
+                    <div class="quick-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+
+                    <div class="quick-content">
+
+                        <h4>
+                            User Management
+                        </h4>
+
+                        <p>
+                            Manage users, roles and account status.
+                        </p>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+
+                <!-- IT ASSETS -->
+
+                {% url 'asset_list' as asset_list_url %}
+
+                {% if asset_list_url %}
+
+                    <a
+                        href="{{ asset_list_url }}"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            <i class="bi bi-pc-display-horizontal"></i>
+                        </div>
+
+                        <div class="quick-content">
+
+                            <h4>
+                                IT Asset Management
+                            </h4>
+
+                            <p>
+                                Manage organizational IT assets.
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right quick-arrow"></i>
+
+                    </a>
+
+                {% endif %}
+
+
+                <!-- ASSET REQUESTS -->
+
+                {% url 'admin_asset_requests' as asset_requests_url %}
+
+                {% if asset_requests_url %}
+
+                    <a
+                        href="{{ asset_requests_url }}"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            <i class="bi bi-file-earmark-check-fill"></i>
+                        </div>
+
+                        <div class="quick-content">
+
+                            <h4>
+                                Asset Requests
+                            </h4>
+
+                            <p>
+                                Review and process pending requests.
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right quick-arrow"></i>
+
+                    </a>
+
+                {% endif %}
+
+
+                <!-- INCIDENTS -->
+
+                {% url 'admin_asset_incident_list' as incident_url %}
+
+                {% if incident_url %}
+
+                    <a
+                        href="{{ incident_url }}"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            <i class="bi bi-shield-exclamation"></i>
+                        </div>
+
+                        <div class="quick-content">
+
+                            <h4>
+                                Asset Incidents
+                            </h4>
+
+                            <p>
+                                Review damaged and lost reports.
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right quick-arrow"></i>
+
+                    </a>
+
+                {% endif %}
+
+
+                <!-- MAINTENANCE -->
+
+                {% url 'maintenance_list' as maintenance_url %}
+
+                {% if maintenance_url %}
+
+                    <a
+                        href="{{ maintenance_url }}"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            <i class="bi bi-wrench-adjustable-circle-fill"></i>
+                        </div>
+
+                        <div class="quick-content">
+
+                            <h4>
+                                Maintenance
+                            </h4>
+
+                            <p>
+                                Monitor maintenance and repair records.
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right quick-arrow"></i>
+
+                    </a>
+
+                {% endif %}
+
+
+                <!-- DEPARTMENTS -->
+
+                {% url 'department_list' as departments_url %}
+
+                {% if departments_url %}
+
+                    <a
+                        href="{{ departments_url }}"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            <i class="bi bi-diagram-3-fill"></i>
+                        </div>
+
+                        <div class="quick-content">
+
+                            <h4>
+                                Departments
+                            </h4>
+
+                            <p>
+                                Manage organizational departments.
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right quick-arrow"></i>
+
+                    </a>
+
+                {% endif %}
+
+
+                <!-- REPORTS -->
+
+                {% url 'reports_home' as reports_url %}
+
+                {% if reports_url %}
+
+                    <a
+                        href="{{ reports_url }}"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                        </div>
+
+                        <div class="quick-content">
+
+                            <h4>
+                                Reports & Analytics
+                            </h4>
+
+                            <p>
+                                Review system reports and analytics.
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right quick-arrow"></i>
+
+                    </a>
+
+                {% endif %}
+
+
+                <!-- NOTIFICATIONS -->
+
+                {% url 'notifications' as notifications_url %}
+
+                {% if notifications_url %}
+
+                    <a
+                        href="{{ notifications_url }}"
+                        class="quick-card"
+                    >
+
+                        <div class="quick-icon">
+                            <i class="bi bi-bell-fill"></i>
+                        </div>
+
+                        <div class="quick-content">
+
+                            <h4>
+                                Notifications
+                            </h4>
+
+                            <p>
+                                Review system notifications and alerts.
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right quick-arrow"></i>
+
+                    </a>
+
+                {% endif %}
+
+
+            </div>
+
+
+            <!-- ====================================================
+                 LOWER PANELS
+            ===================================================== -->
+
+            <div class="lower-grid">
+
+
+                <!-- RECENT ACTIVITY -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <h3>
+                            Recent System Activity
+                        </h3>
+
+                        <span>
+                            Audit activity
+                        </span>
+
+                    </div>
+
+                    <div class="panel-body">
+
+                        <div class="activity-empty">
+
+                            <div>
+
+                                <div class="activity-empty-icon">
+                                    <i class="bi bi-activity"></i>
+                                </div>
+
+                                <h4>
+                                    Activity monitoring
+                                </h4>
+
+                                <p>
+                                    Recent audit records will appear here.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ADMIN ACCESS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <h3>
+                            Administration Access
+                        </h3>
+
+                        <span>
+                            Current role
+                        </span>
+
+                    </div>
+
+                    <div class="panel-body">
+
+                        <div class="access-list">
+
+
+                            <div class="access-item">
+
+                                <i class="bi bi-shield-lock-fill"></i>
+
+                                <div>
+
+                                    <strong>
+                                        Super Administrator
+                                    </strong>
+
+                                    <small>
+                                        Full system access
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="access-item">
+
+                                <i class="bi bi-person-gear"></i>
+
+                                <div>
+
+                                    <strong>
+                                        User & Role Management
+                                    </strong>
+
+                                    <small>
+                                        Account administration
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="access-item">
+
+                                <i class="bi bi-database-fill-gear"></i>
+
+                                <div>
+
+                                    <strong>
+                                        System Records
+                                    </strong>
+
+                                    <small>
+                                        Organization-wide access
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="access-item">
+
+                                <i class="bi bi-journal-check"></i>
+
+                                <div>
+
+                                    <strong>
+                                        Audit & Reports
+                                    </strong>
+
+                                    <small>
+                                        System monitoring
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            ITARMS &copy; {% now "Y" %}
+
+            &nbsp;•&nbsp;
+
+            IT Asset & Resource Management System
+
+            &nbsp;•&nbsp;
+
+            Super Admin Portal
+
+        </footer>
+
+
+    </main>
+
+
+    <!-- ============================================================
+         JAVASCRIPT
+    ============================================================= -->
+
+    <script>
+
+        const sidebar =
+            document.getElementById("adminSidebar");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+        const menuButton =
+            document.getElementById("mobileMenuButton");
+
+
+        function openSidebar() {
+
+            sidebar.classList.add(
+                "mobile-open"
+            );
+
+            overlay.classList.add(
+                "active"
+            );
+
+        }
+
+
+        function closeSidebar() {
+
+            sidebar.classList.remove(
+                "mobile-open"
+            );
+
+            overlay.classList.remove(
+                "active"
+            );
+
+        }
+
+
+        if (menuButton) {
+
+            menuButton.addEventListener(
+                "click",
+                openSidebar
+            );
+
+        }
+
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(".sidebar-link")
+            .forEach(function(link) {
+
+                link.addEventListener(
+                    "click",
+                    function() {
+
+                        if (
+                            window.innerWidth <= 1000
+                        ) {
+
+                            closeSidebar();
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+        window.addEventListener(
+            "resize",
+            function() {
+
+                if (
+                    window.innerWidth > 1000
+                ) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>

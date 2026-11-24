@@ -1,7 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Asset
+from accounts.models import EmployeeProfile
+from .models import Asset, AssetIncident
 
 
 class AssetForm(forms.ModelForm):
@@ -126,7 +127,6 @@ class AssetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Optional fields.
         self.fields["department"].required = False
         self.fields["purchase_date"].required = False
         self.fields["purchase_price"].required = False
@@ -137,7 +137,6 @@ class AssetForm(forms.ModelForm):
         self.fields["invoice_document"].required = False
         self.fields["asset_image"].required = False
 
-        # Required fields.
         required_fields = (
             "asset_name",
             "category",
@@ -151,7 +150,6 @@ class AssetForm(forms.ModelForm):
             self.fields[field_name].required = True
             self.fields[field_name].widget.attrs["required"] = "required"
 
-        # Add browser autocomplete behavior.
         self.fields["asset_name"].widget.attrs["autocomplete"] = "off"
         self.fields["brand_model"].widget.attrs["autocomplete"] = "off"
         self.fields["serial_number"].widget.attrs["autocomplete"] = "off"
@@ -275,3 +273,140 @@ class AssetForm(forms.ModelForm):
             )
 
         return image
+
+
+class AssetIncidentForm(forms.ModelForm):
+
+    class Meta:
+        model = AssetIncident
+        fields = (
+            "asset",
+            "incident_type",
+            "description",
+        )
+
+        widgets = {
+            "asset": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+            "incident_type": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 6,
+                    "placeholder": (
+                        "Describe what happened to the asset..."
+                    ),
+                }
+            ),
+        }
+
+    def __init__(self, *args, employee=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.employee = employee
+
+        self.fields["asset"].queryset = Asset.objects.none()
+
+        if employee is not None:
+            self.fields["asset"].queryset = (
+                Asset.objects
+                .filter(
+                    assignments__employee=employee,
+                    assignments__is_active=True,
+                )
+                .distinct()
+                .order_by("asset_id")
+            )
+
+        self.fields["asset"].required = True
+        self.fields["incident_type"].required = True
+        self.fields["description"].required = True
+
+        self.fields["description"].widget.attrs["maxlength"] = "5000"
+
+    def clean_asset(self):
+        asset = self.cleaned_data.get("asset")
+
+        if not asset:
+            raise ValidationError(
+                "Please select an assigned asset."
+            )
+
+        if self.employee is None:
+            raise ValidationError(
+                "Employee profile is required."
+            )
+
+        is_assigned = asset.assignments.filter(
+            employee=self.employee,
+            is_active=True,
+        ).exists()
+
+        if not is_assigned:
+            raise ValidationError(
+                "You can only report an asset currently assigned to you."
+            )
+
+        if asset.status != Asset.Status.ASSIGNED:
+            raise ValidationError(
+                "Only an asset currently marked as Assigned can be reported."
+            )
+
+        return asset
+
+    def clean_description(self):
+        description = self.cleaned_data.get(
+            "description",
+            "",
+        ).strip()
+
+        if not description:
+            raise ValidationError(
+                "Please describe the damage or loss."
+            )
+
+        return description
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        asset = cleaned_data.get("asset")
+
+        if asset and self.employee:
+
+            active_incident_exists = (
+                AssetIncident.objects
+                .filter(
+                    asset=asset,
+                    employee=self.employee,
+                    status=AssetIncident.Status.PENDING,
+                )
+                .exists()
+            )
+
+            if self.instance.pk:
+                active_incident_exists = (
+                    AssetIncident.objects
+                    .filter(
+                        asset=asset,
+                        employee=self.employee,
+                        status=AssetIncident.Status.PENDING,
+                    )
+                    .exclude(pk=self.instance.pk)
+                    .exists()
+                )
+
+            if active_incident_exists:
+                raise ValidationError(
+                    "You already have a pending damaged/lost report "
+                    "for this asset."
+                )
+
+        return cleaned_data

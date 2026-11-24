@@ -418,6 +418,42 @@
         }
 
 
+        .asset-btn-retire {
+            color: #92400e;
+
+            border: 1px solid #fed7aa;
+
+            background: #fff7ed;
+        }
+
+
+        .asset-btn-retire:hover {
+            color: #78350f;
+
+            border-color: #fdba74;
+
+            background: #ffedd5;
+        }
+
+
+        .asset-btn-dispose {
+            color: #991b1b;
+
+            border: 1px solid #fecaca;
+
+            background: #fef2f2;
+        }
+
+
+        .asset-btn-dispose:hover {
+            color: #7f1d1d;
+
+            border-color: #fca5a5;
+
+            background: #fee2e2;
+        }
+
+
         /* =========================================================
            DETAIL WORKSPACE
         ========================================================= */
@@ -681,6 +717,24 @@
         }
 
 
+        .asset-status-retired {
+            color: #92400e;
+
+            background: #fff7ed;
+
+            border-color: #fed7aa;
+        }
+
+
+        .asset-status-disposed {
+            color: #991b1b;
+
+            background: #fef2f2;
+
+            border-color: #fecaca;
+        }
+
+
         .asset-status-neutral {
             color: #475569;
 
@@ -716,6 +770,206 @@
             line-height: 1.8;
 
             overflow-wrap: anywhere;
+        }
+
+
+        /* =========================================================
+           ASSIGNMENT HISTORY
+        ========================================================= */
+
+        .asset-history-wrapper {
+            width: 100%;
+
+            overflow-x: auto;
+
+            border: 1px solid var(--border-light);
+            border-radius: 13px;
+
+            background: #ffffff;
+        }
+
+
+        .asset-history-table {
+            width: 100%;
+
+            margin: 0;
+
+            border-collapse: separate;
+            border-spacing: 0;
+
+            min-width: 780px;
+        }
+
+
+        .asset-history-table thead th {
+            padding: 13px 14px;
+
+            color: #64748b;
+
+            background: #f8fafc;
+
+            border-bottom: 1px solid var(--border-light);
+
+            font-size: 9px;
+            font-weight: 850;
+
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+
+            white-space: nowrap;
+        }
+
+
+        .asset-history-table tbody td {
+            padding: 15px 14px;
+
+            color: #334155;
+
+            border-bottom: 1px solid #eef2f7;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            vertical-align: middle;
+        }
+
+
+        .asset-history-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+
+        .asset-history-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+
+        .asset-employee-name {
+            color: var(--dark);
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+
+        .asset-employee-id {
+            margin-top: 3px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+        }
+
+
+        .asset-history-active {
+            color: #166534;
+
+            background: #ecfdf3;
+
+            border-color: #bbf7d0;
+        }
+
+
+        .asset-history-returned {
+            color: #475569;
+
+            background: #f1f5f9;
+
+            border-color: #e2e8f0;
+        }
+
+
+        .asset-history-notes {
+            max-width: 210px;
+
+            color: #64748b;
+
+            line-height: 1.55;
+
+            overflow-wrap: anywhere;
+        }
+
+
+        .asset-history-empty {
+            padding: 30px 20px;
+
+            text-align: center;
+
+            color: var(--muted);
+
+            border: 1px dashed var(--border);
+
+            border-radius: 13px;
+
+            background: #f8fafc;
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           LIFECYCLE
+        ========================================================= */
+
+        .asset-lifecycle-box {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 18px;
+
+            padding: 18px;
+
+            border: 1px solid var(--border-light);
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #f8fafc
+                );
+        }
+
+
+        .asset-lifecycle-content {
+            min-width: 0;
+        }
+
+
+        .asset-lifecycle-title {
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+
+        .asset-lifecycle-description {
+            margin: 5px 0 0;
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+            line-height: 1.55;
+        }
+
+
+        .asset-lifecycle-actions {
+            display: flex;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            flex-shrink: 0;
         }
 
 
@@ -912,6 +1166,17 @@
                 justify-content: flex-start;
             }
 
+
+            .asset-lifecycle-box {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+
+            .asset-lifecycle-actions {
+                width: 100%;
+            }
+
         }
 
 
@@ -970,6 +1235,19 @@
                 padding-top: 4px;
             }
 
+
+            .asset-lifecycle-actions {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+
+            .asset-lifecycle-actions .asset-btn {
+                width: 100%;
+            }
+
         }
 
 
@@ -1014,6 +1292,11 @@
                 min-height: 190px;
 
                 padding: 14px;
+            }
+
+
+            .asset-lifecycle-actions {
+                grid-template-columns: 1fr;
             }
 
         }
@@ -1157,144 +1440,85 @@
 
 
             <div class="col-md-4">
-
                 <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Asset ID
-                    </div>
-
+                    <div class="asset-info-label">Asset ID</div>
                     <div class="asset-info-value">
                         {{ asset.asset_id }}
                     </div>
-
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Asset Name
-                    </div>
-
+                    <div class="asset-info-label">Asset Name</div>
                     <div class="asset-info-value">
                         {{ asset.asset_name }}
                     </div>
-
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Category
-                    </div>
-
+                    <div class="asset-info-label">Category</div>
                     <div class="asset-info-value">
                         {{ asset.get_category_display }}
                     </div>
-
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Brand / Model
-                    </div>
-
+                    <div class="asset-info-label">Brand / Model</div>
                     <div class="asset-info-value">
                         {{ asset.brand_model }}
                     </div>
-
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Serial Number
-                    </div>
-
+                    <div class="asset-info-label">Serial Number</div>
                     <div class="asset-info-value">
                         {{ asset.serial_number }}
                     </div>
-
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Department
-                    </div>
-
+                    <div class="asset-info-label">Department</div>
                     <div class="asset-info-value">
 
                         {% if asset.department %}
-
                             {{ asset.department.name }}
-
                         {% else %}
-
                             Not assigned
-
                         {% endif %}
 
                     </div>
-
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Condition
-                    </div>
-
+                    <div class="asset-info-label">Condition</div>
                     <div class="asset-info-value">
                         {{ asset.get_condition_display }}
                     </div>
-
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Status
-                    </div>
-
+                    <div class="asset-info-label">Status</div>
                     <div class="asset-info-value">
-
 
                         {% if asset.status == "AVAILABLE" %}
 
@@ -1302,13 +1526,11 @@
                                 {{ asset.get_status_display }}
                             </span>
 
-
                         {% elif asset.status == "ASSIGNED" %}
 
                             <span class="asset-status asset-status-assigned">
                                 {{ asset.get_status_display }}
                             </span>
-
 
                         {% elif asset.status == "UNDER_MAINTENANCE" %}
 
@@ -1316,13 +1538,11 @@
                                 {{ asset.get_status_display }}
                             </span>
 
-
                         {% elif asset.status == "DAMAGED" %}
 
                             <span class="asset-status asset-status-damaged">
                                 {{ asset.get_status_display }}
                             </span>
-
 
                         {% elif asset.status == "LOST" %}
 
@@ -1330,6 +1550,17 @@
                                 {{ asset.get_status_display }}
                             </span>
 
+                        {% elif asset.status == "RETIRED" %}
+
+                            <span class="asset-status asset-status-retired">
+                                {{ asset.get_status_display }}
+                            </span>
+
+                        {% elif asset.status == "DISPOSED" %}
+
+                            <span class="asset-status asset-status-disposed">
+                                {{ asset.get_status_display }}
+                            </span>
 
                         {% else %}
 
@@ -1340,39 +1571,382 @@
                         {% endif %}
 
                     </div>
-
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Location
-                    </div>
-
+                    <div class="asset-info-label">Location</div>
                     <div class="asset-info-value">
 
                         {% if asset.asset_location %}
-
                             {{ asset.asset_location }}
-
                         {% else %}
-
                             Not specified
-
                         {% endif %}
 
                     </div>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ASSET LIFECYCLE ACTIONS
+    ====================================================== -->
+
+    {% if can_manage %}
+
+        <section class="asset-detail-card">
+
+            <div class="asset-section-header">
+
+                <div class="asset-section-icon">
+                    LIFE
+                </div>
+
+                <div>
+
+                    <h2 class="asset-section-title">
+                        Asset Lifecycle
+                    </h2>
+
+                    <p class="asset-section-subtitle">
+                        Controlled retirement and disposal of this asset.
+                    </p>
 
                 </div>
 
             </div>
 
+
+            <div class="asset-lifecycle-box">
+
+                <div class="asset-lifecycle-content">
+
+                    {% if asset.status == "DISPOSED" %}
+
+                        <h3 class="asset-lifecycle-title">
+                            Asset Disposed
+                        </h3>
+
+                        <p class="asset-lifecycle-description">
+                            This asset has completed its lifecycle and is no
+                            longer available for operational use or assignment.
+                        </p>
+
+
+                    {% elif asset.status == "RETIRED" %}
+
+                        <h3 class="asset-lifecycle-title">
+                            Asset Retired
+                        </h3>
+
+                        <p class="asset-lifecycle-description">
+                            This asset has been retired from active use.
+                            It can be permanently disposed after retirement.
+                        </p>
+
+
+                    {% elif has_active_assignment %}
+
+                        <h3 class="asset-lifecycle-title">
+                            Return Required Before Retirement
+                        </h3>
+
+                        <p class="asset-lifecycle-description">
+                            This asset is currently assigned to an employee.
+                            The active assignment must be returned before the
+                            asset can be retired or disposed.
+                        </p>
+
+
+                    {% else %}
+
+                        <h3 class="asset-lifecycle-title">
+                            Lifecycle Management
+                        </h3>
+
+                        <p class="asset-lifecycle-description">
+                            Retire an asset when it is permanently removed
+                            from active operational use. Disposal is available
+                            only after retirement.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="asset-lifecycle-actions">
+
+                    {% if can_retire %}
+
+                        <form
+                            method="post"
+                            action="{% url 'asset_retire' asset.id %}"
+                            onsubmit="
+                                return confirm(
+                                    'Are you sure you want to retire this asset? This action will remove it from active operational use.'
+                                );
+                            "
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="asset-btn asset-btn-retire"
+                            >
+                                Retire Asset
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+
+                    {% if can_dispose %}
+
+                        <form
+                            method="post"
+                            action="{% url 'asset_dispose' asset.id %}"
+                            onsubmit="
+                                return confirm(
+                                    'Are you sure you want to dispose this retired asset? This action permanently marks the asset as disposed.'
+                                );
+                            "
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="asset-btn asset-btn-dispose"
+                            >
+                                Dispose Asset
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+
+                    {% if not can_retire and not can_dispose and asset.status != "RETIRED" and asset.status != "DISPOSED" and not has_active_assignment %}
+
+                        <span class="asset-status asset-status-neutral">
+                            No lifecycle action available
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         ASSIGNMENT HISTORY
+    ====================================================== -->
+
+    <section class="asset-detail-card">
+
+        <div class="asset-section-header">
+
+            <div class="asset-section-icon">
+                02
+            </div>
+
+            <div>
+
+                <h2 class="asset-section-title">
+                    Assignment History
+                </h2>
+
+                <p class="asset-section-subtitle">
+                    Complete assignment and return history for this asset.
+                </p>
+
+            </div>
+
         </div>
+
+
+        {% if assignment_history %}
+
+            <div class="asset-history-wrapper">
+
+                <table class="asset-history-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Employee
+                            </th>
+
+                            <th>
+                                Assigned Date
+                            </th>
+
+                            <th>
+                                Return Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Assignment Notes
+                            </th>
+
+                            <th>
+                                Return Notes
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for assignment in assignment_history %}
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="asset-employee-name">
+
+                                        {% if assignment.employee.user.get_full_name %}
+
+                                            {{ assignment.employee.user.get_full_name }}
+
+                                        {% else %}
+
+                                            {{ assignment.employee.employee_id }}
+
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div class="asset-employee-id">
+
+                                        {{ assignment.employee.employee_id }}
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ assignment.assigned_date|date:"d M Y" }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if assignment.return_date %}
+
+                                        {{ assignment.return_date|date:"d M Y" }}
+
+                                    {% else %}
+
+                                        —
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if assignment.is_active %}
+
+                                        <span class="asset-status asset-history-active">
+                                            Active
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="asset-status asset-history-returned">
+                                            Returned
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="asset-history-notes">
+
+                                        {% if assignment.assignment_notes %}
+
+                                            {{ assignment.assignment_notes|linebreaksbr }}
+
+                                        {% else %}
+
+                                            —
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="asset-history-notes">
+
+                                        {% if assignment.return_notes %}
+
+                                            {{ assignment.return_notes|linebreaksbr }}
+
+                                        {% else %}
+
+                                            —
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="asset-history-empty">
+
+                No assignment history is available for this asset.
+
+            </div>
+
+        {% endif %}
 
     </section>
 
@@ -1386,7 +1960,7 @@
         <div class="asset-section-header">
 
             <div class="asset-section-icon">
-                02
+                03
             </div>
 
             <div>
@@ -1418,13 +1992,9 @@
                     <div class="asset-info-value">
 
                         {% if asset.purchase_date %}
-
                             {{ asset.purchase_date|date:"d M Y" }}
-
                         {% else %}
-
                             Not specified
-
                         {% endif %}
 
                     </div>
@@ -1445,13 +2015,9 @@
                     <div class="asset-info-value">
 
                         {% if asset.purchase_price %}
-
                             {{ asset.purchase_price }}
-
                         {% else %}
-
                             Not specified
-
                         {% endif %}
 
                     </div>
@@ -1472,13 +2038,9 @@
                     <div class="asset-info-value">
 
                         {% if asset.warranty_expiry_date %}
-
                             {{ asset.warranty_expiry_date|date:"d M Y" }}
-
                         {% else %}
-
                             Not specified
-
                         {% endif %}
 
                     </div>
@@ -1499,13 +2061,9 @@
                     <div class="asset-info-value">
 
                         {% if asset.vendor_name %}
-
                             {{ asset.vendor_name }}
-
                         {% else %}
-
                             Not specified
-
                         {% endif %}
 
                     </div>
@@ -1530,7 +2088,7 @@
             <div class="asset-section-header">
 
                 <div class="asset-section-icon">
-                    03
+                    04
                 </div>
 
                 <div>

@@ -420,9 +420,14 @@
             Management
         </div>
 
-        <a href="/assets/" class="sidebar-link">
+        <a href="{% url 'asset_list' %}" class="sidebar-link">
             <span class="icon">▣</span>
             <span>Assets</span>
+        </a>
+
+        <a href="{% url 'admin_asset_incident_list' %}" class="sidebar-link">
+            <span class="icon">⚠</span>
+            <span>Damaged / Lost Reports</span>
         </a>
 
         <a href="/assignments/" class="sidebar-link">
@@ -430,7 +435,7 @@
             <span>Assignments</span>
         </a>
 
-        <a href="/asset-requests/" class="sidebar-link">
+        <a href="{% url 'admin_requests' %}" class="sidebar-link">
             <span class="icon">▤</span>
             <span>Asset Requests</span>
         </a>
