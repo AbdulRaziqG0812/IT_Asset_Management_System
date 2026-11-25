@@ -1,0 +1,2626 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Reports & Analytics | ITARMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+        {% load static %}
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+
+            --sidebar: #0f172a;
+            --sidebar-hover: #1e293b;
+            --sidebar-active: #2563eb;
+
+            --background: #f5f7fb;
+            --card: #ffffff;
+
+            --text: #172033;
+            --muted: #64748b;
+            --border: #e2e8f0;
+
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --purple: #7c3aed;
+            --cyan: #0891b2;
+            --indigo: #4f46e5;
+
+            --shadow:
+                0 7px 22px rgba(15, 23, 42, 0.055);
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background: var(--background);
+            color: var(--text);
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+
+
+        /* =====================================================
+           MAIN LAYOUT
+        ====================================================== */
+
+        .admin-main {
+            margin-left: 270px;
+
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .admin-topbar {
+            height: 72px;
+
+            background: #ffffff;
+
+            border-bottom:
+                1px solid var(--border);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 900;
+        }
+
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .mobile-menu-btn {
+            display: none;
+
+            width: 40px;
+            height: 40px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            background: #ffffff;
+
+            color: var(--text);
+
+            font-size: 20px;
+        }
+
+
+        .topbar-title {
+            font-size: 20px;
+            font-weight: 750;
+
+            color: var(--text);
+        }
+
+
+        .topbar-user {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+
+        .topbar-user i {
+            color: var(--primary);
+
+            font-size: 18px;
+        }
+
+
+        .page-content {
+            flex: 1;
+
+            padding: 26px 30px 32px;
+        }
+
+
+        .page-heading {
+            margin-bottom: 21px;
+        }
+
+
+        .page-heading h1 {
+            margin: 0;
+
+            font-size: 25px;
+            font-weight: 800;
+
+            color: var(--text);
+        }
+
+
+        .page-heading p {
+            margin: 6px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            line-height: 1.55;
+        }
+
+
+        /* =====================================================
+           SUMMARY CARDS
+        ====================================================== */
+
+        .summary-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 14px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .summary-card {
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            padding: 15px 16px;
+
+            box-shadow: var(--shadow);
+
+            min-width: 0;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 26px
+                rgba(15, 23, 42, 0.08);
+        }
+
+
+        .summary-card-top {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .summary-label {
+            color: var(--muted);
+
+            font-size: 10px;
+
+            font-weight: 750;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.45px;
+        }
+
+
+        .summary-value {
+            margin-top: 6px;
+
+            font-size: 23px;
+
+            line-height: 1;
+
+            font-weight: 800;
+
+            color: var(--text);
+        }
+
+
+        .summary-icon {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 17px;
+
+            flex-shrink: 0;
+        }
+
+
+        .icon-blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+
+        .icon-green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+
+        .icon-orange {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+
+        .icon-purple {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+
+        .icon-cyan {
+            background: #cffafe;
+            color: #0891b2;
+        }
+
+
+        .icon-red {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+
+        .icon-yellow {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+
+        .icon-indigo {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+
+        /* =====================================================
+           CHART SECTION
+        ====================================================== */
+
+        .charts-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 16px;
+
+            margin-bottom: 24px;
+        }
+
+
+        .chart-card {
+            background: #ffffff;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 13px;
+
+            box-shadow: var(--shadow);
+
+            padding: 17px;
+
+            min-width: 0;
+
+            overflow: hidden;
+        }
+
+
+        .chart-card.full-width {
+            grid-column: auto;
+        }
+
+
+        .chart-card:hover {
+            box-shadow:
+                0 10px 28px
+                rgba(15, 23, 42, 0.075);
+        }
+
+
+        .chart-header {
+            display: flex;
+
+            align-items: flex-start;
+            justify-content: space-between;
+
+            gap: 12px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .chart-heading-group {
+            min-width: 0;
+        }
+
+
+        .chart-title {
+            margin: 0;
+
+            font-size: 14px;
+
+            font-weight: 750;
+
+            color: var(--text);
+        }
+
+
+        .chart-description {
+            margin: 4px 0 0;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            line-height: 1.45;
+        }
+
+
+        .chart-header-icon {
+            width: 32px;
+            height: 32px;
+
+            border-radius: 8px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            font-size: 14px;
+        }
+
+
+        .chart-icon-blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+
+        .chart-icon-green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+
+        .chart-icon-purple {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+
+        .chart-icon-orange {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+
+        .chart-icon-cyan {
+            background: #cffafe;
+            color: #0891b2;
+        }
+
+
+        .chart-wrapper {
+            position: relative;
+
+            height: 220px;
+
+            width: 100%;
+        }
+
+
+        /* =====================================================
+           DETAILED REPORTS
+        ====================================================== */
+
+        .reports-section {
+            margin-top: 3px;
+        }
+
+
+        .section-heading {
+            margin-bottom: 14px;
+        }
+
+
+        .section-heading h2 {
+            margin: 0;
+
+            font-size: 18px;
+
+            font-weight: 800;
+        }
+
+
+        .section-heading p {
+            margin: 4px 0 0;
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+
+        .report-links-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 13px;
+        }
+
+
+        .report-link-card {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            min-width: 0;
+
+            padding: 14px;
+
+            background: #ffffff;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 11px;
+
+            color: var(--text);
+
+            box-shadow:
+                0 4px 15px
+                rgba(15, 23, 42, 0.035);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+
+        .report-link-card:hover {
+            transform: translateY(-2px);
+
+            border-color: #bfdbfe;
+
+            box-shadow:
+                0 8px 22px
+                rgba(15, 23, 42, 0.07);
+
+            color: var(--text);
+        }
+
+
+        .report-link-icon {
+            width: 37px;
+            height: 37px;
+
+            border-radius: 9px;
+
+            background: #eff6ff;
+
+            color: var(--primary);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 16px;
+
+            flex-shrink: 0;
+        }
+
+
+        .report-link-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+
+        .report-link-title {
+            font-size: 12px;
+
+            font-weight: 750;
+
+            margin-bottom: 3px;
+        }
+
+
+        .report-link-description {
+            color: var(--muted);
+
+            font-size: 10px;
+
+            line-height: 1.4;
+        }
+
+
+        .report-link-arrow {
+            color: #94a3b8;
+
+            font-size: 14px;
+
+            flex-shrink: 0;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ====================================================== */
+
+        .admin-footer {
+            margin-top: auto;
+
+            padding: 17px 30px;
+
+            border-top:
+                1px solid var(--border);
+
+            background: #ffffff;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+
+        .footer-left {
+            font-weight: 600;
+        }
+
+
+        .footer-right {
+            text-align: right;
+        }
+
+
+        /* =====================================================
+           MOBILE OVERLAY
+        ====================================================== */
+
+        .sidebar-overlay {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(15, 23, 42, 0.45);
+
+            z-index: 1040;
+        }
+
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 1250px) {
+
+            .summary-grid {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+
+
+            .report-links-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 991px) {
+
+            .admin-sidebar {
+                transform:
+                    translateX(-100%);
+            }
+
+
+            .admin-sidebar.mobile-open {
+                transform:
+                    translateX(0);
+            }
+
+
+            .admin-main {
+                margin-left: 0;
+            }
+
+
+            .mobile-menu-btn {
+                display: inline-flex;
+
+                align-items: center;
+                justify-content: center;
+            }
+
+
+            .admin-topbar {
+                padding: 0 20px;
+            }
+
+
+            .page-content {
+                padding:
+                    22px 20px 28px;
+            }
+
+
+            .summary-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .report-links-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .page-heading h1 {
+                font-size: 23px;
+            }
+
+
+            .topbar-title {
+                font-size: 17px;
+            }
+
+
+            .topbar-user {
+                display: none;
+            }
+
+
+            .chart-wrapper {
+                height: 235px;
+            }
+
+
+            .admin-footer {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                padding:
+                    16px 20px;
+            }
+
+
+            .footer-right {
+                text-align: left;
+            }
+
+        }
+
+
+        @media (max-width: 450px) {
+
+            .page-content {
+                padding:
+                    18px 14px 24px;
+            }
+
+
+            .admin-topbar {
+                padding: 0 14px;
+            }
+
+
+            .summary-card {
+                padding: 14px;
+            }
+
+
+            .chart-card {
+                padding: 14px;
+            }
+
+
+            .chart-wrapper {
+                height: 220px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         SHARED SUPER ADMIN SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
+
+        <div class="sidebar-brand">
+
+            <h2 class="brand-title">
+                ITARMS
+            </h2>
+
+            <div class="brand-subtitle">
+                Super Admin Panel
+            </div>
+
+        </div>
+
+
+        <!-- CURRENT USER -->
+
+        <div class="sidebar-user">
+
+            <div class="sidebar-user-inner">
+
+                <div class="user-avatar">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+
+                <div class="user-details">
+
+                    <div class="user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Super Administrator
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SIDEBAR NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <!-- MAIN -->
+
+            <div class="sidebar-section-title">
+                Main
+            </div>
+
+
+            <a
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link "
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+
+            <!-- MANAGEMENT -->
+
+            <div class="sidebar-section-title">
+                Management
+            </div>
+
+
+            <!-- IT ASSETS -->
+
+            {% url 'asset_list' as asset_list_url %}
+
+            {% if asset_list_url %}
+
+                <a
+                    href="{{ asset_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET ASSIGNMENTS -->
+
+            {% url 'admin_assignment_list' as assignment_list_url %}
+
+            {% if assignment_list_url %}
+
+                <a
+                    href="{{ assignment_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET REQUESTS -->
+
+            {% url 'admin_asset_requests' as asset_requests_url %}
+
+            {% if asset_requests_url %}
+
+                <a
+                    href="{{ asset_requests_url }}"
+                    class="sidebar-link "
+                >
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- DAMAGED / LOST -->
+
+            {% url 'admin_asset_incident_list' as incident_list_url %}
+
+            {% if incident_list_url %}
+
+                <a
+                    href="{{ incident_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- MAINTENANCE -->
+
+            {% url 'maintenance_list' as maintenance_url %}
+
+            {% if maintenance_url %}
+
+                <a
+                    href="{{ maintenance_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance</span>
+                </a>
+
+            {% endif %}
+            
+                        <!-- SOFTWARE LICENSES -->
+
+            <a
+                href="{% url 'software_license_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-key-fill"></i>
+                <span>Software Licenses</span>
+            </a>
+
+
+            <!-- DEPARTMENTS -->
+
+            <a
+                href="{% url 'super_admin_department_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-building-fill"></i>
+                <span>Departments</span>
+            </a>
+
+
+            <!-- REPORTS -->
+
+            <a
+                href="{% url 'reports:home' %}"
+                class="sidebar-link active"
+            >
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <span>Reports &amp; Analytics</span>
+            </a>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <a
+                href="{% url 'notifications:list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bell-fill"></i>
+                <span>Notifications</span>
+            </a>
+
+
+            <!-- SYSTEM -->
+
+            <div class="sidebar-section-title">
+                System
+            </div>
+
+        </nav>
+
+
+        <div class="sidebar-spacer"></div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="sidebar-bottom">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="admin-main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="admin-topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    type="button"
+                    class="mobile-menu-btn"
+                    id="mobileMenuBtn"
+                    aria-label="Open menu"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+
+                <div class="topbar-title">
+                    Reports &amp; Analytics
+                </div>
+
+            </div>
+
+
+            <div class="topbar-user">
+
+                <i class="bi bi-shield-lock-fill"></i>
+
+                Super Admin
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE CONTENT -->
+
+        <section class="page-content">
+
+
+            <div class="page-heading">
+
+                <h1>
+                    Reports &amp; Analytics
+                </h1>
+
+                <p>
+                    Monitor IT assets, assignments, requests, maintenance
+                    activity, and other operational information across ITARMS.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 SUMMARY
+            ================================================== -->
+
+            <div class="summary-grid">
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Total IT Assets
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.total_assets }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-blue">
+                            <i class="bi bi-pc-display"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Total Employees
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.total_employees }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-green">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Total Assignments
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.total_assignments }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-purple">
+                            <i class="bi bi-arrow-left-right"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Active Assignments
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.active_assignments }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-cyan">
+                            <i class="bi bi-person-check-fill"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Asset Requests
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.total_asset_requests }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-orange">
+                            <i class="bi bi-clipboard-check"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Pending Requests
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.pending_asset_requests }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-yellow">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Maintenance Requests
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.total_maintenance_requests }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-red">
+                            <i class="bi bi-tools"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Pending Maintenance
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.pending_maintenance_requests }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-indigo">
+                            <i class="bi bi-wrench-adjustable"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Software Licenses
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.total_software_licenses }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-purple">
+                            <i class="bi bi-key-fill"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Total Vendors
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.total_vendors }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-green">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <div>
+
+                            <div class="summary-label">
+                                Total Purchases
+                            </div>
+
+                            <div class="summary-value">
+                                {{ data.total_purchases }}
+                            </div>
+
+                        </div>
+
+                        <div class="summary-icon icon-blue">
+                            <i class="bi bi-cart-check-fill"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 CHARTS
+            ================================================== -->
+
+            <div class="charts-grid">
+
+
+                <!-- ASSET STATUS -->
+
+                <div class="chart-card">
+
+                    <div class="chart-header">
+
+                        <div class="chart-heading-group">
+
+                            <h2 class="chart-title">
+                                Assets by Status
+                            </h2>
+
+                            <p class="chart-description">
+                                Current distribution of IT assets by lifecycle status.
+                            </p>
+
+                        </div>
+
+                        <div class="chart-header-icon chart-icon-blue">
+                            <i class="bi bi-pie-chart-fill"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="assetStatusChart"></canvas>
+                    </div>
+
+                </div>
+
+
+                <!-- ASSET CATEGORY -->
+
+                <div class="chart-card">
+
+                    <div class="chart-header">
+
+                        <div class="chart-heading-group">
+
+                            <h2 class="chart-title">
+                                Assets by Category
+                            </h2>
+
+                            <p class="chart-description">
+                                Distribution of assets across available categories.
+                            </p>
+
+                        </div>
+
+                        <div class="chart-header-icon chart-icon-green">
+                            <i class="bi bi-bar-chart-fill"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="assetCategoryChart"></canvas>
+                    </div>
+
+                </div>
+
+
+                <!-- ASSET DEPARTMENT -->
+
+                <div class="chart-card">
+
+                    <div class="chart-header">
+
+                        <div class="chart-heading-group">
+
+                            <h2 class="chart-title">
+                                Assets by Department
+                            </h2>
+
+                            <p class="chart-description">
+                                Number of IT assets associated with each department.
+                            </p>
+
+                        </div>
+
+                        <div class="chart-header-icon chart-icon-purple">
+                            <i class="bi bi-diagram-3-fill"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="assetDepartmentChart"></canvas>
+                    </div>
+
+                </div>
+
+
+                <!-- MAINTENANCE -->
+
+                <div class="chart-card">
+
+                    <div class="chart-header">
+
+                        <div class="chart-heading-group">
+
+                            <h2 class="chart-title">
+                                Maintenance Requests
+                            </h2>
+
+                            <p class="chart-description">
+                                Maintenance and repair requests grouped by status.
+                            </p>
+
+                        </div>
+
+                        <div class="chart-header-icon chart-icon-orange">
+                            <i class="bi bi-tools"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="maintenanceStatusChart"></canvas>
+                    </div>
+
+                </div>
+
+
+                <!-- ASSET REQUESTS -->
+
+                <div class="chart-card">
+
+                    <div class="chart-header">
+
+                        <div class="chart-heading-group">
+
+                            <h2 class="chart-title">
+                                Asset Requests
+                            </h2>
+
+                            <p class="chart-description">
+                                Employee asset requests grouped by current status.
+                            </p>
+
+                        </div>
+
+                        <div class="chart-header-icon chart-icon-cyan">
+                            <i class="bi bi-clipboard-check-fill"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="assetRequestStatusChart"></canvas>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 DETAILED REPORTS
+            ================================================== -->
+
+            <section class="reports-section">
+
+
+                <div class="section-heading">
+
+                    <h2>
+                        Detailed Reports
+                    </h2>
+
+                    <p>
+                        Open the available detailed reports for deeper analysis.
+                    </p>
+
+                </div>
+
+
+                <div class="report-links-grid">
+
+
+                    <a
+                        href="{% url 'reports:asset_report' %}"
+                        class="report-link-card"
+                    >
+
+                        <div class="report-link-icon">
+                            <i class="bi bi-pc-display-horizontal"></i>
+                        </div>
+
+                        <div class="report-link-content">
+
+                            <div class="report-link-title">
+                                Asset Report
+                            </div>
+
+                            <div class="report-link-description">
+                                Review asset status, category, and department data.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right report-link-arrow"></i>
+
+                    </a>
+
+
+                    <a
+                        href="{% url 'reports:assignment_report' %}"
+                        class="report-link-card"
+                    >
+
+                        <div class="report-link-icon">
+                            <i class="bi bi-arrow-left-right"></i>
+                        </div>
+
+                        <div class="report-link-content">
+
+                            <div class="report-link-title">
+                                Assignment Report
+                            </div>
+
+                            <div class="report-link-description">
+                                Review active, returned, department, and employee assignments.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right report-link-arrow"></i>
+
+                    </a>
+
+
+                    <a
+                        href="{% url 'reports:maintenance_report' %}"
+                        class="report-link-card"
+                    >
+
+                        <div class="report-link-icon">
+                            <i class="bi bi-tools"></i>
+                        </div>
+
+                        <div class="report-link-content">
+
+                            <div class="report-link-title">
+                                Maintenance Report
+                            </div>
+
+                            <div class="report-link-description">
+                                Review maintenance status, priority, and request types.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right report-link-arrow"></i>
+
+                    </a>
+
+
+                    <a
+                        href="{% url 'reports:asset_request_report' %}"
+                        class="report-link-card"
+                    >
+
+                        <div class="report-link-icon">
+                            <i class="bi bi-clipboard-check"></i>
+                        </div>
+
+                        <div class="report-link-content">
+
+                            <div class="report-link-title">
+                                Asset Request Report
+                            </div>
+
+                            <div class="report-link-description">
+                                Review request status, priority, and asset categories.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right report-link-arrow"></i>
+
+                    </a>
+
+
+                    <a
+                        href="{% url 'reports:software_license_report' %}"
+                        class="report-link-card"
+                    >
+
+                        <div class="report-link-icon">
+                            <i class="bi bi-key-fill"></i>
+                        </div>
+
+                        <div class="report-link-content">
+
+                            <div class="report-link-title">
+                                Software License Report
+                            </div>
+
+                            <div class="report-link-description">
+                                Review software license records, allocation, and status.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right report-link-arrow"></i>
+
+                    </a>
+
+
+                    <a
+                        href="{% url 'reports:vendor_purchase_report' %}"
+                        class="report-link-card"
+                    >
+
+                        <div class="report-link-icon">
+                            <i class="bi bi-building-check"></i>
+                        </div>
+
+                        <div class="report-link-content">
+
+                            <div class="report-link-title">
+                                Vendor &amp; Purchase Report
+                            </div>
+
+                            <div class="report-link-description">
+                                Review vendors, purchases, and purchase amounts.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right report-link-arrow"></i>
+
+                    </a>
+
+
+                    <a
+                        href="{% url 'reports:employee_report' %}"
+                        class="report-link-card"
+                    >
+
+                        <div class="report-link-icon">
+                            <i class="bi bi-person-vcard-fill"></i>
+                        </div>
+
+                        <div class="report-link-content">
+
+                            <div class="report-link-title">
+                                Employee Report
+                            </div>
+
+                            <div class="report-link-description">
+                                Review employee totals, active status, and departments.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right report-link-arrow"></i>
+
+                    </a>
+
+
+                    <a
+                        href="{% url 'reports:department_report' %}"
+                        class="report-link-card"
+                    >
+
+                        <div class="report-link-icon">
+                            <i class="bi bi-diagram-3-fill"></i>
+                        </div>
+
+                        <div class="report-link-content">
+
+                            <div class="report-link-title">
+                                Department Report
+                            </div>
+
+                            <div class="report-link-description">
+                                Review department-level employee and asset information.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right report-link-arrow"></i>
+
+                    </a>
+
+
+                    <a
+                        href="{% url 'reports:audit_log_report' %}"
+                        class="report-link-card"
+                    >
+
+                        <div class="report-link-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+
+                        <div class="report-link-content">
+
+                            <div class="report-link-title">
+                                Audit Log Report
+                            </div>
+
+                            <div class="report-link-description">
+                                Review audit activity by action, module, and user.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right report-link-arrow"></i>
+
+                    </a>
+
+
+                </div>
+
+            </section>
+
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="admin-footer">
+
+            <div class="footer-left">
+                ITARMS &copy; {% now "Y" %}
+            </div>
+
+            <div class="footer-right">
+                IT Asset &amp; Resource Management System
+                &nbsp;&bull;&nbsp;
+                Super Admin Portal
+            </div>
+
+        </footer>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         SAFE CHART DATA
+    ====================================================== -->
+
+    {{ chart_data|json_script:"reports-chart-data" }}
+
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+
+                /* =================================================
+                   MOBILE SIDEBAR
+                ================================================= */
+
+                const sidebar =
+                    document.getElementById(
+                        "adminSidebar"
+                    );
+
+                const mobileMenuBtn =
+                    document.getElementById(
+                        "mobileMenuBtn"
+                    );
+
+                const sidebarOverlay =
+                    document.getElementById(
+                        "sidebarOverlay"
+                    );
+
+
+                function openSidebar() {
+
+                    sidebar.classList.add(
+                        "mobile-open"
+                    );
+
+                    sidebarOverlay.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+                function closeSidebar() {
+
+                    sidebar.classList.remove(
+                        "mobile-open"
+                    );
+
+                    sidebarOverlay.classList.remove(
+                        "active"
+                    );
+
+                }
+
+
+                if (mobileMenuBtn) {
+
+                    mobileMenuBtn.addEventListener(
+                        "click",
+                        function () {
+
+                            if (
+                                sidebar.classList.contains(
+                                    "mobile-open"
+                                )
+                            ) {
+
+                                closeSidebar();
+
+                            } else {
+
+                                openSidebar();
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                if (sidebarOverlay) {
+
+                    sidebarOverlay.addEventListener(
+                        "click",
+                        closeSidebar
+                    );
+
+                }
+
+
+                /* =================================================
+                   CHART DATA
+                ================================================= */
+
+                const chartDataElement =
+                    document.getElementById(
+                        "reports-chart-data"
+                    );
+
+
+                if (!chartDataElement) {
+                    return;
+                }
+
+
+                const chartData =
+                    JSON.parse(
+                        chartDataElement.textContent
+                    );
+
+
+                /* =================================================
+                   COMMON CHART SETTINGS
+                ================================================= */
+
+                const commonTooltip = {
+
+                    backgroundColor:
+                        "#0f172a",
+
+                    titleColor:
+                        "#ffffff",
+
+                    bodyColor:
+                        "#e2e8f0",
+
+                    padding: 11,
+
+                    cornerRadius: 8,
+
+                    displayColors: true
+
+                };
+
+
+                const doughnutLegend = {
+
+                    position: "bottom",
+
+                    labels: {
+
+                        usePointStyle: true,
+
+                        pointStyle: "circle",
+
+                        padding: 14,
+
+                        color: "#475569",
+
+                        font: {
+                            size: 10,
+                            weight: "600"
+                        }
+
+                    }
+
+                };
+
+
+                const commonDoughnutOptions = {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    cutout: "62%",
+
+                    plugins: {
+
+                        legend: doughnutLegend,
+
+                        tooltip: commonTooltip
+
+                    }
+
+                };
+
+
+                const commonBarOptions = {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            grid: {
+                                color:
+                                    "rgba(148, 163, 184, 0.15)"
+                            },
+
+                            border: {
+                                display: false
+                            },
+
+                            ticks: {
+                                precision: 0,
+
+                                color: "#64748b",
+
+                                font: {
+                                    size: 10
+                                }
+                            }
+
+                        },
+
+                        x: {
+
+                            grid: {
+                                display: false
+                            },
+
+                            border: {
+                                display: false
+                            },
+
+                            ticks: {
+
+                                color: "#64748b",
+
+                                font: {
+                                    size: 10
+                                },
+
+                                autoSkip: false
+                            }
+
+                        }
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        },
+
+                        tooltip: commonTooltip
+
+                    }
+
+                };
+
+
+                function getLabels(dataObject) {
+
+                    return Object.keys(
+                        dataObject || {}
+                    );
+
+                }
+
+
+                function getValues(dataObject) {
+
+                    return Object.values(
+                        dataObject || {}
+                    );
+
+                }
+
+
+                function formatLabel(label) {
+
+                    return String(label)
+                        .replaceAll("_", " ")
+                        .replace(/\b\w/g, function (letter) {
+                            return letter.toUpperCase();
+                        });
+
+                }
+
+
+                /* =================================================
+                   ASSET STATUS
+                ================================================= */
+
+                const assetStatusElement =
+                    document.getElementById(
+                        "assetStatusChart"
+                    );
+
+
+                if (assetStatusElement) {
+
+                    new Chart(
+                        assetStatusElement,
+                        {
+
+                            type: "doughnut",
+
+                            data: {
+
+                                labels:
+                                    getLabels(
+                                        chartData.asset_status
+                                    ).map(
+                                        formatLabel
+                                    ),
+
+                                datasets: [
+                                    {
+
+                                        data:
+                                            getValues(
+                                                chartData.asset_status
+                                            ),
+
+                                        backgroundColor: [
+                                            "#22c55e",
+                                            "#3b82f6",
+                                            "#f59e0b",
+                                            "#ef4444",
+                                            "#8b5cf6",
+                                            "#64748b",
+                                            "#0f172a"
+                                        ],
+
+                                        hoverBackgroundColor: [
+                                            "#16a34a",
+                                            "#2563eb",
+                                            "#d97706",
+                                            "#dc2626",
+                                            "#7c3aed",
+                                            "#475569",
+                                            "#020617"
+                                        ],
+
+                                        borderColor:
+                                            "#ffffff",
+
+                                        borderWidth: 2,
+
+                                        hoverOffset: 5
+
+                                    }
+                                ]
+
+                            },
+
+                            options:
+                                commonDoughnutOptions
+
+                        }
+                    );
+
+                }
+
+
+                /* =================================================
+                   ASSET CATEGORY
+                ================================================= */
+
+                const assetCategoryElement =
+                    document.getElementById(
+                        "assetCategoryChart"
+                    );
+
+
+                if (assetCategoryElement) {
+
+                    const categoryValues =
+                        getValues(
+                            chartData.asset_category
+                        );
+
+
+                    new Chart(
+                        assetCategoryElement,
+                        {
+
+                            type: "bar",
+
+                            data: {
+
+                                labels:
+                                    getLabels(
+                                        chartData.asset_category
+                                    ).map(
+                                        formatLabel
+                                    ),
+
+                                datasets: [
+                                    {
+
+                                        label:
+                                            "Assets",
+
+                                        data:
+                                            categoryValues,
+
+                                        backgroundColor: [
+                                            "#2563eb",
+                                            "#16a34a",
+                                            "#7c3aed",
+                                            "#ea580c",
+                                            "#0891b2",
+                                            "#db2777",
+                                            "#ca8a04"
+                                        ],
+
+                                        borderRadius: 7,
+
+                                        borderSkipped: false
+
+                                    }
+                                ]
+
+                            },
+
+                            options:
+                                commonBarOptions
+
+                        }
+                    );
+
+                }
+
+
+                /* =================================================
+                   ASSET DEPARTMENT
+                ================================================= */
+
+                const assetDepartmentElement =
+                    document.getElementById(
+                        "assetDepartmentChart"
+                    );
+
+
+                if (assetDepartmentElement) {
+
+                    const departmentLabels =
+                        getLabels(
+                            chartData.asset_department
+                        );
+
+
+                    new Chart(
+                        assetDepartmentElement,
+                        {
+
+                            type: "bar",
+
+                            data: {
+
+                                labels:
+                                    departmentLabels.map(
+                                        formatLabel
+                                    ),
+
+                                datasets: [
+                                    {
+
+                                        label:
+                                            "Assets",
+
+                                        data:
+                                            getValues(
+                                                chartData.asset_department
+                                            ),
+
+                                        backgroundColor: [
+                                            "#7c3aed",
+                                            "#2563eb",
+                                            "#16a34a",
+                                            "#ea580c",
+                                            "#0891b2",
+                                            "#db2777",
+                                            "#ca8a04"
+                                        ],
+
+                                        borderRadius: 7,
+
+                                        borderSkipped: false
+
+                                    }
+                                ]
+
+                            },
+
+                            options: {
+
+                                ...commonBarOptions,
+
+                                indexAxis: "y",
+
+                                scales: {
+
+                                    x: {
+
+                                        beginAtZero: true,
+
+                                        grid: {
+                                            color:
+                                                "rgba(148, 163, 184, 0.15)"
+                                        },
+
+                                        border: {
+                                            display: false
+                                        },
+
+                                        ticks: {
+
+                                            precision: 0,
+
+                                            color:
+                                                "#64748b",
+
+                                            font: {
+                                                size: 10
+                                            }
+
+                                        }
+
+                                    },
+
+                                    y: {
+
+                                        grid: {
+                                            display: false
+                                        },
+
+                                        border: {
+                                            display: false
+                                        },
+
+                                        ticks: {
+
+                                            color:
+                                                "#64748b",
+
+                                            font: {
+                                                size: 10
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                /* =================================================
+                   MAINTENANCE STATUS
+                ================================================= */
+
+                const maintenanceStatusElement =
+                    document.getElementById(
+                        "maintenanceStatusChart"
+                    );
+
+
+                if (maintenanceStatusElement) {
+
+                    new Chart(
+                        maintenanceStatusElement,
+                        {
+
+                            type: "doughnut",
+
+                            data: {
+
+                                labels:
+                                    getLabels(
+                                        chartData.maintenance_status
+                                    ).map(
+                                        formatLabel
+                                    ),
+
+                                datasets: [
+                                    {
+
+                                        data:
+                                            getValues(
+                                                chartData.maintenance_status
+                                            ),
+
+                                        backgroundColor: [
+                                            "#f59e0b",
+                                            "#3b82f6",
+                                            "#22c55e",
+                                            "#ef4444",
+                                            "#8b5cf6"
+                                        ],
+
+                                        hoverBackgroundColor: [
+                                            "#d97706",
+                                            "#2563eb",
+                                            "#16a34a",
+                                            "#dc2626",
+                                            "#7c3aed"
+                                        ],
+
+                                        borderColor:
+                                            "#ffffff",
+
+                                        borderWidth: 2,
+
+                                        hoverOffset: 5
+
+                                    }
+                                ]
+
+                            },
+
+                            options:
+                                commonDoughnutOptions
+
+                        }
+                    );
+
+                }
+
+
+                /* =================================================
+                   ASSET REQUEST STATUS
+                ================================================= */
+
+                const assetRequestStatusElement =
+                    document.getElementById(
+                        "assetRequestStatusChart"
+                    );
+
+
+                if (assetRequestStatusElement) {
+
+                    new Chart(
+                        assetRequestStatusElement,
+                        {
+
+                            type: "doughnut",
+
+                            data: {
+
+                                labels:
+                                    getLabels(
+                                        chartData.asset_request_status
+                                    ).map(
+                                        formatLabel
+                                    ),
+
+                                datasets: [
+                                    {
+
+                                        data:
+                                            getValues(
+                                                chartData.asset_request_status
+                                            ),
+
+                                        backgroundColor: [
+                                            "#3b82f6",
+                                            "#22c55e",
+                                            "#ef4444",
+                                            "#f59e0b",
+                                            "#8b5cf6"
+                                        ],
+
+                                        hoverBackgroundColor: [
+                                            "#2563eb",
+                                            "#16a34a",
+                                            "#dc2626",
+                                            "#d97706",
+                                            "#7c3aed"
+                                        ],
+
+                                        borderColor:
+                                            "#ffffff",
+
+                                        borderWidth: 2,
+
+                                        hoverOffset: 5
+
+                                    }
+                                ]
+
+                            },
+
+                            options:
+                                commonDoughnutOptions
+
+                        }
+                    );
+
+                }
+
+
+            }
+
+        );
+
+    </script>
+
+
+</body>
+
+</html>

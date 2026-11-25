@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,31 +19,46 @@
         rel="stylesheet"
     >
 
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
     <style>
 
-        * {
+        /* =========================================================
+           MAIN CONTENT LAYOUT
+        ========================================================= */
+
+        .admin-main {
+            margin-left: 250px !important;
+            width: calc(100% - 250px) !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden;
+        }
+
+        .admin-content {
+            width: 100%;
+            min-width: 0;
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            background: #f4f6f9;
-            color: #1f2937;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                Arial,
-                sans-serif;
+        /* =========================================================
+           ASSET REQUESTS PAGE
+        ========================================================= */
+
+        .asset-request-page {
+            padding: 28px;
         }
 
-        .page-wrapper {
-            min-height: 100vh;
-            padding: 30px;
-        }
-
-        .page-header {
+        .asset-request-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
@@ -49,121 +66,176 @@
             margin-bottom: 24px;
         }
 
-        .page-header h1 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: 700;
-            color: #111827;
+        .asset-request-heading {
+            min-width: 0;
         }
 
-        .page-header p {
+        .asset-request-heading h1 {
+            margin: 0;
+            color: #111827;
+            font-size: 27px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .asset-request-heading p {
             margin: 7px 0 0;
             color: #6b7280;
             font-size: 14px;
+            line-height: 1.6;
         }
 
-        .back-button {
+        .page-back-button {
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             min-height: 40px;
             padding: 9px 16px;
-            border-radius: 8px;
-            background: #111827;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: 0.2s ease;
-        }
-
-        .back-button:hover {
-            background: #1f2937;
-            color: #ffffff;
-        }
-
-        .filter-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-        }
-
-        .filter-title {
-            margin-bottom: 15px;
-            font-size: 15px;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .form-label {
-            margin-bottom: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        .form-control,
-        .form-select {
-            min-height: 40px;
-            border-color: #d1d5db;
-            border-radius: 8px;
-            font-size: 13px;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #4b5563;
-            box-shadow: 0 0 0 3px rgba(75, 85, 99, 0.10);
-        }
-
-        .filter-button {
-            width: 100%;
-            min-height: 40px;
-            border: 0;
-            border-radius: 8px;
-            background: #111827;
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .filter-button:hover {
-            background: #1f2937;
-        }
-
-        .clear-button {
-            width: 100%;
-            min-height: 40px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             background: #ffffff;
             color: #374151;
+            text-decoration: none;
             font-size: 13px;
             font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            white-space: nowrap;
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
         }
 
-        .clear-button:hover {
+        .page-back-button:hover {
             background: #f9fafb;
+            border-color: #9ca3af;
             color: #111827;
         }
 
-        .table-card {
+        /* =========================================================
+           ALERTS
+        ========================================================= */
+
+        .asset-request-alerts {
+            margin-bottom: 20px;
+        }
+
+        .asset-request-alerts .alert {
+            margin-bottom: 10px;
+            border-radius: 9px;
+            border: 1px solid transparent;
+            font-size: 13px;
+        }
+
+        /* =========================================================
+           FILTER CARD
+        ========================================================= */
+
+        .request-filter-card {
+            margin-bottom: 22px;
+            padding: 20px;
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
-            overflow: hidden;
             box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
         }
 
-        .table-header {
+        .request-filter-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 17px;
+            color: #111827;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .request-filter-title i {
+            color: #4b5563;
+            font-size: 16px;
+        }
+
+        .request-filter-card .form-label {
+            margin-bottom: 6px;
+            color: #374151;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .request-filter-card .form-control,
+        .request-filter-card .form-select {
+            min-height: 40px;
+            border-color: #d1d5db;
+            border-radius: 8px;
+            color: #374151;
+            font-size: 13px;
+        }
+
+        .request-filter-card .form-control::placeholder {
+            color: #9ca3af;
+        }
+
+        .request-filter-card .form-control:focus,
+        .request-filter-card .form-select:focus {
+            border-color: #6b7280;
+            box-shadow: 0 0 0 3px rgba(75, 85, 99, 0.10);
+        }
+
+        .filter-button,
+        .clear-filter-button {
+            width: 100%;
+            min-height: 40px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .filter-button {
+            border: 1px solid #111827;
+            background: #111827;
+            color: #ffffff;
+        }
+
+        .filter-button:hover {
+            background: #1f2937;
+            border-color: #1f2937;
+            color: #ffffff;
+        }
+
+        .clear-filter-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            text-decoration: none;
+        }
+
+        .clear-filter-button:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+            color: #111827;
+        }
+
+        /* =========================================================
+           REQUEST TABLE CARD
+        ========================================================= */
+
+        .request-table-card {
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+
+        .request-table-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -172,65 +244,96 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
-        .table-header h2 {
+        .request-table-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .request-table-heading i {
+            color: #4b5563;
+            font-size: 17px;
+        }
+
+        .request-table-heading h2 {
             margin: 0;
+            color: #111827;
             font-size: 16px;
             font-weight: 700;
-            color: #111827;
         }
 
         .request-count {
+            flex-shrink: 0;
+            padding: 5px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 999px;
+            background: #f9fafb;
             color: #6b7280;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 600;
         }
 
-        .table-responsive {
+        .request-table-scroll {
             overflow-x: auto;
+            width: 100%;
         }
 
-        table {
+        .request-table {
             width: 100%;
-            min-width: 1250px;
+            min-width: 1320px;
             margin: 0;
             border-collapse: collapse;
         }
 
-        thead th {
+        .request-table thead th {
             padding: 13px 14px;
             background: #f9fafb;
             border-bottom: 1px solid #e5e7eb;
             color: #4b5563;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
             white-space: nowrap;
+            vertical-align: middle;
         }
 
-        tbody td {
+        .request-table tbody td {
             padding: 15px 14px;
             border-bottom: 1px solid #f0f1f3;
             color: #374151;
             font-size: 13px;
+            line-height: 1.5;
             vertical-align: top;
         }
 
-        tbody tr:last-child td {
+        .request-table tbody tr:last-child td {
             border-bottom: 0;
         }
 
-        tbody tr:hover {
+        .request-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .request-table tbody tr:hover {
             background: #fafafa;
         }
 
+        /* =========================================================
+           REQUEST INFORMATION
+        ========================================================= */
+
         .request-id {
-            font-weight: 700;
             color: #111827;
+            font-size: 13px;
+            font-weight: 700;
         }
 
         .employee-name {
-            font-weight: 600;
             color: #111827;
+            font-size: 13px;
+            font-weight: 600;
         }
 
         .employee-id {
@@ -239,9 +342,16 @@
             font-size: 11px;
         }
 
+        .department-name {
+            color: #374151;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
         .asset-name {
-            font-weight: 600;
             color: #111827;
+            font-size: 13px;
+            font-weight: 600;
         }
 
         .asset-category {
@@ -250,26 +360,58 @@
             font-size: 11px;
         }
 
+        .quantity-value {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            min-height: 28px;
+            padding: 4px 8px;
+            border-radius: 7px;
+            background: #f3f4f6;
+            color: #374151;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
         .reason-text {
-            max-width: 260px;
+            max-width: 270px;
             color: #4b5563;
-            line-height: 1.5;
-            white-space: normal;
+            line-height: 1.55;
             overflow-wrap: anywhere;
         }
+
+        .requested-date {
+            color: #374151;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .requested-time {
+            margin-top: 3px;
+            color: #9ca3af;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        /* =========================================================
+           STATUS / PRIORITY
+        ========================================================= */
 
         .status-badge,
         .priority-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 76px;
+            min-width: 78px;
             padding: 5px 9px;
             border-radius: 999px;
             font-size: 10px;
             font-weight: 700;
-            text-transform: uppercase;
             letter-spacing: 0.03em;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .status-pending {
@@ -307,24 +449,34 @@
             color: #b91c1c;
         }
 
+        /* =========================================================
+           PROCESSING ACTION
+        ========================================================= */
+
         .action-form {
-            min-width: 230px;
+            min-width: 235px;
         }
 
         .notes-input {
             width: 100%;
             min-height: 70px;
-            padding: 8px 9px;
+            padding: 9px 10px;
             border: 1px solid #d1d5db;
-            border-radius: 7px;
-            resize: vertical;
-            font-size: 12px;
+            border-radius: 8px;
+            background: #ffffff;
             color: #374151;
+            font-size: 12px;
+            line-height: 1.45;
+            resize: vertical;
+        }
+
+        .notes-input::placeholder {
+            color: #9ca3af;
         }
 
         .notes-input:focus {
             outline: none;
-            border-color: #4b5563;
+            border-color: #6b7280;
             box-shadow: 0 0 0 3px rgba(75, 85, 99, 0.08);
         }
 
@@ -338,99 +490,206 @@
         .reject-button {
             flex: 1;
             min-height: 34px;
-            border: 0;
             border-radius: 7px;
             color: #ffffff;
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
+            transition:
+                background 0.2s ease,
+                transform 0.15s ease;
         }
 
         .approve-button {
+            border: 1px solid #047857;
             background: #047857;
         }
 
         .approve-button:hover {
             background: #065f46;
+            border-color: #065f46;
         }
 
         .reject-button {
+            border: 1px solid #b91c1c;
             background: #b91c1c;
         }
 
         .reject-button:hover {
             background: #991b1b;
+            border-color: #991b1b;
+        }
+
+        .approve-button:active,
+        .reject-button:active {
+            transform: translateY(1px);
         }
 
         .processed-info {
+            max-width: 250px;
             color: #6b7280;
             font-size: 11px;
-            line-height: 1.5;
+            line-height: 1.55;
+            overflow-wrap: anywhere;
         }
 
-        .empty-state {
-            padding: 60px 25px;
+        .processed-info strong {
+            color: #374151;
+            font-weight: 600;
+        }
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .request-empty-state {
+            padding: 65px 25px;
             text-align: center;
         }
 
-        .empty-state h3 {
-            margin: 0 0 7px;
-            font-size: 17px;
-            color: #111827;
+        .empty-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            margin-bottom: 14px;
+            border-radius: 12px;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 21px;
         }
 
-        .empty-state p {
-            margin: 0;
+        .request-empty-state h3 {
+            margin: 0 0 7px;
+            color: #111827;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .request-empty-state p {
+            max-width: 500px;
+            margin: 0 auto;
             color: #6b7280;
             font-size: 13px;
+            line-height: 1.6;
         }
 
-        .pagination-wrapper {
+        /* =========================================================
+           PAGINATION
+        ========================================================= */
+
+        .request-pagination {
             display: flex;
             justify-content: center;
-            padding: 20px;
+            padding: 19px 20px;
             border-top: 1px solid #e5e7eb;
         }
 
-        .pagination .page-link {
-            color: #374151;
-            border-color: #e5e7eb;
-            font-size: 12px;
+        .request-pagination .pagination {
+            margin: 0;
         }
 
-        .pagination .page-item.active .page-link {
+        .request-pagination .page-link {
+            min-width: 36px;
+            border-color: #e5e7eb;
+            color: #374151;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .request-pagination .page-link:hover {
+            background: #f9fafb;
+            color: #111827;
+        }
+
+        .request-pagination .page-item.active .page-link {
             background: #111827;
             border-color: #111827;
             color: #ffffff;
         }
 
-        .alert {
-            border-radius: 9px;
-            font-size: 13px;
-            border: 0;
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1100px) {
+
+            .admin-main {
+                margin-left: 250px !important;
+                width: calc(100% - 250px) !important;
+            }
+
+            .asset-request-page {
+                padding: 22px;
+            }
+
+            .asset-request-heading h1 {
+                font-size: 24px;
+            }
+
         }
 
         @media (max-width: 768px) {
 
-            .page-wrapper {
+            .admin-main {
+                margin-left: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .asset-request-page {
                 padding: 18px;
             }
 
-            .page-header {
+            .asset-request-header {
                 flex-direction: column;
+                gap: 15px;
             }
 
-            .back-button {
+            .asset-request-heading h1 {
+                font-size: 22px;
+            }
+
+            .page-back-button {
                 width: 100%;
             }
 
-            .filter-card {
-                padding: 15px;
+            .request-filter-card {
+                padding: 16px;
             }
 
-            .table-header {
+            .request-table-header {
                 align-items: flex-start;
                 flex-direction: column;
+            }
+
+            .request-count {
+                align-self: flex-start;
+            }
+
+        }
+
+        @media (max-width: 576px) {
+
+            .asset-request-page {
+                padding: 14px;
+            }
+
+            .asset-request-heading h1 {
+                font-size: 20px;
+            }
+
+            .asset-request-heading p {
+                font-size: 13px;
+            }
+
+            .request-table-header {
+                padding: 16px;
+            }
+
+            .request-empty-state {
+                padding: 50px 18px;
             }
 
         }
@@ -441,626 +700,1087 @@
 
 <body>
 
-<div class="page-wrapper">
+<div class="admin-layout">
 
-    <div class="page-header">
+    <!-- =====================================================
+         SHARED SUPER ADMIN SIDEBAR
+    ====================================================== -->
 
-        <div>
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
 
-            <h1>Asset Requests</h1>
+        <div class="sidebar-brand">
 
-            <p>
-                Review and process employee requests for IT assets.
-            </p>
+            <h2 class="brand-title">
+                ITARMS
+            </h2>
 
-        </div>
-
-        <a
-            href="{% url 'dashboard:home' %}"
-            class="back-button"
-        >
-            Back to Dashboard
-        </a>
-
-    </div>
-
-
-    {% if messages %}
-
-        {% for message in messages %}
-
-            <div
-                class="alert alert-{{ message.tags }}"
-                role="alert"
-            >
-                {{ message }}
+            <div class="brand-subtitle">
+                Super Admin Panel
             </div>
 
-        {% endfor %}
-
-    {% endif %}
-
-
-    <div class="filter-card">
-
-        <div class="filter-title">
-            Search & Filter Requests
         </div>
 
-        <form
-            method="get"
-            action="{% url 'admin_asset_requests' %}"
-        >
 
-            <div class="row g-3">
+        <!-- CURRENT USER -->
 
-                <div class="col-lg-5 col-md-6">
+        <div class="sidebar-user">
 
-                    <label
-                        for="search"
-                        class="form-label"
-                    >
-                        Search
-                    </label>
+            <div class="sidebar-user-inner">
 
-                    <input
-                        type="text"
-                        id="search"
-                        name="q"
-                        class="form-control"
-                        value="{{ search_query }}"
-                        placeholder="Employee, asset, category, reason..."
-                    >
+                <div class="user-avatar">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+
+                <div class="user-details">
+
+                    <div class="user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Super Administrator
+                    </div>
 
                 </div>
 
+            </div>
 
-                <div class="col-lg-2 col-md-3">
-
-                    <label
-                        for="status"
-                        class="form-label"
-                    >
-                        Status
-                    </label>
-
-                    <select
-                        id="status"
-                        name="status"
-                        class="form-select"
-                    >
-
-                        <option value="">
-                            All Statuses
-                        </option>
-
-                        {% for value, label in statuses %}
-
-                            <option
-                                value="{{ value }}"
-                                {% if selected_status == value %}selected{% endif %}
-                            >
-                                {{ label }}
-                            </option>
-
-                        {% endfor %}
-
-                    </select>
-
-                </div>
+        </div>
 
 
-                <div class="col-lg-2 col-md-3">
+        <!-- SIDEBAR NAVIGATION -->
 
-                    <label
-                        for="priority"
-                        class="form-label"
-                    >
-                        Priority
-                    </label>
-
-                    <select
-                        id="priority"
-                        name="priority"
-                        class="form-select"
-                    >
-
-                        <option value="">
-                            All Priorities
-                        </option>
-
-                        {% for value, label in priorities %}
-
-                            <option
-                                value="{{ value }}"
-                                {% if selected_priority == value %}selected{% endif %}
-                            >
-                                {{ label }}
-                            </option>
-
-                        {% endfor %}
-
-                    </select>
-
-                </div>
+        <nav class="sidebar-nav">
 
 
-                <div class="col-lg-1 col-md-6 d-flex align-items-end">
+            <!-- MAIN -->
 
-                    <button
-                        type="submit"
-                        class="filter-button"
-                    >
-                        Filter
-                    </button>
-
-                </div>
+            <div class="sidebar-section-title">
+                Main
+            </div>
 
 
-                <div class="col-lg-2 col-md-6 d-flex align-items-end">
+            <a
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link "
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+
+            <!-- MANAGEMENT -->
+
+            <div class="sidebar-section-title">
+                Management
+            </div>
+
+
+            <!-- IT ASSETS -->
+
+            {% url 'asset_list' as asset_list_url %}
+
+            {% if asset_list_url %}
+
+                <a
+                    href="{{ asset_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET ASSIGNMENTS -->
+
+            {% url 'admin_assignment_list' as assignment_list_url %}
+
+            {% if assignment_list_url %}
+
+                <a
+                    href="{{ assignment_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET REQUESTS -->
+
+            {% url 'admin_asset_requests' as asset_requests_url %}
+
+            {% if asset_requests_url %}
+
+                <a
+                    href="{{ asset_requests_url }}"
+                    class="sidebar-link active"
+                >
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- DAMAGED / LOST -->
+
+            {% url 'admin_asset_incident_list' as incident_list_url %}
+
+            {% if incident_list_url %}
+
+                <a
+                    href="{{ incident_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- MAINTENANCE -->
+
+            {% url 'maintenance_list' as maintenance_url %}
+
+            {% if maintenance_url %}
+
+                <a
+                    href="{{ maintenance_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance</span>
+                </a>
+
+            {% endif %}
+
+                        <!-- SOFTWARE LICENSES -->
+
+            <a
+                href="{% url 'software_license_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-key-fill"></i>
+                <span>Software Licenses</span>
+            </a>
+
+
+            <!-- DEPARTMENTS -->
+
+            <a
+                href="{% url 'super_admin_department_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-building-fill"></i>
+                <span>Departments</span>
+            </a>
+
+
+            <!-- REPORTS -->
+
+            <a
+                href="{% url 'reports:home' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <span>Reports &amp; Analytics</span>
+            </a>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <a
+                href="{% url 'notifications:list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bell-fill"></i>
+                <span>Notifications</span>
+            </a>
+
+
+            <!-- SYSTEM -->
+
+            <div class="sidebar-section-title">
+                System
+            </div>
+
+        </nav>
+
+
+        <div class="sidebar-spacer"></div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="sidebar-bottom">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
+    <div class="admin-main">
+
+
+        <!-- =====================================================
+             PAGE CONTENT
+        ====================================================== -->
+
+        <main class="admin-content">
+
+            <div class="asset-request-page">
+
+                <div class="asset-request-header">
+
+                    <div class="asset-request-heading">
+
+                        <h1>
+                            Asset Requests
+                        </h1>
+
+                        <p>
+                            Review and process employee requests for IT assets.
+                        </p>
+
+                    </div>
+
 
                     <a
-                        href="{% url 'admin_asset_requests' %}"
-                        class="clear-button"
+                        href="{% url 'super_admin_dashboard' %}"
+                        class="page-back-button"
                     >
-                        Clear Filters
+                        <i class="bi bi-arrow-left"></i>
+                        Back to Dashboard
                     </a>
 
                 </div>
 
-            </div>
 
-        </form>
+                <!-- =================================================
+                     MESSAGES
+                ================================================== -->
 
-    </div>
+                {% if messages %}
 
+                    <div class="asset-request-alerts">
 
-    <div class="table-card">
+                        {% for message in messages %}
 
-        <div class="table-header">
-
-            <h2>
-                Employee Asset Requests
-            </h2>
-
-            <span class="request-count">
-
-                {% if page_obj.paginator.count == 1 %}
-                    1 request
-                {% else %}
-                    {{ page_obj.paginator.count }} requests
-                {% endif %}
-
-            </span>
-
-        </div>
-
-
-        {% if asset_requests %}
-
-            <div class="table-responsive">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Request
-                            </th>
-
-                            <th>
-                                Employee
-                            </th>
-
-                            <th>
-                                Department
-                            </th>
-
-                            <th>
-                                Asset
-                            </th>
-
-                            <th>
-                                Quantity
-                            </th>
-
-                            <th>
-                                Reason
-                            </th>
-
-                            <th>
-                                Priority
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th>
-                                Requested
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        {% for asset_request in asset_requests %}
-
-                            <tr>
-
-                                <td>
-
-                                    <div class="request-id">
-                                        #{{ asset_request.id }}
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    <div class="employee-name">
-
-                                        {% if asset_request.employee.user.get_full_name %}
-
-                                            {{ asset_request.employee.user.get_full_name }}
-
-                                        {% else %}
-
-                                            {{ asset_request.employee.user.username }}
-
-                                        {% endif %}
-
-                                    </div>
-
-                                    <div class="employee-id">
-
-                                        {{ asset_request.employee.employee_id }}
-
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    {{ asset_request.department.name }}
-
-                                </td>
-
-
-                                <td>
-
-                                    <div class="asset-name">
-
-                                        {% if asset_request.asset_name %}
-
-                                            {{ asset_request.asset_name }}
-
-                                        {% else %}
-
-                                            Not specified
-
-                                        {% endif %}
-
-                                    </div>
-
-                                    <div class="asset-category">
-
-                                        {{ asset_request.asset_category }}
-
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    {{ asset_request.quantity }}
-
-                                </td>
-
-
-                                <td>
-
-                                    <div class="reason-text">
-
-                                        {{ asset_request.reason|linebreaksbr }}
-
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    {% if asset_request.priority == "LOW" %}
-
-                                        <span class="priority-badge priority-low">
-                                            {{ asset_request.get_priority_display }}
-                                        </span>
-
-                                    {% elif asset_request.priority == "MEDIUM" %}
-
-                                        <span class="priority-badge priority-medium">
-                                            {{ asset_request.get_priority_display }}
-                                        </span>
-
-                                    {% elif asset_request.priority == "HIGH" %}
-
-                                        <span class="priority-badge priority-high">
-                                            {{ asset_request.get_priority_display }}
-                                        </span>
-
-                                    {% else %}
-
-                                        <span class="priority-badge priority-urgent">
-                                            {{ asset_request.get_priority_display }}
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <td>
-
-                                    {% if asset_request.status == "PENDING" %}
-
-                                        <span class="status-badge status-pending">
-                                            {{ asset_request.get_status_display }}
-                                        </span>
-
-                                    {% elif asset_request.status == "APPROVED" %}
-
-                                        <span class="status-badge status-approved">
-                                            {{ asset_request.get_status_display }}
-                                        </span>
-
-                                    {% else %}
-
-                                        <span class="status-badge status-rejected">
-                                            {{ asset_request.get_status_display }}
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <td>
-
-                                    <div>
-                                        {{ asset_request.requested_at|date:"d M Y" }}
-                                    </div>
-
-                                    <div class="processed-info">
-                                        {{ asset_request.requested_at|date:"h:i A" }}
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    {% if asset_request.status == "PENDING" %}
-
-                                        <form
-                                            method="post"
-                                            action="{% url 'admin_asset_request_process' asset_request.id %}"
-                                            class="action-form"
-                                        >
-
-                                            {% csrf_token %}
-
-                                            <textarea
-                                                name="manager_notes"
-                                                class="notes-input"
-                                                maxlength="5000"
-                                                placeholder="Optional manager notes..."
-                                            ></textarea>
-
-                                            <div class="action-buttons">
-
-                                                <button
-                                                    type="submit"
-                                                    name="decision"
-                                                    value="APPROVED"
-                                                    class="approve-button"
-                                                    onclick="return confirm('Are you sure you want to approve this asset request?');"
-                                                >
-                                                    Approve
-                                                </button>
-
-                                                <button
-                                                    type="submit"
-                                                    name="decision"
-                                                    value="REJECTED"
-                                                    class="reject-button"
-                                                    onclick="return confirm('Are you sure you want to reject this asset request?');"
-                                                >
-                                                    Reject
-                                                </button>
-
-                                            </div>
-
-                                        </form>
-
-                                    {% else %}
-
-                                        <div class="processed-info">
-
-                                            {% if asset_request.approved_by %}
-
-                                                Processed by:
-                                                <strong>
-                                                    {% if asset_request.approved_by.get_full_name %}
-                                                        {{ asset_request.approved_by.get_full_name }}
-                                                    {% else %}
-                                                        {{ asset_request.approved_by.username }}
-                                                    {% endif %}
-                                                </strong>
-
-                                            {% endif %}
-
-                                            {% if asset_request.processed_at %}
-
-                                                <br>
-
-                                                {{ asset_request.processed_at|date:"d M Y, h:i A" }}
-
-                                            {% endif %}
-
-                                            {% if asset_request.manager_notes %}
-
-                                                <br><br>
-
-                                                <strong>Notes:</strong>
-
-                                                <br>
-
-                                                {{ asset_request.manager_notes|linebreaksbr }}
-
-                                            {% endif %}
-
-                                        </div>
-
-                                    {% endif %}
-
-                                </td>
-
-                            </tr>
+                            <div
+                                class="alert alert-{{ message.tags }}"
+                                role="alert"
+                            >
+                                {{ message }}
+                            </div>
 
                         {% endfor %}
 
-                    </tbody>
+                    </div>
 
-                </table>
-
-            </div>
+                {% endif %}
 
 
-            {% if page_obj.paginator.num_pages > 1 %}
+                <!-- =================================================
+                     FILTERS
+                ================================================== -->
 
-                <div class="pagination-wrapper">
+                <div class="request-filter-card">
 
-                    <nav aria-label="Asset request pagination">
+                    <div class="request-filter-title">
 
-                        <ul class="pagination mb-0">
+                        <i class="bi bi-funnel"></i>
 
-                            {% if page_obj.has_previous %}
+                        <span>
+                            Search & Filter Requests
+                        </span>
 
-                                <li class="page-item">
-
-                                    <a
-                                        class="page-link"
-                                        href="?q={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&priority={{ selected_priority|urlencode }}&page={{ page_obj.previous_page_number }}"
-                                    >
-                                        Previous
-                                    </a>
-
-                                </li>
-
-                            {% endif %}
+                    </div>
 
 
-                            {% for page_number in page_obj.paginator.page_range %}
+                    <form
+                        method="get"
+                        action="{% url 'admin_asset_requests' %}"
+                    >
 
-                                {% if page_number == page_obj.number %}
+                        <div class="row g-3">
 
-                                    <li class="page-item active">
+                            <div class="col-lg-5 col-md-6">
 
-                                        <span class="page-link">
-                                            {{ page_number }}
-                                        </span>
+                                <label
+                                    for="search"
+                                    class="form-label"
+                                >
+                                    Search
+                                </label>
 
-                                    </li>
+                                <input
+                                    type="text"
+                                    id="search"
+                                    name="q"
+                                    class="form-control"
+                                    value="{{ search_query }}"
+                                    placeholder="Employee, asset, category, reason..."
+                                >
 
-                                {% elif page_number >= page_obj.number|add:"-2" and page_number <= page_obj.number|add:"2" %}
+                            </div>
 
-                                    <li class="page-item">
 
-                                        <a
-                                            class="page-link"
-                                            href="?q={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&priority={{ selected_priority|urlencode }}&page={{ page_number }}"
+                            <div class="col-lg-2 col-md-3">
+
+                                <label
+                                    for="status"
+                                    class="form-label"
+                                >
+                                    Status
+                                </label>
+
+                                <select
+                                    id="status"
+                                    name="status"
+                                    class="form-select"
+                                >
+
+                                    <option value="">
+                                        All Statuses
+                                    </option>
+
+                                    {% for value, label in statuses %}
+
+                                        <option
+                                            value="{{ value }}"
+                                            {% if selected_status == value %}selected{% endif %}
                                         >
-                                            {{ page_number }}
-                                        </a>
+                                            {{ label }}
+                                        </option>
 
-                                    </li>
+                                    {% endfor %}
 
-                                {% endif %}
+                                </select>
 
-                            {% endfor %}
+                            </div>
 
 
-                            {% if page_obj.has_next %}
+                            <div class="col-lg-2 col-md-3">
 
-                                <li class="page-item">
+                                <label
+                                    for="priority"
+                                    class="form-label"
+                                >
+                                    Priority
+                                </label>
 
-                                    <a
-                                        class="page-link"
-                                        href="?q={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&priority={{ selected_priority|urlencode }}&page={{ page_obj.next_page_number }}"
-                                    >
-                                        Next
-                                    </a>
+                                <select
+                                    id="priority"
+                                    name="priority"
+                                    class="form-select"
+                                >
 
-                                </li>
+                                    <option value="">
+                                        All Priorities
+                                    </option>
 
-                            {% endif %}
+                                    {% for value, label in priorities %}
 
-                        </ul>
+                                        <option
+                                            value="{{ value }}"
+                                            {% if selected_priority == value %}selected{% endif %}
+                                        >
+                                            {{ label }}
+                                        </option>
 
-                    </nav>
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="col-lg-1 col-md-6 d-flex align-items-end">
+
+                                <button
+                                    type="submit"
+                                    class="filter-button"
+                                >
+                                    <i class="bi bi-search"></i>
+                                    Filter
+                                </button>
+
+                            </div>
+
+
+                            <div class="col-lg-2 col-md-6 d-flex align-items-end">
+
+                                <a
+                                    href="{% url 'admin_asset_requests' %}"
+                                    class="clear-filter-button"
+                                >
+                                    <i class="bi bi-x-circle"></i>
+                                    Clear Filters
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </form>
 
                 </div>
 
-            {% endif %}
 
-        {% else %}
+                <!-- =================================================
+                     REQUEST TABLE
+                ================================================== -->
 
-            <div class="empty-state">
+                <div class="request-table-card">
 
-                <h3>
-                    No Asset Requests Found
-                </h3>
+                    <div class="request-table-header">
 
-                <p>
-                    There are no asset requests matching the current search or filters.
-                </p>
+                        <div class="request-table-heading">
+
+                            <i class="bi bi-clipboard-check"></i>
+
+                            <h2>
+                                Employee Asset Requests
+                            </h2>
+
+                        </div>
+
+
+                        <span class="request-count">
+
+                            {% if page_obj.paginator.count == 1 %}
+
+                                1 request
+
+                            {% else %}
+
+                                {{ page_obj.paginator.count }} requests
+
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+
+                    {% if asset_requests %}
+
+                        <div class="request-table-scroll">
+
+                            <table class="request-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Request
+                                        </th>
+
+                                        <th>
+                                            Employee
+                                        </th>
+
+                                        <th>
+                                            Department
+                                        </th>
+
+                                        <th>
+                                            Asset
+                                        </th>
+
+                                        <th>
+                                            Quantity
+                                        </th>
+
+                                        <th>
+                                            Reason
+                                        </th>
+
+                                        <th>
+                                            Priority
+                                        </th>
+
+                                        <th>
+                                            Status
+                                        </th>
+
+                                        <th>
+                                            Requested
+                                        </th>
+
+                                        <th>
+                                            Action
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for asset_request in asset_requests %}
+
+                                        <tr>
+
+                                            <!-- REQUEST -->
+
+                                            <td>
+
+                                                <div class="request-id">
+                                                    #{{ asset_request.id }}
+                                                </div>
+
+                                            </td>
+
+
+                                            <!-- EMPLOYEE -->
+
+                                            <td>
+
+                                                <div class="employee-name">
+
+                                                    {% if asset_request.employee.user.get_full_name %}
+
+                                                        {{ asset_request.employee.user.get_full_name }}
+
+                                                    {% else %}
+
+                                                        {{ asset_request.employee.user.username }}
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                                <div class="employee-id">
+
+                                                    {{ asset_request.employee.employee_id }}
+
+                                                </div>
+
+                                            </td>
+
+
+                                            <!-- DEPARTMENT -->
+
+                                            <td>
+
+                                                <div class="department-name">
+
+                                                    {{ asset_request.department.name }}
+
+                                                </div>
+
+                                            </td>
+
+
+                                            <!-- ASSET -->
+
+                                            <td>
+
+                                                <div class="asset-name">
+
+                                                    {% if asset_request.asset_name %}
+
+                                                        {{ asset_request.asset_name }}
+
+                                                    {% else %}
+
+                                                        Not specified
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                                <div class="asset-category">
+
+                                                    {{ asset_request.asset_category }}
+
+                                                </div>
+
+                                            </td>
+
+
+                                            <!-- QUANTITY -->
+
+                                            <td>
+
+                                                <span class="quantity-value">
+                                                    {{ asset_request.quantity }}
+                                                </span>
+
+                                            </td>
+
+
+                                            <!-- REASON -->
+
+                                            <td>
+
+                                                <div class="reason-text">
+
+                                                    {{ asset_request.reason|linebreaksbr }}
+
+                                                </div>
+
+                                            </td>
+
+
+                                            <!-- PRIORITY -->
+
+                                            <td>
+
+                                                {% if asset_request.priority == "LOW" %}
+
+                                                    <span class="priority-badge priority-low">
+                                                        {{ asset_request.get_priority_display }}
+                                                    </span>
+
+                                                {% elif asset_request.priority == "MEDIUM" %}
+
+                                                    <span class="priority-badge priority-medium">
+                                                        {{ asset_request.get_priority_display }}
+                                                    </span>
+
+                                                {% elif asset_request.priority == "HIGH" %}
+
+                                                    <span class="priority-badge priority-high">
+                                                        {{ asset_request.get_priority_display }}
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="priority-badge priority-urgent">
+                                                        {{ asset_request.get_priority_display }}
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <!-- STATUS -->
+
+                                            <td>
+
+                                                {% if asset_request.status == "PENDING" %}
+
+                                                    <span class="status-badge status-pending">
+                                                        {{ asset_request.get_status_display }}
+                                                    </span>
+
+                                                {% elif asset_request.status == "APPROVED" %}
+
+                                                    <span class="status-badge status-approved">
+                                                        {{ asset_request.get_status_display }}
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="status-badge status-rejected">
+                                                        {{ asset_request.get_status_display }}
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <!-- REQUESTED -->
+
+                                            <td>
+
+                                                <div class="requested-date">
+                                                    {{ asset_request.requested_at|date:"d M Y" }}
+                                                </div>
+
+                                                <div class="requested-time">
+                                                    {{ asset_request.requested_at|date:"h:i A" }}
+                                                </div>
+
+                                            </td>
+
+
+                                            <!-- ACTION -->
+
+                                            <td>
+
+                                                {% if asset_request.status == "PENDING" %}
+
+                                                    <form
+                                                        method="post"
+                                                        action="{% url 'admin_asset_request_process' asset_request.id %}"
+                                                        class="action-form"
+                                                    >
+
+                                                        {% csrf_token %}
+
+                                                        <textarea
+                                                            name="manager_notes"
+                                                            class="notes-input"
+                                                            maxlength="5000"
+                                                            placeholder="Optional manager notes..."
+                                                        ></textarea>
+
+
+                                                        <div class="action-buttons">
+
+                                                            <button
+                                                                type="submit"
+                                                                name="decision"
+                                                                value="APPROVED"
+                                                                class="approve-button"
+                                                                onclick="return confirm('Are you sure you want to approve this asset request?');"
+                                                            >
+                                                                <i class="bi bi-check-lg"></i>
+                                                                Approve
+                                                            </button>
+
+
+                                                            <button
+                                                                type="submit"
+                                                                name="decision"
+                                                                value="REJECTED"
+                                                                class="reject-button"
+                                                                onclick="return confirm('Are you sure you want to reject this asset request?');"
+                                                            >
+                                                                <i class="bi bi-x-lg"></i>
+                                                                Reject
+                                                            </button>
+
+                                                        </div>
+
+                                                    </form>
+
+                                                {% else %}
+
+                                                    <div class="processed-info">
+
+                                                        {% if asset_request.approved_by %}
+
+                                                            Processed by:
+
+                                                            <strong>
+
+                                                                {% if asset_request.approved_by.get_full_name %}
+
+                                                                    {{ asset_request.approved_by.get_full_name }}
+
+                                                                {% else %}
+
+                                                                    {{ asset_request.approved_by.username }}
+
+                                                                {% endif %}
+
+                                                            </strong>
+
+                                                        {% endif %}
+
+
+                                                        {% if asset_request.processed_at %}
+
+                                                            <br>
+
+                                                            {{ asset_request.processed_at|date:"d M Y, h:i A" }}
+
+                                                        {% endif %}
+
+
+                                                        {% if asset_request.manager_notes %}
+
+                                                            <br><br>
+
+                                                            <strong>
+                                                                Notes:
+                                                            </strong>
+
+                                                            <br>
+
+                                                            {{ asset_request.manager_notes|linebreaksbr }}
+
+                                                        {% endif %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             PAGINATION
+                        ================================================== -->
+
+                        {% if page_obj.paginator.num_pages > 1 %}
+
+                            <div class="request-pagination">
+
+                                <nav
+                                    aria-label="Asset request pagination"
+                                >
+
+                                    <ul class="pagination">
+
+                                        {% if page_obj.has_previous %}
+
+                                            <li class="page-item">
+
+                                                <a
+                                                    class="page-link"
+                                                    href="?q={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&priority={{ selected_priority|urlencode }}&page={{ page_obj.previous_page_number }}"
+                                                >
+                                                    Previous
+                                                </a>
+
+                                            </li>
+
+                                        {% endif %}
+
+
+                                        {% for page_number in page_obj.paginator.page_range %}
+
+                                            {% if page_number == page_obj.number %}
+
+                                                <li class="page-item active">
+
+                                                    <span class="page-link">
+                                                        {{ page_number }}
+                                                    </span>
+
+                                                </li>
+
+                                            {% elif page_number >= page_obj.number|add:"-2" and page_number <= page_obj.number|add:"2" %}
+
+                                                <li class="page-item">
+
+                                                    <a
+                                                        class="page-link"
+                                                        href="?q={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&priority={{ selected_priority|urlencode }}&page={{ page_number }}"
+                                                    >
+                                                        {{ page_number }}
+                                                    </a>
+
+                                                </li>
+
+                                            {% endif %}
+
+                                        {% endfor %}
+
+
+                                        {% if page_obj.has_next %}
+
+                                            <li class="page-item">
+
+                                                <a
+                                                    class="page-link"
+                                                    href="?q={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&priority={{ selected_priority|urlencode }}&page={{ page_obj.next_page_number }}"
+                                                >
+                                                    Next
+                                                </a>
+
+                                            </li>
+
+                                        {% endif %}
+
+                                    </ul>
+
+                                </nav>
+
+                            </div>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <!-- =================================================
+                             EMPTY STATE
+                        ================================================== -->
+
+                        <div class="request-empty-state">
+
+                            <div class="empty-icon">
+                                <i class="bi bi-clipboard-x"></i>
+                            </div>
+
+                            <h3>
+                                No Asset Requests Found
+                            </h3>
+
+                            <p>
+                                There are no asset requests matching the
+                                current search or filters.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
 
             </div>
 
-        {% endif %}
+        </main>
 
     </div>
 
 </div>
 
 
+<!-- =============================================================
+     MOBILE SIDEBAR SCRIPT
+============================================================== -->
+
 <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const mobileMenuBtn =
+            document.getElementById("mobileMenuBtn");
+
+        const adminSidebar =
+            document.getElementById("adminSidebar");
+
+        const sidebarOverlay =
+            document.getElementById("sidebarOverlay");
+
+
+        function openSidebar() {
+
+            if (adminSidebar) {
+                adminSidebar.classList.add("mobile-open");
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.add("active");
+            }
+
+            document.body.classList.add("sidebar-open");
+        }
+
+
+        function closeSidebar() {
+
+            if (adminSidebar) {
+                adminSidebar.classList.remove("mobile-open");
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.remove("active");
+            }
+
+            document.body.classList.remove("sidebar-open");
+        }
+
+
+        if (mobileMenuBtn) {
+
+            mobileMenuBtn.addEventListener(
+                "click",
+                openSidebar
+            );
+
+        }
+
+
+        if (sidebarOverlay) {
+
+            sidebarOverlay.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(".sidebar-link")
+            .forEach(function (link) {
+
+                link.addEventListener(
+                    "click",
+                    closeSidebar
+                );
+
+            });
+
+    });
+
+
+    /* Auto-hide Django messages */
 
     setTimeout(function () {
 
-        const alerts = document.querySelectorAll(".alert");
+        const alerts =
+            document.querySelectorAll(
+                ".asset-request-alerts .alert"
+            );
 
         alerts.forEach(function (alert) {
 
-            alert.style.transition = "opacity 0.3s ease";
+            alert.style.transition =
+                "opacity 0.3s ease";
 
             alert.style.opacity = "0";
 
             setTimeout(function () {
+
                 alert.remove();
+
             }, 300);
 
         });

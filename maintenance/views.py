@@ -1,4 +1,3 @@
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
@@ -7,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import EmployeeProfile, User
 from assignments.models import Assignment
+from audit_logs.models import AuditLog
 from notifications.models import Notification
 
 from .forms import MaintenanceRequestForm
@@ -47,6 +47,22 @@ def can_manage_maintenance(user):
         User.Role.SUPER_ADMIN,
         User.Role.IT_ADMIN,
     )
+
+
+def is_current_asset_assignment(employee_profile, asset):
+    """
+    Verify that the asset is currently assigned to the same employee.
+
+    This check is intentionally performed against the Assignment table
+    instead of trusting the maintenance request's historical employee
+    and asset relationship.
+    """
+    return Assignment.objects.filter(
+        employee=employee_profile,
+        asset=asset,
+        is_active=True,
+        asset__status="ASSIGNED",
+    ).exists()
 
 
 @login_required
@@ -287,12 +303,15 @@ def admin_maintenance_process(request, maintenance_id):
     """
     Process a maintenance request for Super Admin and IT Admin.
 
-    Allowed transitions are enforced both here and by the model:
+    Allowed transitions:
 
         PENDING -> IN_PROGRESS
         PENDING -> REJECTED
         IN_PROGRESS -> COMPLETED
         IN_PROGRESS -> REJECTED
+
+    The request is locked during processing and the current asset
+    assignment is revalidated before any status-changing operation.
     """
     user = request.user
 
@@ -311,15 +330,6 @@ def admin_maintenance_process(request, maintenance_id):
             "Maintenance request processing must be submitted using POST."
         )
 
-    maintenance_request = get_object_or_404(
-        MaintenanceRequest.objects.select_related(
-            "asset",
-            "employee",
-            "employee__user",
-        ),
-        pk=maintenance_id,
-    )
-
     decision = request.POST.get(
         "decision",
         "",
@@ -332,25 +342,6 @@ def admin_maintenance_process(request, maintenance_id):
     }
 
     if decision not in allowed_decisions:
-        return redirect("maintenance_list")
-
-    current_status = maintenance_request.status
-
-    allowed_transitions = {
-        MaintenanceRequest.Status.PENDING: {
-            MaintenanceRequest.Status.IN_PROGRESS,
-            MaintenanceRequest.Status.REJECTED,
-        },
-        MaintenanceRequest.Status.IN_PROGRESS: {
-            MaintenanceRequest.Status.COMPLETED,
-            MaintenanceRequest.Status.REJECTED,
-        },
-    }
-
-    if decision not in allowed_transitions.get(
-        current_status,
-        set(),
-    ):
         return redirect("maintenance_list")
 
     technician_notes = request.POST.get(
@@ -369,9 +360,61 @@ def admin_maintenance_process(request, maintenance_id):
     if len(resolution_notes) > 10000:
         return redirect("maintenance_list")
 
-    employee_user = maintenance_request.employee.user
-
     with transaction.atomic():
+
+        # Lock the maintenance request so two administrators cannot
+        # process the same request concurrently.
+        maintenance_request = get_object_or_404(
+            MaintenanceRequest.objects
+            .select_for_update()
+            .select_related(
+                "asset",
+                "employee",
+                "employee__user",
+            ),
+            pk=maintenance_id,
+        )
+
+        current_status = maintenance_request.status
+
+        allowed_transitions = {
+            MaintenanceRequest.Status.PENDING: {
+                MaintenanceRequest.Status.IN_PROGRESS,
+                MaintenanceRequest.Status.REJECTED,
+            },
+            MaintenanceRequest.Status.IN_PROGRESS: {
+                MaintenanceRequest.Status.COMPLETED,
+                MaintenanceRequest.Status.REJECTED,
+            },
+        }
+
+        if decision not in allowed_transitions.get(
+            current_status,
+            set(),
+        ):
+            return redirect("maintenance_list")
+
+        # ---------------------------------------------------------
+        # CURRENT ASSIGNMENT SECURITY CHECK
+        # ---------------------------------------------------------
+        #
+        # The maintenance request stores the employee/asset that
+        # originally submitted the request. That relationship alone
+        # must not be trusted when an administrator processes it.
+        #
+        # The asset may have been returned, transferred, or assigned
+        # to another employee after the request was created.
+        #
+        # Therefore, every status-changing operation verifies the
+        # live assignment again.
+        #
+        if not is_current_asset_assignment(
+            maintenance_request.employee,
+            maintenance_request.asset,
+        ):
+            return redirect("maintenance_list")
+
+        employee_user = maintenance_request.employee.user
 
         maintenance_request.status = decision
 
@@ -381,7 +424,50 @@ def admin_maintenance_process(request, maintenance_id):
         if resolution_notes:
             maintenance_request.resolution_notes = resolution_notes
 
+        # The MaintenanceRequest model remains responsible for
+        # started_at/completed_at and asset-status synchronization.
         maintenance_request.save()
+
+        # ---------------------------------------------------------
+        # AUDIT LOG
+        # ---------------------------------------------------------
+        #
+        # Record every successful administrative status change.
+        # AuditLog uses the existing model structure; no new fields
+        # are required.
+        #
+        if decision == MaintenanceRequest.Status.REJECTED:
+            audit_action = AuditLog.Action.REJECT
+            action_label = "rejected"
+        elif decision == MaintenanceRequest.Status.IN_PROGRESS:
+            audit_action = AuditLog.Action.UPDATE
+            action_label = "started"
+        else:
+            audit_action = AuditLog.Action.UPDATE
+            action_label = "completed"
+
+        AuditLog.objects.create(
+            user=user,
+            action=audit_action,
+            module="Maintenance",
+            object_type="MaintenanceRequest",
+            object_id=str(maintenance_request.id),
+            description=(
+                f"Maintenance request #{maintenance_request.id} "
+                f"for asset {maintenance_request.asset.asset_id} "
+                f"was {action_label} by {user.username}. "
+                f"Request type: "
+                f"{maintenance_request.get_request_type_display()}. "
+                f"Previous status: "
+                f"{current_status}. "
+                f"New status: "
+                f"{maintenance_request.get_status_display()}."
+            ),
+            ip_address=(
+                request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip()
+                or request.META.get("REMOTE_ADDR")
+            ),
+        )
 
         if employee_user.is_active:
 

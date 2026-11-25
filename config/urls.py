@@ -60,6 +60,11 @@ urlpatterns = [
         "dashboard/",
         include("dashboard.urls"),
     ),
+
+    path(
+        "software-licenses/",
+        include("software_licenses.urls"),
+    ),
 ]
 
 

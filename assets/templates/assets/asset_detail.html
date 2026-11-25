@@ -14,10 +14,24 @@
 
     <title>{{ asset.asset_id }} | ITARMS</title>
 
+    <!-- Bootstrap -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <!-- Shared Super Admin Dashboard CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
 
     <style>
 
@@ -27,6 +41,7 @@
         ========================================================= */
 
         :root {
+
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
             --primary-soft: #eff6ff;
@@ -124,12 +139,31 @@
 
 
         /* =========================================================
+           MAIN CONTENT
+        ========================================================= */
+
+        .main-content {
+            margin-left: 250px !important;
+            width: calc(100% - 250px) !important;
+
+            min-width: 0 !important;
+            max-width: none !important;
+
+            box-sizing: border-box !important;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================================
            PAGE WRAPPER
         ========================================================= */
 
         .asset-detail-page {
             width: min(1180px, calc(100% - 36px));
+
             margin: 0 auto;
+
             padding: 30px 0 55px;
         }
 
@@ -153,21 +187,27 @@
 
         .asset-alert-danger {
             color: #991b1b;
+
             border: 1px solid #fecaca;
+
             background: var(--danger-soft);
         }
 
 
         .asset-alert-success {
             color: #166534;
+
             border: 1px solid #bbf7d0;
+
             background: var(--success-soft);
         }
 
 
         .asset-alert-info {
             color: #1e40af;
+
             border: 1px solid #bfdbfe;
+
             background: var(--primary-soft);
         }
 
@@ -180,6 +220,7 @@
             position: relative;
 
             display: flex;
+
             align-items: center;
             justify-content: space-between;
 
@@ -191,6 +232,7 @@
             overflow: hidden;
 
             border: 1px solid rgba(255, 255, 255, 0.95);
+
             border-radius: var(--radius-lg);
 
             background:
@@ -253,6 +295,7 @@
 
         .asset-detail-hero-content {
             position: relative;
+
             z-index: 2;
 
             min-width: 0;
@@ -268,6 +311,7 @@
             font-weight: 850;
 
             letter-spacing: 1.4px;
+
             text-transform: uppercase;
         }
 
@@ -292,44 +336,46 @@
             color: var(--muted);
 
             font-size: 13px;
+
             line-height: 1.5;
         }
 
 
         /* =========================================================
-           ACTIONS
+           HERO BACK BUTTON
         ========================================================= */
 
-        .asset-detail-actions {
+        .asset-detail-back {
             position: relative;
+
             z-index: 3;
 
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-
-            flex-wrap: wrap;
-            gap: 8px;
-
-            flex-shrink: 0;
-        }
-
-
-        .asset-btn {
-            min-height: 41px;
-
             display: inline-flex;
+
             align-items: center;
             justify-content: center;
 
-            gap: 7px;
+            gap: 8px;
 
-            padding: 9px 15px;
+            min-height: 42px;
+
+            padding: 9px 16px;
+
+            flex-shrink: 0;
+
+            color: #475569;
+
+            border: 1px solid var(--border);
 
             border-radius: 10px;
 
+            background: #ffffff;
+
             font-size: 11px;
             font-weight: 800;
+
+            box-shadow:
+                0 3px 8px rgba(15, 23, 42, 0.04);
 
             transition:
                 transform 0.2s ease,
@@ -339,118 +385,17 @@
         }
 
 
-        .asset-btn:hover {
-            transform: translateY(-2px);
-        }
-
-
-        .asset-btn-secondary {
-            color: #475569;
-
-            border: 1px solid var(--border);
-
-            background: #ffffff;
-
-            box-shadow:
-                0 3px 8px rgba(15, 23, 42, 0.04);
-        }
-
-
-        .asset-btn-secondary:hover {
+        .asset-detail-back:hover {
             color: var(--dark);
 
             border-color: #cbd5e1;
 
             background: #f8fafc;
 
-            box-shadow:
-                0 7px 16px rgba(15, 23, 42, 0.07);
-        }
-
-
-        .asset-btn-primary {
-            color: #ffffff;
-
-            border: 0;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #3b82f6,
-                    #1d4ed8
-                );
+            transform: translateY(-2px);
 
             box-shadow:
-                0 9px 20px rgba(37, 99, 235, 0.24),
-                inset 0 1px 0 rgba(255, 255, 255, 0.25);
-        }
-
-
-        .asset-btn-primary:hover {
-            color: #ffffff;
-
-            box-shadow:
-                0 13px 27px rgba(37, 99, 235, 0.31);
-        }
-
-
-        .asset-btn-outline-danger {
-            color: #b91c1c;
-
-            border: 1px solid #fecaca;
-
-            background: #ffffff;
-
-            box-shadow:
-                0 3px 8px rgba(220, 38, 38, 0.03);
-        }
-
-
-        .asset-btn-outline-danger:hover {
-            color: #991b1b;
-
-            border-color: #fca5a5;
-
-            background: #fff7f7;
-
-            box-shadow:
-                0 8px 18px rgba(220, 38, 38, 0.08);
-        }
-
-
-        .asset-btn-retire {
-            color: #92400e;
-
-            border: 1px solid #fed7aa;
-
-            background: #fff7ed;
-        }
-
-
-        .asset-btn-retire:hover {
-            color: #78350f;
-
-            border-color: #fdba74;
-
-            background: #ffedd5;
-        }
-
-
-        .asset-btn-dispose {
-            color: #991b1b;
-
-            border: 1px solid #fecaca;
-
-            background: #fef2f2;
-        }
-
-
-        .asset-btn-dispose:hover {
-            color: #7f1d1d;
-
-            border-color: #fca5a5;
-
-            background: #fee2e2;
+                0 8px 17px rgba(15, 23, 42, 0.07);
         }
 
 
@@ -462,11 +407,13 @@
             position: relative;
 
             margin-bottom: 18px;
+
             padding: 27px 30px;
 
             overflow: hidden;
 
             border: 1px solid rgba(255, 255, 255, 0.95);
+
             border-radius: var(--radius-lg);
 
             background:
@@ -475,7 +422,6 @@
             box-shadow: var(--shadow-md);
 
             transition:
-                transform 0.2s ease,
                 box-shadow 0.2s ease;
         }
 
@@ -492,6 +438,7 @@
             position: absolute;
 
             left: 0;
+
             top: 22px;
             bottom: 22px;
 
@@ -516,6 +463,7 @@
 
         .asset-section-header {
             display: flex;
+
             align-items: flex-start;
 
             gap: 13px;
@@ -529,6 +477,7 @@
             height: 39px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -591,6 +540,7 @@
             padding: 14px 15px;
 
             border: 1px solid var(--border-light);
+
             border-radius: 11px;
 
             background:
@@ -652,6 +602,7 @@
 
         .asset-status {
             display: inline-flex;
+
             align-items: center;
             justify-content: center;
 
@@ -745,6 +696,151 @@
 
 
         /* =========================================================
+           LIFECYCLE
+        ========================================================= */
+
+        .asset-lifecycle-box {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 18px;
+
+            padding: 18px;
+
+            border: 1px solid var(--border-light);
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #f8fafc
+                );
+        }
+
+
+        .asset-lifecycle-content {
+            min-width: 0;
+        }
+
+
+        .asset-lifecycle-title {
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+
+        .asset-lifecycle-description {
+            margin: 5px 0 0;
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+            line-height: 1.55;
+        }
+
+
+        .asset-lifecycle-actions {
+            display: flex;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            flex-shrink: 0;
+        }
+
+
+        .asset-lifecycle-actions form {
+            margin: 0;
+        }
+
+
+        .asset-btn {
+            min-height: 41px;
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 7px;
+
+            padding: 9px 15px;
+
+            border-radius: 10px;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+
+            cursor: pointer;
+        }
+
+
+        .asset-btn:hover {
+            transform: translateY(-2px);
+        }
+
+
+        .asset-btn-retire {
+            color: #92400e;
+
+            border: 1px solid #fed7aa;
+
+            background: #fff7ed;
+        }
+
+
+        .asset-btn-retire:hover {
+            color: #78350f;
+
+            border-color: #fdba74;
+
+            background: #ffedd5;
+
+            box-shadow:
+                0 8px 18px rgba(217, 119, 6, 0.08);
+        }
+
+
+        .asset-btn-dispose {
+            color: #991b1b;
+
+            border: 1px solid #fecaca;
+
+            background: #fef2f2;
+        }
+
+
+        .asset-btn-dispose:hover {
+            color: #7f1d1d;
+
+            border-color: #fca5a5;
+
+            background: #fee2e2;
+
+            box-shadow:
+                0 8px 18px rgba(220, 38, 38, 0.08);
+        }
+
+
+        /* =========================================================
            DESCRIPTION
         ========================================================= */
 
@@ -756,6 +852,7 @@
             color: #475569;
 
             border: 1px solid var(--border-light);
+
             border-radius: 11px;
 
             background:
@@ -783,6 +880,7 @@
             overflow-x: auto;
 
             border: 1px solid var(--border-light);
+
             border-radius: 13px;
 
             background: #ffffff;
@@ -814,6 +912,7 @@
             font-weight: 850;
 
             letter-spacing: 0.7px;
+
             text-transform: uppercase;
 
             white-space: nowrap;
@@ -909,76 +1008,12 @@
 
 
         /* =========================================================
-           LIFECYCLE
-        ========================================================= */
-
-        .asset-lifecycle-box {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 18px;
-
-            padding: 18px;
-
-            border: 1px solid var(--border-light);
-            border-radius: 13px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #ffffff,
-                    #f8fafc
-                );
-        }
-
-
-        .asset-lifecycle-content {
-            min-width: 0;
-        }
-
-
-        .asset-lifecycle-title {
-            margin: 0;
-
-            color: var(--dark);
-
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-
-        .asset-lifecycle-description {
-            margin: 5px 0 0;
-
-            color: var(--muted);
-
-            font-size: 10px;
-
-            line-height: 1.55;
-        }
-
-
-        .asset-lifecycle-actions {
-            display: flex;
-
-            align-items: center;
-
-            flex-wrap: wrap;
-
-            gap: 8px;
-
-            flex-shrink: 0;
-        }
-
-
-        /* =========================================================
            IMAGE
         ========================================================= */
 
         .asset-image-frame {
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -987,6 +1022,7 @@
             padding: 22px;
 
             border: 1px solid var(--border-light);
+
             border-radius: 14px;
 
             background:
@@ -1036,6 +1072,7 @@
             padding: 17px 18px;
 
             border: 1px solid var(--border-light);
+
             border-radius: 13px;
 
             background:
@@ -1052,6 +1089,7 @@
 
         .asset-document-info {
             display: flex;
+
             align-items: center;
 
             gap: 12px;
@@ -1065,6 +1103,7 @@
             height: 42px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -1107,7 +1146,7 @@
 
 
         /* =========================================================
-           FOOTER / SYSTEM NOTE
+           PAGE FOOTER
         ========================================================= */
 
         .asset-page-footer {
@@ -1156,19 +1195,19 @@
 
             .asset-detail-hero {
                 align-items: flex-start;
+
                 flex-direction: column;
             }
 
 
-            .asset-detail-actions {
+            .asset-detail-back {
                 width: 100%;
-
-                justify-content: flex-start;
             }
 
 
             .asset-lifecycle-box {
                 align-items: flex-start;
+
                 flex-direction: column;
             }
 
@@ -1182,10 +1221,19 @@
 
         @media (max-width: 768px) {
 
+            .main-content {
+                margin-left: 0 !important;
+
+                width: 100% !important;
+
+                max-width: 100% !important;
+            }
+
+
             .asset-detail-page {
                 width: min(100% - 20px, 1180px);
 
-                padding-top: 15px;
+                padding-top: 18px;
             }
 
 
@@ -1199,23 +1247,14 @@
             }
 
 
-            .asset-detail-actions {
-                display: grid;
-
-                grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
-
-                width: 100%;
-            }
-
-
-            .asset-detail-actions .asset-btn {
+            .asset-detail-back {
                 width: 100%;
             }
 
 
             .asset-document {
                 align-items: stretch;
+
                 flex-direction: column;
             }
 
@@ -1253,6 +1292,13 @@
 
         @media (max-width: 480px) {
 
+            .asset-detail-page {
+                width: calc(100% - 16px);
+
+                padding-top: 14px;
+            }
+
+
             .asset-detail-title {
                 font-size: 24px;
             }
@@ -1263,11 +1309,6 @@
             }
 
 
-            .asset-detail-actions {
-                grid-template-columns: 1fr;
-            }
-
-
             .asset-section-title {
                 font-size: 15px;
             }
@@ -1275,6 +1316,16 @@
 
             .asset-section-subtitle {
                 font-size: 10px;
+            }
+
+
+            .asset-detail-card {
+                padding: 19px 14px;
+            }
+
+
+            .asset-detail-hero {
+                padding: 20px 15px;
             }
 
 
@@ -1308,1025 +1359,1413 @@
 
 <body>
 
-<div class="asset-detail-page">
+
+<div class="dashboard-layout">
 
 
     <!-- =====================================================
-         MESSAGES
+         SHARED SUPER ADMIN SIDEBAR
     ====================================================== -->
 
-    {% if messages %}
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
 
-        {% for message in messages %}
+        <div class="sidebar-brand">
 
-            <div
-                class="alert asset-alert
-                {% if message.tags == 'error' %}
-                    asset-alert-danger
-                {% elif message.tags == 'success' %}
-                    asset-alert-success
-                {% else %}
-                    asset-alert-info
-                {% endif %}
-                alert-dismissible fade show"
-                role="alert"
-            >
+            <h2 class="brand-title">
+                ITARMS
+            </h2>
 
-                {{ message }}
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Close"
-                ></button>
-
+            <div class="brand-subtitle">
+                Super Admin Panel
             </div>
-
-        {% endfor %}
-
-    {% endif %}
-
-
-    <!-- =====================================================
-         HERO
-    ====================================================== -->
-
-    <section class="asset-detail-hero">
-
-        <div class="asset-detail-hero-content">
-
-            <div class="asset-detail-id">
-                Asset Record · {{ asset.asset_id }}
-            </div>
-
-            <h1 class="asset-detail-title">
-                {{ asset.asset_name }}
-            </h1>
-
-            <p class="asset-detail-model">
-                {{ asset.brand_model }}
-            </p>
 
         </div>
 
 
-        <div class="asset-detail-actions">
+        <!-- CURRENT USER -->
+
+        <div class="sidebar-user">
+
+            <div class="sidebar-user-inner">
+
+                <div class="user-avatar">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+
+                <div class="user-details">
+
+                    <div class="user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Super Administrator
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SIDEBAR NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <!-- MAIN -->
+
+            <div class="sidebar-section-title">
+                Main
+            </div>
+
 
             <a
-                href="{% url 'asset_list' %}"
-                class="asset-btn asset-btn-secondary"
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link "
             >
-                ← Back
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
             </a>
 
 
-            {% if can_manage %}
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+
+            <!-- MANAGEMENT -->
+
+            <div class="sidebar-section-title">
+                Management
+            </div>
+
+
+            <!-- IT ASSETS -->
+
+            {% url 'asset_list' as asset_list_url %}
+
+            {% if asset_list_url %}
 
                 <a
-                    href="{% url 'asset_update' asset.id %}"
-                    class="asset-btn asset-btn-primary"
+                    href="{{ asset_list_url }}"
+                    class="sidebar-link active"
                 >
-                    Edit Asset
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
                 </a>
 
             {% endif %}
 
 
-            {% if can_delete %}
+            <!-- ASSET ASSIGNMENTS -->
+
+            {% url 'admin_assignment_list' as assignment_list_url %}
+
+            {% if assignment_list_url %}
 
                 <a
-                    href="{% url 'asset_delete' asset.id %}"
-                    class="asset-btn asset-btn-outline-danger"
+                    href="{{ assignment_list_url }}"
+                    class="sidebar-link"
                 >
-                    Delete
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
                 </a>
 
             {% endif %}
 
-        </div>
 
-    </section>
+            <!-- ASSET REQUESTS -->
+
+            {% url 'admin_asset_requests' as asset_requests_url %}
+
+            {% if asset_requests_url %}
+
+                <a
+                    href="{{ asset_requests_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+            {% endif %}
 
 
-    <!-- =====================================================
-         ASSET INFORMATION
-    ====================================================== -->
+            <!-- DAMAGED / LOST -->
 
-    <section class="asset-detail-card">
+            {% url 'admin_asset_incident_list' as incident_list_url %}
 
-        <div class="asset-section-header">
+            {% if incident_list_url %}
 
-            <div class="asset-section-icon">
-                01
+                <a
+                    href="{{ incident_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- MAINTENANCE -->
+
+            {% url 'maintenance_list' as maintenance_url %}
+
+            {% if maintenance_url %}
+
+                <a
+                    href="{{ maintenance_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance</span>
+                </a>
+
+            {% endif %}
+
+                        <!-- SOFTWARE LICENSES -->
+
+            <a
+                href="{% url 'software_license_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-key-fill"></i>
+                <span>Software Licenses</span>
+            </a>
+
+
+            <!-- DEPARTMENTS -->
+
+            <a
+                href="{% url 'super_admin_department_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-building-fill"></i>
+                <span>Departments</span>
+            </a>
+
+
+            <!-- REPORTS -->
+
+            <a
+                href="{% url 'reports:home' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <span>Reports &amp; Analytics</span>
+            </a>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <a
+                href="{% url 'notifications:list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bell-fill"></i>
+                <span>Notifications</span>
+            </a>
+
+
+            <!-- SYSTEM -->
+
+            <div class="sidebar-section-title">
+                System
             </div>
 
-            <div>
+        </nav>
 
-                <h2 class="asset-section-title">
-                    Asset Information
-                </h2>
 
-                <p class="asset-section-subtitle">
-                    Core identity, classification and operational details.
-                </p>
+        <div class="sidebar-spacer"></div>
 
-            </div>
+
+        <!-- LOGOUT -->
+
+        <div class="sidebar-bottom">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </button>
+
+            </form>
 
         </div>
 
+    </aside>
 
-        <div class="row g-3">
+
+    <!-- Mobile Sidebar Overlay -->
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
 
 
-            <div class="col-md-4">
-                <div class="asset-info-item">
-                    <div class="asset-info-label">Asset ID</div>
-                    <div class="asset-info-value">
-                        {{ asset.asset_id }}
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
+    <main class="main-content">
+
+
+        <div class="asset-detail-page">
+
+
+            <!-- =================================================
+                 MESSAGES
+            ================================================== -->
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div
+                        class="alert asset-alert
+                        {% if message.tags == 'error' %}
+                            asset-alert-danger
+                        {% elif message.tags == 'success' %}
+                            asset-alert-success
+                        {% else %}
+                            asset-alert-info
+                        {% endif %}
+                        alert-dismissible fade show"
+                        role="alert"
+                    >
+
+                        {{ message }}
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"
+                        ></button>
+
                     </div>
-                </div>
-            </div>
+
+                {% endfor %}
+
+            {% endif %}
 
 
-            <div class="col-md-4">
-                <div class="asset-info-item">
-                    <div class="asset-info-label">Asset Name</div>
-                    <div class="asset-info-value">
+            <!-- =================================================
+                 HERO
+            ================================================== -->
+
+            <section class="asset-detail-hero">
+
+
+                <div class="asset-detail-hero-content">
+
+                    <div class="asset-detail-id">
+                        Asset Record · {{ asset.asset_id }}
+                    </div>
+
+
+                    <h1 class="asset-detail-title">
                         {{ asset.asset_name }}
-                    </div>
-                </div>
-            </div>
+                    </h1>
 
 
-            <div class="col-md-4">
-                <div class="asset-info-item">
-                    <div class="asset-info-label">Category</div>
-                    <div class="asset-info-value">
-                        {{ asset.get_category_display }}
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4">
-                <div class="asset-info-item">
-                    <div class="asset-info-label">Brand / Model</div>
-                    <div class="asset-info-value">
+                    <p class="asset-detail-model">
                         {{ asset.brand_model }}
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4">
-                <div class="asset-info-item">
-                    <div class="asset-info-label">Serial Number</div>
-                    <div class="asset-info-value">
-                        {{ asset.serial_number }}
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4">
-                <div class="asset-info-item">
-                    <div class="asset-info-label">Department</div>
-                    <div class="asset-info-value">
-
-                        {% if asset.department %}
-                            {{ asset.department.name }}
-                        {% else %}
-                            Not assigned
-                        {% endif %}
-
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4">
-                <div class="asset-info-item">
-                    <div class="asset-info-label">Condition</div>
-                    <div class="asset-info-value">
-                        {{ asset.get_condition_display }}
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4">
-                <div class="asset-info-item">
-                    <div class="asset-info-label">Status</div>
-                    <div class="asset-info-value">
-
-                        {% if asset.status == "AVAILABLE" %}
-
-                            <span class="asset-status asset-status-available">
-                                {{ asset.get_status_display }}
-                            </span>
-
-                        {% elif asset.status == "ASSIGNED" %}
-
-                            <span class="asset-status asset-status-assigned">
-                                {{ asset.get_status_display }}
-                            </span>
-
-                        {% elif asset.status == "UNDER_MAINTENANCE" %}
-
-                            <span class="asset-status asset-status-maintenance">
-                                {{ asset.get_status_display }}
-                            </span>
-
-                        {% elif asset.status == "DAMAGED" %}
-
-                            <span class="asset-status asset-status-damaged">
-                                {{ asset.get_status_display }}
-                            </span>
-
-                        {% elif asset.status == "LOST" %}
-
-                            <span class="asset-status asset-status-lost">
-                                {{ asset.get_status_display }}
-                            </span>
-
-                        {% elif asset.status == "RETIRED" %}
-
-                            <span class="asset-status asset-status-retired">
-                                {{ asset.get_status_display }}
-                            </span>
-
-                        {% elif asset.status == "DISPOSED" %}
-
-                            <span class="asset-status asset-status-disposed">
-                                {{ asset.get_status_display }}
-                            </span>
-
-                        {% else %}
-
-                            <span class="asset-status asset-status-neutral">
-                                {{ asset.get_status_display }}
-                            </span>
-
-                        {% endif %}
-
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4">
-                <div class="asset-info-item">
-                    <div class="asset-info-label">Location</div>
-                    <div class="asset-info-value">
-
-                        {% if asset.asset_location %}
-                            {{ asset.asset_location }}
-                        {% else %}
-                            Not specified
-                        {% endif %}
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         ASSET LIFECYCLE ACTIONS
-    ====================================================== -->
-
-    {% if can_manage %}
-
-        <section class="asset-detail-card">
-
-            <div class="asset-section-header">
-
-                <div class="asset-section-icon">
-                    LIFE
-                </div>
-
-                <div>
-
-                    <h2 class="asset-section-title">
-                        Asset Lifecycle
-                    </h2>
-
-                    <p class="asset-section-subtitle">
-                        Controlled retirement and disposal of this asset.
                     </p>
 
                 </div>
 
-            </div>
 
+                <!-- Only Back button.
+                     Edit/Delete intentionally removed. -->
 
-            <div class="asset-lifecycle-box">
-
-                <div class="asset-lifecycle-content">
-
-                    {% if asset.status == "DISPOSED" %}
-
-                        <h3 class="asset-lifecycle-title">
-                            Asset Disposed
-                        </h3>
-
-                        <p class="asset-lifecycle-description">
-                            This asset has completed its lifecycle and is no
-                            longer available for operational use or assignment.
-                        </p>
-
-
-                    {% elif asset.status == "RETIRED" %}
-
-                        <h3 class="asset-lifecycle-title">
-                            Asset Retired
-                        </h3>
-
-                        <p class="asset-lifecycle-description">
-                            This asset has been retired from active use.
-                            It can be permanently disposed after retirement.
-                        </p>
-
-
-                    {% elif has_active_assignment %}
-
-                        <h3 class="asset-lifecycle-title">
-                            Return Required Before Retirement
-                        </h3>
-
-                        <p class="asset-lifecycle-description">
-                            This asset is currently assigned to an employee.
-                            The active assignment must be returned before the
-                            asset can be retired or disposed.
-                        </p>
-
-
-                    {% else %}
-
-                        <h3 class="asset-lifecycle-title">
-                            Lifecycle Management
-                        </h3>
-
-                        <p class="asset-lifecycle-description">
-                            Retire an asset when it is permanently removed
-                            from active operational use. Disposal is available
-                            only after retirement.
-                        </p>
-
-                    {% endif %}
-
-                </div>
-
-
-                <div class="asset-lifecycle-actions">
-
-                    {% if can_retire %}
-
-                        <form
-                            method="post"
-                            action="{% url 'asset_retire' asset.id %}"
-                            onsubmit="
-                                return confirm(
-                                    'Are you sure you want to retire this asset? This action will remove it from active operational use.'
-                                );
-                            "
-                        >
-
-                            {% csrf_token %}
-
-                            <button
-                                type="submit"
-                                class="asset-btn asset-btn-retire"
-                            >
-                                Retire Asset
-                            </button>
-
-                        </form>
-
-                    {% endif %}
-
-
-                    {% if can_dispose %}
-
-                        <form
-                            method="post"
-                            action="{% url 'asset_dispose' asset.id %}"
-                            onsubmit="
-                                return confirm(
-                                    'Are you sure you want to dispose this retired asset? This action permanently marks the asset as disposed.'
-                                );
-                            "
-                        >
-
-                            {% csrf_token %}
-
-                            <button
-                                type="submit"
-                                class="asset-btn asset-btn-dispose"
-                            >
-                                Dispose Asset
-                            </button>
-
-                        </form>
-
-                    {% endif %}
-
-
-                    {% if not can_retire and not can_dispose and asset.status != "RETIRED" and asset.status != "DISPOSED" and not has_active_assignment %}
-
-                        <span class="asset-status asset-status-neutral">
-                            No lifecycle action available
-                        </span>
-
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-        </section>
-
-    {% endif %}
-
-
-    <!-- =====================================================
-         ASSIGNMENT HISTORY
-    ====================================================== -->
-
-    <section class="asset-detail-card">
-
-        <div class="asset-section-header">
-
-            <div class="asset-section-icon">
-                02
-            </div>
-
-            <div>
-
-                <h2 class="asset-section-title">
-                    Assignment History
-                </h2>
-
-                <p class="asset-section-subtitle">
-                    Complete assignment and return history for this asset.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        {% if assignment_history %}
-
-            <div class="asset-history-wrapper">
-
-                <table class="asset-history-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Employee
-                            </th>
-
-                            <th>
-                                Assigned Date
-                            </th>
-
-                            <th>
-                                Return Date
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th>
-                                Assignment Notes
-                            </th>
-
-                            <th>
-                                Return Notes
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        {% for assignment in assignment_history %}
-
-                            <tr>
-
-                                <td>
-
-                                    <div class="asset-employee-name">
-
-                                        {% if assignment.employee.user.get_full_name %}
-
-                                            {{ assignment.employee.user.get_full_name }}
-
-                                        {% else %}
-
-                                            {{ assignment.employee.employee_id }}
-
-                                        {% endif %}
-
-                                    </div>
-
-                                    <div class="asset-employee-id">
-
-                                        {{ assignment.employee.employee_id }}
-
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    {{ assignment.assigned_date|date:"d M Y" }}
-
-                                </td>
-
-
-                                <td>
-
-                                    {% if assignment.return_date %}
-
-                                        {{ assignment.return_date|date:"d M Y" }}
-
-                                    {% else %}
-
-                                        —
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <td>
-
-                                    {% if assignment.is_active %}
-
-                                        <span class="asset-status asset-history-active">
-                                            Active
-                                        </span>
-
-                                    {% else %}
-
-                                        <span class="asset-status asset-history-returned">
-                                            Returned
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <td>
-
-                                    <div class="asset-history-notes">
-
-                                        {% if assignment.assignment_notes %}
-
-                                            {{ assignment.assignment_notes|linebreaksbr }}
-
-                                        {% else %}
-
-                                            —
-
-                                        {% endif %}
-
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    <div class="asset-history-notes">
-
-                                        {% if assignment.return_notes %}
-
-                                            {{ assignment.return_notes|linebreaksbr }}
-
-                                        {% else %}
-
-                                            —
-
-                                        {% endif %}
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        {% else %}
-
-            <div class="asset-history-empty">
-
-                No assignment history is available for this asset.
-
-            </div>
-
-        {% endif %}
-
-    </section>
-
-
-    <!-- =====================================================
-         PURCHASE & WARRANTY
-    ====================================================== -->
-
-    <section class="asset-detail-card">
-
-        <div class="asset-section-header">
-
-            <div class="asset-section-icon">
-                03
-            </div>
-
-            <div>
-
-                <h2 class="asset-section-title">
-                    Purchase & Warranty
-                </h2>
-
-                <p class="asset-section-subtitle">
-                    Procurement, cost and warranty information.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="row g-3">
-
-
-            <div class="col-md-4">
-
-                <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Purchase Date
-                    </div>
-
-                    <div class="asset-info-value">
-
-                        {% if asset.purchase_date %}
-                            {{ asset.purchase_date|date:"d M Y" }}
-                        {% else %}
-                            Not specified
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-md-4">
-
-                <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Purchase Price
-                    </div>
-
-                    <div class="asset-info-value">
-
-                        {% if asset.purchase_price %}
-                            {{ asset.purchase_price }}
-                        {% else %}
-                            Not specified
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-md-4">
-
-                <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Warranty Expiry
-                    </div>
-
-                    <div class="asset-info-value">
-
-                        {% if asset.warranty_expiry_date %}
-                            {{ asset.warranty_expiry_date|date:"d M Y" }}
-                        {% else %}
-                            Not specified
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-md-4">
-
-                <div class="asset-info-item">
-
-                    <div class="asset-info-label">
-                        Vendor / Supplier
-                    </div>
-
-                    <div class="asset-info-value">
-
-                        {% if asset.vendor_name %}
-                            {{ asset.vendor_name }}
-                        {% else %}
-                            Not specified
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         DESCRIPTION
-    ====================================================== -->
-
-    {% if asset.description %}
-
-        <section class="asset-detail-card">
-
-            <div class="asset-section-header">
-
-                <div class="asset-section-icon">
-                    04
-                </div>
-
-                <div>
-
-                    <h2 class="asset-section-title">
-                        Description
-                    </h2>
-
-                    <p class="asset-section-subtitle">
-                        Additional information about this asset.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <p class="asset-description">
-                {{ asset.description|linebreaksbr }}
-            </p>
-
-        </section>
-
-    {% endif %}
-
-
-    <!-- =====================================================
-         ASSET IMAGE
-    ====================================================== -->
-
-    {% if asset.asset_image %}
-
-        <section class="asset-detail-card">
-
-            <div class="asset-section-header">
-
-                <div class="asset-section-icon">
-                    IMG
-                </div>
-
-                <div>
-
-                    <h2 class="asset-section-title">
-                        Asset Image
-                    </h2>
-
-                    <p class="asset-section-subtitle">
-                        Visual reference for this IT asset.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="asset-image-frame">
-
-                <img
-                    src="{{ asset.asset_image.url }}"
-                    alt="{{ asset.asset_name }}"
-                    class="asset-detail-image"
+                <a
+                    href="{% url 'asset_list' %}"
+                    class="asset-detail-back"
                 >
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Back to Assets</span>
+                </a>
 
-            </div>
-
-        </section>
-
-    {% endif %}
-
-
-    <!-- =====================================================
-         DOCUMENTS
-    ====================================================== -->
-
-    <section class="asset-detail-card">
-
-        <div class="asset-section-header">
-
-            <div class="asset-section-icon">
-                DOC
-            </div>
-
-            <div>
-
-                <h2 class="asset-section-title">
-                    Documents
-                </h2>
-
-                <p class="asset-section-subtitle">
-                    Supporting documents associated with this asset.
-                </p>
-
-            </div>
-
-        </div>
+            </section>
 
 
-        {% if asset.invoice_document %}
+            <!-- =================================================
+                 01 ASSET INFORMATION
+            ================================================== -->
 
-            <div class="asset-document">
+            <section class="asset-detail-card">
 
-                <div class="asset-document-info">
 
-                    <div class="asset-document-icon">
-                        PDF
+                <div class="asset-section-header">
+
+                    <div class="asset-section-icon">
+                        01
                     </div>
 
                     <div>
 
-                        <div class="asset-document-name">
-                            Invoice Document
+                        <h2 class="asset-section-title">
+                            Asset Information
+                        </h2>
+
+                        <p class="asset-section-subtitle">
+                            Core identity, classification and operational details.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row g-3">
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Asset ID
+                            </div>
+
+                            <div class="asset-info-value">
+                                {{ asset.asset_id }}
+                            </div>
+
                         </div>
 
-                        <div class="asset-document-label">
-                            Uploaded asset invoice
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Asset Name
+                            </div>
+
+                            <div class="asset-info-value">
+                                {{ asset.asset_name }}
+                            </div>
+
                         </div>
 
                     </div>
 
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Category
+                            </div>
+
+                            <div class="asset-info-value">
+                                {{ asset.get_category_display }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Brand / Model
+                            </div>
+
+                            <div class="asset-info-value">
+                                {{ asset.brand_model }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Serial Number
+                            </div>
+
+                            <div class="asset-info-value">
+                                {{ asset.serial_number }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Department
+                            </div>
+
+                            <div class="asset-info-value">
+
+                                {% if asset.department %}
+                                    {{ asset.department.name }}
+                                {% else %}
+                                    Not assigned
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Condition
+                            </div>
+
+                            <div class="asset-info-value">
+                                {{ asset.get_condition_display }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Status
+                            </div>
+
+                            <div class="asset-info-value">
+
+
+                                {% if asset.status == "AVAILABLE" %}
+
+                                    <span class="asset-status asset-status-available">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+
+                                {% elif asset.status == "ASSIGNED" %}
+
+                                    <span class="asset-status asset-status-assigned">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+
+                                {% elif asset.status == "UNDER_MAINTENANCE" %}
+
+                                    <span class="asset-status asset-status-maintenance">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+
+                                {% elif asset.status == "DAMAGED" %}
+
+                                    <span class="asset-status asset-status-damaged">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+
+                                {% elif asset.status == "LOST" %}
+
+                                    <span class="asset-status asset-status-lost">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+
+                                {% elif asset.status == "RETIRED" %}
+
+                                    <span class="asset-status asset-status-retired">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+
+                                {% elif asset.status == "DISPOSED" %}
+
+                                    <span class="asset-status asset-status-disposed">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+
+                                {% else %}
+
+                                    <span class="asset-status asset-status-neutral">
+                                        {{ asset.get_status_display }}
+                                    </span>
+
+                                {% endif %}
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Location
+                            </div>
+
+                            <div class="asset-info-value">
+
+                                {% if asset.asset_location %}
+                                    {{ asset.asset_location }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 ASSET LIFECYCLE
+            ================================================== -->
+
+            {% if can_manage %}
+
+                <section class="asset-detail-card">
+
+
+                    <div class="asset-section-header">
+
+                        <div class="asset-section-icon">
+                            LIFE
+                        </div>
+
+                        <div>
+
+                            <h2 class="asset-section-title">
+                                Asset Lifecycle
+                            </h2>
+
+                            <p class="asset-section-subtitle">
+                                Controlled retirement and disposal of this asset.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="asset-lifecycle-box">
+
+
+                        <div class="asset-lifecycle-content">
+
+
+                            {% if asset.status == "DISPOSED" %}
+
+
+                                <h3 class="asset-lifecycle-title">
+                                    Asset Disposed
+                                </h3>
+
+                                <p class="asset-lifecycle-description">
+                                    This asset has completed its lifecycle and is no
+                                    longer available for operational use or assignment.
+                                </p>
+
+
+                            {% elif asset.status == "RETIRED" %}
+
+
+                                <h3 class="asset-lifecycle-title">
+                                    Asset Retired
+                                </h3>
+
+                                <p class="asset-lifecycle-description">
+                                    This asset has been retired from active use.
+                                    It can be permanently disposed after retirement.
+                                </p>
+
+
+                            {% elif has_active_assignment %}
+
+
+                                <h3 class="asset-lifecycle-title">
+                                    Return Required Before Retirement
+                                </h3>
+
+                                <p class="asset-lifecycle-description">
+                                    This asset is currently assigned to an employee.
+                                    The active assignment must be returned before the
+                                    asset can be retired or disposed.
+                                </p>
+
+
+                            {% else %}
+
+
+                                <h3 class="asset-lifecycle-title">
+                                    Lifecycle Management
+                                </h3>
+
+                                <p class="asset-lifecycle-description">
+                                    Retire an asset when it is permanently removed
+                                    from active operational use. Disposal is available
+                                    only after retirement.
+                                </p>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                        <div class="asset-lifecycle-actions">
+
+
+                            {% if can_retire %}
+
+                                <form
+                                    method="post"
+                                    action="{% url 'asset_retire' asset.id %}"
+                                    onsubmit="
+                                        return confirm(
+                                            'Are you sure you want to retire this asset? This action will remove it from active operational use.'
+                                        );
+                                    "
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="asset-btn asset-btn-retire"
+                                    >
+                                        <i class="bi bi-archive"></i>
+                                        <span>Retire Asset</span>
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+
+                            {% if can_dispose %}
+
+                                <form
+                                    method="post"
+                                    action="{% url 'asset_dispose' asset.id %}"
+                                    onsubmit="
+                                        return confirm(
+                                            'Are you sure you want to dispose this retired asset? This action permanently marks the asset as disposed.'
+                                        );
+                                    "
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="asset-btn asset-btn-dispose"
+                                    >
+                                        <i class="bi bi-trash3"></i>
+                                        <span>Dispose Asset</span>
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+
+                            {% if not can_retire and not can_dispose and asset.status != "RETIRED" and asset.status != "DISPOSED" and not has_active_assignment %}
+
+                                <span class="asset-status asset-status-neutral">
+                                    No lifecycle action available
+                                </span>
+
+                            {% endif %}
+
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 02 ASSIGNMENT HISTORY
+            ================================================== -->
+
+            <section class="asset-detail-card">
+
+
+                <div class="asset-section-header">
+
+                    <div class="asset-section-icon">
+                        02
+                    </div>
+
+                    <div>
+
+                        <h2 class="asset-section-title">
+                            Assignment History
+                        </h2>
+
+                        <p class="asset-section-subtitle">
+                            Complete assignment and return history for this asset.
+                        </p>
+
+                    </div>
+
                 </div>
 
 
-                <a
-                    href="{{ asset.invoice_document.url }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="asset-btn asset-btn-secondary"
-                >
-                    View Invoice
-                </a>
-
-            </div>
-
-        {% else %}
-
-            <div class="asset-description">
-                No invoice document has been uploaded for this asset.
-            </div>
-
-        {% endif %}
-
-    </section>
+                {% if assignment_history %}
 
 
-    <!-- =====================================================
-         RECORD INFORMATION
-    ====================================================== -->
-
-    <section class="asset-detail-card">
-
-        <div class="asset-section-header">
-
-            <div class="asset-section-icon">
-                LOG
-            </div>
-
-            <div>
-
-                <h2 class="asset-section-title">
-                    Record Information
-                </h2>
-
-                <p class="asset-section-subtitle">
-                    System timestamps for this asset record.
-                </p>
-
-            </div>
-
-        </div>
+                    <div class="asset-history-wrapper">
 
 
-        <div class="row g-3">
+                        <table class="asset-history-table">
 
 
-            <div class="col-md-6">
+                            <thead>
 
-                <div class="asset-info-item">
+                                <tr>
 
-                    <div class="asset-info-label">
-                        Created
+                                    <th>
+                                        Employee
+                                    </th>
+
+                                    <th>
+                                        Assigned Date
+                                    </th>
+
+                                    <th>
+                                        Return Date
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Assignment Notes
+                                    </th>
+
+                                    <th>
+                                        Return Notes
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+
+                                {% for assignment in assignment_history %}
+
+
+                                    <tr>
+
+
+                                        <td>
+
+                                            <div class="asset-employee-name">
+
+                                                {% if assignment.employee.user.get_full_name %}
+
+                                                    {{ assignment.employee.user.get_full_name }}
+
+                                                {% else %}
+
+                                                    {{ assignment.employee.employee_id }}
+
+                                                {% endif %}
+
+                                            </div>
+
+                                            <div class="asset-employee-id">
+                                                {{ assignment.employee.employee_id }}
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+                                            {{ assignment.assigned_date|date:"d M Y" }}
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if assignment.return_date %}
+
+                                                {{ assignment.return_date|date:"d M Y" }}
+
+                                            {% else %}
+
+                                                —
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+
+                                            {% if assignment.is_active %}
+
+                                                <span class="asset-status asset-history-active">
+                                                    Active
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="asset-status asset-history-returned">
+                                                    Returned
+                                                </span>
+
+                                            {% endif %}
+
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="asset-history-notes">
+
+                                                {% if assignment.assignment_notes %}
+
+                                                    {{ assignment.assignment_notes|linebreaksbr }}
+
+                                                {% else %}
+
+                                                    —
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="asset-history-notes">
+
+                                                {% if assignment.return_notes %}
+
+                                                    {{ assignment.return_notes|linebreaksbr }}
+
+                                                {% else %}
+
+                                                    —
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </td>
+
+
+                                    </tr>
+
+
+                                {% endfor %}
+
+
+                            </tbody>
+
+                        </table>
+
                     </div>
 
-                    <div class="asset-info-value">
-                        {{ asset.created_at|date:"d M Y, h:i A" }}
+
+                {% else %}
+
+
+                    <div class="asset-history-empty">
+
+                        <i class="bi bi-clock-history"></i>
+
+                        <span>
+                            No assignment history is available for this asset.
+                        </span>
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </section>
+
+
+            <!-- =================================================
+                 03 PURCHASE & WARRANTY
+            ================================================== -->
+
+            <section class="asset-detail-card">
+
+
+                <div class="asset-section-header">
+
+                    <div class="asset-section-icon">
+                        03
+                    </div>
+
+                    <div>
+
+                        <h2 class="asset-section-title">
+                            Purchase &amp; Warranty
+                        </h2>
+
+                        <p class="asset-section-subtitle">
+                            Procurement, cost and warranty information.
+                        </p>
+
                     </div>
 
                 </div>
 
-            </div>
+
+                <div class="row g-3">
 
 
-            <div class="col-md-6">
+                    <div class="col-md-4">
 
-                <div class="asset-info-item">
+                        <div class="asset-info-item">
 
-                    <div class="asset-info-label">
-                        Last Updated
+                            <div class="asset-info-label">
+                                Purchase Date
+                            </div>
+
+                            <div class="asset-info-value">
+
+                                {% if asset.purchase_date %}
+                                    {{ asset.purchase_date|date:"d M Y" }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    <div class="asset-info-value">
-                        {{ asset.updated_at|date:"d M Y, h:i A" }}
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Purchase Price
+                            </div>
+
+                            <div class="asset-info-value">
+
+                                {% if asset.purchase_price %}
+                                    {{ asset.purchase_price }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Warranty Expiry
+                            </div>
+
+                            <div class="asset-info-value">
+
+                                {% if asset.warranty_expiry_date %}
+                                    {{ asset.warranty_expiry_date|date:"d M Y" }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Vendor / Supplier
+                            </div>
+
+                            <div class="asset-info-value">
+
+                                {% if asset.vendor_name %}
+                                    {{ asset.vendor_name }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 04 DESCRIPTION
+            ================================================== -->
+
+            {% if asset.description %}
+
+                <section class="asset-detail-card">
+
+
+                    <div class="asset-section-header">
+
+                        <div class="asset-section-icon">
+                            04
+                        </div>
+
+                        <div>
+
+                            <h2 class="asset-section-title">
+                                Description
+                            </h2>
+
+                            <p class="asset-section-subtitle">
+                                Additional information about this asset.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <p class="asset-description">
+                        {{ asset.description|linebreaksbr }}
+                    </p>
+
+
+                </section>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 ASSET IMAGE
+            ================================================== -->
+
+            {% if asset.asset_image %}
+
+                <section class="asset-detail-card">
+
+
+                    <div class="asset-section-header">
+
+                        <div class="asset-section-icon">
+                            IMG
+                        </div>
+
+                        <div>
+
+                            <h2 class="asset-section-title">
+                                Asset Image
+                            </h2>
+
+                            <p class="asset-section-subtitle">
+                                Visual reference for this IT asset.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="asset-image-frame">
+
+                        <img
+                            src="{{ asset.asset_image.url }}"
+                            alt="{{ asset.asset_name }}"
+                            class="asset-detail-image"
+                        >
+
+                    </div>
+
+
+                </section>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 DOCUMENTS
+            ================================================== -->
+
+            <section class="asset-detail-card">
+
+
+                <div class="asset-section-header">
+
+                    <div class="asset-section-icon">
+                        DOC
+                    </div>
+
+                    <div>
+
+                        <h2 class="asset-section-title">
+                            Documents
+                        </h2>
+
+                        <p class="asset-section-subtitle">
+                            Supporting documents associated with this asset.
+                        </p>
+
                     </div>
 
                 </div>
 
+
+                {% if asset.invoice_document %}
+
+
+                    <div class="asset-document">
+
+
+                        <div class="asset-document-info">
+
+                            <div class="asset-document-icon">
+                                PDF
+                            </div>
+
+                            <div>
+
+                                <div class="asset-document-name">
+                                    Invoice Document
+                                </div>
+
+                                <div class="asset-document-label">
+                                    Uploaded asset invoice
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="{{ asset.invoice_document.url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="asset-btn asset-btn-secondary"
+                        >
+                            <i class="bi bi-box-arrow-up-right"></i>
+                            <span>View Invoice</span>
+                        </a>
+
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <div class="asset-description">
+
+                        <i class="bi bi-file-earmark-x"></i>
+
+                        No invoice document has been uploaded for this asset.
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </section>
+
+
+            <!-- =================================================
+                 RECORD INFORMATION
+            ================================================== -->
+
+            <section class="asset-detail-card">
+
+
+                <div class="asset-section-header">
+
+                    <div class="asset-section-icon">
+                        LOG
+                    </div>
+
+                    <div>
+
+                        <h2 class="asset-section-title">
+                            Record Information
+                        </h2>
+
+                        <p class="asset-section-subtitle">
+                            System timestamps for this asset record.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row g-3">
+
+
+                    <div class="col-md-6">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Created
+                            </div>
+
+                            <div class="asset-info-value">
+                                {{ asset.created_at|date:"d M Y, h:i A" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <div class="asset-info-item">
+
+                            <div class="asset-info-label">
+                                Last Updated
+                            </div>
+
+                            <div class="asset-info-value">
+                                {{ asset.updated_at|date:"d M Y, h:i A" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =================================================
+                 PAGE FOOTER
+            ================================================== -->
+
+            <div class="asset-page-footer">
+
+
+                <div>
+                    ITARMS · IT Asset &amp; Resource Management System
+                </div>
+
+
+                <div class="asset-security-note">
+
+                    <span class="asset-security-dot"></span>
+
+                    Secure asset record management
+
+                </div>
+
+
             </div>
 
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         PAGE FOOTER
-    ====================================================== -->
-
-    <div class="asset-page-footer">
-
-        <div>
-            ITARMS · IT Asset & Resource Management System
-        </div>
-
-        <div class="asset-security-note">
-
-            <span class="asset-security-dot"></span>
-
-            Secure asset record management
 
         </div>
 
-    </div>
+    </main>
 
 </div>
 
 
+<!-- =============================================================
+     BOOTSTRAP JS
+============================================================== -->
+
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 ></script>
+
 
 </body>
 

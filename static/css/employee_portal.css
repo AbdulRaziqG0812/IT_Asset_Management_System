@@ -3839,6 +3839,10 @@ textarea:focus-visible {
 
 .asset-requests-page .page-header {
     margin-bottom: 22px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
 }
 
 .asset-requests-page .page-header h1 {
@@ -3867,17 +3871,42 @@ textarea:focus-visible {
    CREATE REQUEST BUTTON
 ========================================================= */
 
-.request-create-button {
-    min-height: 38px;
-    padding: 7px 14px;
-    gap: 6px;
+.asset-requests-page .request-create-button {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 16px;
+    border: 0;
     border-radius: 8px;
-    font-size: 11.5px;
+    background: #0051ff;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
     white-space: nowrap;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
-.request-plus-icon {
-    font-size: 16px;
+.asset-requests-page .request-create-button:hover {
+    background: #0045d8;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(0, 81, 255, 0.20);
+}
+
+.asset-requests-page .request-plus-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
     line-height: 1;
 }
 

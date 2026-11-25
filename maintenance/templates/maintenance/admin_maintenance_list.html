@@ -30,182 +30,333 @@
     >
 
     <style>
+        /* =========================================================
+        MAINTENANCE ADMIN PAGE
+        Internal content styling only
+        Sidebar / topbar structure remains untouched
+        ========================================================= */
 
         .maintenance-content {
             padding: 28px;
+            background: #f6f8fc;
         }
+
+        /* =========================
+        PAGE HEADING
+        ========================= */
 
         .page-heading {
             margin-bottom: 24px;
+            padding: 22px 24px;
+            background: #ffffff;
+            border: 1px solid #e7ebf2;
+            border-radius: 16px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
         }
 
         .page-heading h2 {
             margin: 0;
-            font-size: 26px;
-            font-weight: 700;
             color: #172033;
+            font-size: 25px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         .page-heading p {
-            margin: 6px 0 0;
+            margin: 7px 0 0;
             color: #6b7280;
-            font-size: 14px;
+            font-size: 13px;
+            line-height: 1.6;
         }
 
+
+        /* =========================
+        SUMMARY CARDS
+        ========================= */
+
         .summary-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 20px;
+            position: relative;
             height: 100%;
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e7ebf2;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .summary-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 70px;
+            height: 70px;
+            background: #f4f6ff;
+            border-radius: 0 0 0 70px;
+            pointer-events: none;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            border-color: #dce2ef;
+            box-shadow: 0 9px 25px rgba(15, 23, 42, 0.08);
         }
 
         .summary-icon {
+            position: relative;
+            z-index: 1;
             width: 46px;
             height: 46px;
-            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 15px;
+            border-radius: 12px;
             background: #eef2ff;
             color: #4338ca;
-            font-size: 20px;
-            margin-bottom: 14px;
+            font-size: 19px;
         }
 
         .summary-card h6 {
+            position: relative;
+            z-index: 1;
+            margin: 0 0 5px;
             color: #6b7280;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            margin-bottom: 5px;
+            letter-spacing: 0.01em;
         }
 
         .summary-number {
+            position: relative;
+            z-index: 1;
             color: #172033;
-            font-size: 26px;
-            font-weight: 700;
+            font-size: 27px;
+            line-height: 1.2;
+            font-weight: 750;
         }
 
+
+        /* =========================
+        FILTER SECTION
+        ========================= */
+
         .filter-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 20px;
             margin-top: 24px;
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+            padding: 21px;
+            background: #ffffff;
+            border: 1px solid #e7ebf2;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
         }
 
         .filter-card label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
+            display: block;
             margin-bottom: 7px;
+            color: #374151;
+            font-size: 12px;
+            font-weight: 700;
         }
 
         .filter-card .form-control,
         .filter-card .form-select {
             min-height: 42px;
+            padding: 8px 12px;
+            border: 1px solid #d9dee8;
             border-radius: 9px;
-            border-color: #d7dce5;
-            font-size: 14px;
+            background-color: #ffffff;
+            color: #273142;
+            font-size: 13px;
+            box-shadow: none;
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .filter-card .form-control::placeholder {
+            color: #9ca3af;
         }
 
         .filter-card .form-control:focus,
         .filter-card .form-select:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
         }
 
         .btn-filter {
             min-height: 42px;
+            padding: 8px 17px;
+            border: 0;
             border-radius: 9px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 650;
+            box-shadow: none;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
         }
 
+        .btn-filter:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(79, 70, 229, 0.18);
+        }
+
+
+        /* =========================
+        TABLE CARD
+        ========================= */
+
         .table-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
             margin-top: 24px;
             overflow: hidden;
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+            background: #ffffff;
+            border: 1px solid #e7ebf2;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
         }
 
         .table-header {
-            padding: 18px 20px;
-            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 18px 21px;
+            background: #ffffff;
+            border-bottom: 1px solid #e9edf3;
         }
 
         .table-header h5 {
             margin: 0;
             color: #172033;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
         }
 
         .table-header span {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 999px;
+            background: #f8fafc;
             color: #6b7280;
-            font-size: 13px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+
+        /* =========================
+        TABLE WRAPPER
+        ========================= */
+
+        .maintenance-table-wrapper {
+            overflow-x: auto;
+            width: 100%;
         }
 
         .maintenance-table {
+            width: 100%;
+            min-width: 1280px;
             margin: 0;
-            min-width: 1250px;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
         .maintenance-table thead th {
+            padding: 13px 15px;
             background: #f8fafc;
-            color: #4b5563;
-            font-size: 12px;
-            font-weight: 700;
+            border-bottom: 1px solid #e4e8ef;
+            color: #596273;
+            font-size: 11px;
+            font-weight: 750;
+            letter-spacing: 0.045em;
+            line-height: 1.3;
             text-transform: uppercase;
-            letter-spacing: 0.03em;
             white-space: nowrap;
-            padding: 14px 15px;
-            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
         }
 
         .maintenance-table tbody td {
+            padding: 16px 15px;
+            background: #ffffff;
+            border-bottom: 1px solid #eef1f5;
             color: #374151;
             font-size: 13px;
+            line-height: 1.45;
             vertical-align: middle;
-            padding: 15px;
-            border-bottom: 1px solid #eef0f3;
         }
 
         .maintenance-table tbody tr:last-child td {
             border-bottom: 0;
         }
 
-        .maintenance-table tbody tr:hover {
-            background: #fafbff;
+        .maintenance-table tbody tr {
+            transition: background-color 0.18s ease;
         }
 
+        .maintenance-table tbody tr:hover td {
+            background: #fbfcff;
+        }
+
+
+        /* =========================
+        REQUEST / ASSET / EMPLOYEE
+        ========================= */
+
         .request-id {
-            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            min-height: 27px;
+            padding: 4px 9px;
+            border: 1px solid #e0e7ff;
+            border-radius: 7px;
+            background: #f3f4ff;
             color: #3730a3;
+            font-size: 11px;
+            font-weight: 750;
+            white-space: nowrap;
         }
 
         .asset-name {
-            font-weight: 700;
+            display: block;
+            margin-bottom: 3px;
             color: #172033;
+            font-size: 13px;
+            font-weight: 700;
         }
 
         .employee-name {
-            font-weight: 600;
+            display: block;
+            margin-bottom: 3px;
             color: #374151;
+            font-size: 13px;
+            font-weight: 650;
         }
 
         .muted-text {
-            color: #6b7280;
-            font-size: 12px;
+            display: block;
+            color: #8a93a3;
+            font-size: 11px;
+            line-height: 1.45;
         }
 
         .issue-text {
             max-width: 250px;
-            line-height: 1.5;
+            color: #4b5563;
+            font-size: 12px;
+            line-height: 1.55;
         }
+
+
+        /* =========================
+        BADGES
+        ========================= */
 
         .status-badge,
         .priority-badge,
@@ -213,168 +364,506 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 6px 10px;
+            min-height: 27px;
+            padding: 5px 10px;
             border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 10px;
+            font-weight: 750;
+            line-height: 1;
             white-space: nowrap;
+            border: 1px solid transparent;
         }
+
+        /* Status */
 
         .status-pending {
             background: #fff7ed;
+            border-color: #fed7aa;
             color: #c2410c;
         }
 
         .status-progress {
             background: #eff6ff;
+            border-color: #bfdbfe;
             color: #1d4ed8;
         }
 
         .status-completed {
             background: #ecfdf5;
-            color: #047857;
+            border-color: #bbf7d0;
+            color: #15803d;
         }
 
         .status-rejected {
             background: #fef2f2;
+            border-color: #fecaca;
             color: #b91c1c;
         }
 
+        /* Priority */
+
         .priority-low {
-            background: #f3f4f6;
-            color: #4b5563;
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #64748b;
         }
 
         .priority-medium {
             background: #eff6ff;
+            border-color: #bfdbfe;
             color: #1d4ed8;
         }
 
         .priority-high {
             background: #fff7ed;
+            border-color: #fed7aa;
             color: #c2410c;
         }
 
         .priority-urgent {
             background: #fef2f2;
+            border-color: #fecaca;
             color: #b91c1c;
         }
 
+        /* Request Type */
+
         .type-badge {
             background: #f5f3ff;
+            border-color: #ddd6fe;
             color: #6d28d9;
         }
 
+
+        /* =========================
+        REQUESTED DATE / TIME
+        ========================= */
+
+        .requested-cell {
+            min-width: 125px;
+        }
+
+        .requested-date {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 5px;
+            color: #263142;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .requested-date i {
+            color: #6366f1;
+            font-size: 13px;
+        }
+
+        .requested-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 7px;
+            border-radius: 6px;
+            background: #f8fafc;
+            color: #7b8494;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .requested-time i {
+            color: #9ca3af;
+            font-size: 10px;
+        }
+
+
+        /* =========================
+        ACTION AREA
+        ========================= */
+
         .action-cell {
-            min-width: 250px;
+            width: 285px;
+            min-width: 285px;
         }
 
         .action-form {
-            margin: 0 0 8px;
+            margin: 0 0 9px;
+            padding: 10px;
+            background: #fbfcfe;
+            border: 1px solid #e8ecf2;
+            border-radius: 10px;
         }
 
         .action-form:last-child {
             margin-bottom: 0;
         }
 
+        .action-form .muted-text {
+            margin-bottom: 7px;
+            color: #687386;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
         .action-form .form-control {
             min-height: 36px;
-            border-radius: 8px;
-            border-color: #d7dce5;
-            font-size: 12px;
             margin-bottom: 7px;
+            padding: 7px 9px;
+            border: 1px solid #d8dee8;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #374151;
+            font-size: 11px;
+            resize: vertical;
+            box-shadow: none;
+        }
+
+        .action-form .form-control::placeholder {
+            color: #a0a7b3;
         }
 
         .action-form .form-control:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.09);
         }
 
         .action-buttons {
             display: flex;
+            align-items: center;
             gap: 6px;
             flex-wrap: wrap;
         }
 
         .action-buttons .btn {
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 10px;
+            min-height: 32px;
+            padding: 5px 10px;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .action-buttons .btn i {
+            margin-right: 3px;
         }
 
         .action-note {
-            color: #6b7280;
-            font-size: 12px;
-            line-height: 1.5;
+            padding: 8px 9px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid #e8ecf2;
+            color: #687386;
+            font-size: 11px;
+            line-height: 1.55;
         }
 
         .recorded-notes {
             margin-top: 7px;
             padding: 9px 10px;
             background: #f8fafc;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e6eaf0;
             border-radius: 8px;
-            font-size: 12px;
-            color: #4b5563;
-            line-height: 1.5;
+            color: #596273;
+            font-size: 11px;
+            line-height: 1.55;
         }
 
         .recorded-notes strong {
+            display: block;
+            margin-bottom: 3px;
             color: #374151;
+            font-size: 10px;
+            font-weight: 700;
         }
 
+
+        /* =========================
+        EMPTY STATE
+        ========================= */
+
         .empty-state {
-            padding: 55px 20px;
+            padding: 65px 20px;
             text-align: center;
         }
 
         .empty-state i {
-            font-size: 42px;
-            color: #9ca3af;
-            margin-bottom: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 58px;
+            margin-bottom: 14px;
+            border-radius: 15px;
+            background: #f1f5f9;
+            color: #94a3b8;
+            font-size: 24px;
         }
 
         .empty-state h5 {
-            color: #374151;
+            margin: 0 0 6px;
+            color: #273142;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 6px;
         }
 
         .empty-state p {
-            color: #6b7280;
-            margin: 0;
-            font-size: 14px;
+            max-width: 430px;
+            margin: 0 auto;
+            color: #7b8494;
+            font-size: 12px;
+            line-height: 1.6;
         }
 
-        .table-responsive {
-            overflow-x: auto;
+
+        /* =========================
+        FOOTER / 2026 SECTION
+        ========================= */
+
+        .admin-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            min-height: 60px;
+            padding: 15px 28px;
+            background: #ffffff;
+            border-top: 1px solid #e7ebf2;
+            color: #8a93a3;
+            font-size: 11px;
+        }
+
+        .admin-footer span {
+            line-height: 1.5;
+        }
+
+        .admin-footer span:first-child {
+            color: #626c7b;
+            font-weight: 600;
+        }
+
+        .admin-footer span:last-child {
+            color: #9aa2af;
+            font-weight: 500;
+        }
+
+
+        /* =========================
+        RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1199px) {
+            .maintenance-content {
+                padding: 24px;
+            }
+
+            .maintenance-table {
+                min-width: 1200px;
+            }
         }
 
         @media (max-width: 991px) {
-
             .maintenance-content {
                 padding: 20px;
             }
 
+            .page-heading {
+                padding: 20px;
+            }
+
+            .page-heading h2 {
+                font-size: 23px;
+            }
+
+            .summary-card {
+                padding: 17px;
+            }
+
+            .filter-card {
+                padding: 18px;
+            }
+
+            .table-header {
+                padding: 17px 18px;
+            }
+
+            .admin-footer {
+                padding: 15px 20px;
+            }
         }
 
         @media (max-width: 767px) {
-
             .maintenance-content {
                 padding: 15px;
             }
 
+            .page-heading {
+                margin-bottom: 18px;
+                padding: 18px;
+                border-radius: 13px;
+            }
+
             .page-heading h2 {
-                font-size: 22px;
+                font-size: 21px;
+            }
+
+            .page-heading p {
+                font-size: 12px;
             }
 
             .summary-card {
                 padding: 16px;
+                border-radius: 13px;
             }
 
+            .summary-icon {
+                width: 42px;
+                height: 42px;
+                margin-bottom: 12px;
+                font-size: 17px;
+            }
+
+            .summary-number {
+                font-size: 24px;
+            }
+
+            .filter-card {
+                margin-top: 18px;
+                padding: 16px;
+                border-radius: 13px;
+            }
+
+            .table-card {
+                margin-top: 18px;
+                border-radius: 13px;
+            }
+
+            .table-header {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 15px 16px;
+            }
+
+            .maintenance-table {
+                min-width: 1120px;
+            }
+
+            .admin-footer {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+                padding: 14px 15px;
+            }
         }
 
+                /* =========================
+        MAINTENANCE TOPBAR
+        ========================= */
+
+        .admin-topbar {
+            min-height: 72px;
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            background: #ffffff;
+            border-bottom: 1px solid #e7ebf2;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+        }
+
+        .mobile-menu-btn {
+            width: 40px;
+            height: 40px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e1e6ee;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #374151;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .topbar-title {
+            flex: 1;
+            color: #172033;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .topbar-user {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 36px;
+            padding: 7px 13px;
+            border: 1px solid #e4e8ef;
+            border-radius: 9px;
+            background: #f8fafc;
+            color: #4b5563;
+            font-size: 12px;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+        .topbar-user i {
+            color: #4f46e5;
+            font-size: 14px;
+        }
+
+
+        /* Tablet / Mobile */
+
+        @media (max-width: 991px) {
+
+            .admin-topbar {
+                min-height: 66px;
+                padding: 0 20px;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .topbar-title {
+                font-size: 16px;
+            }
+
+            .topbar-user {
+                padding: 7px 10px;
+                font-size: 11px;
+            }
+        }
+
+
+        @media (max-width: 575px) {
+
+            .admin-topbar {
+                padding: 0 15px;
+                gap: 10px;
+            }
+
+            .mobile-menu-btn {
+                width: 38px;
+                height: 38px;
+            }
+
+            .topbar-title {
+                font-size: 15px;
+            }
+
+            .topbar-user {
+                min-height: 34px;
+                padding: 6px 8px;
+            }
+
+            .topbar-user i {
+                font-size: 13px;
+            }
+        }
     </style>
 
 </head>
@@ -383,57 +872,98 @@
 
 <div class="admin-layout">
 
-    <!-- SIDEBAR -->
+    <!-- =====================================================
+         SHARED SUPER ADMIN SIDEBAR
+    ====================================================== -->
 
-    <aside class="admin-sidebar">
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
 
         <div class="sidebar-brand">
-            <div class="brand-title">ITARMS</div>
-            <div class="brand-subtitle">Super Admin Panel</div>
+
+            <h2 class="brand-title">
+                ITARMS
+            </h2>
+
+            <div class="brand-subtitle">
+                Super Admin Panel
+            </div>
+
         </div>
+
+
+        <!-- CURRENT USER -->
 
         <div class="sidebar-user">
 
-            <div class="sidebar-user-icon">
-                <i class="bi bi-person-circle"></i>
-            </div>
+            <div class="sidebar-user-inner">
 
-            <div>
-                <div class="sidebar-user-name">
-                    {{ request.user.get_full_name|default:request.user.username }}
+                <div class="user-avatar">
+                    <i class="bi bi-shield-lock-fill"></i>
                 </div>
 
-                <div class="sidebar-user-role">
-                    Super Administrator
+                <div class="user-details">
+
+                    <div class="user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Super Administrator
+                    </div>
+
                 </div>
+
             </div>
 
         </div>
 
+
+        <!-- SIDEBAR NAVIGATION -->
+
         <nav class="sidebar-nav">
 
-            <div class="nav-section-title">
+
+            <!-- MAIN -->
+
+            <div class="sidebar-section-title">
                 Main
             </div>
 
+
             <a
                 href="{% url 'super_admin_dashboard' %}"
-                class="sidebar-link"
+                class="sidebar-link "
             >
-                <i class="bi bi-speedometer2"></i>
+                <i class="bi bi-grid-1x2-fill"></i>
                 <span>Dashboard</span>
             </a>
+
 
             <a
                 href="{% url 'user_management' %}"
                 class="sidebar-link"
             >
-                <i class="bi bi-people"></i>
+                <i class="bi bi-people-fill"></i>
                 <span>User Management</span>
             </a>
 
+
+            <!-- MANAGEMENT -->
+
+            <div class="sidebar-section-title">
+                Management
+            </div>
+
+
+            <!-- IT ASSETS -->
+
             {% url 'asset_list' as asset_list_url %}
+
             {% if asset_list_url %}
+
                 <a
                     href="{{ asset_list_url }}"
                     class="sidebar-link"
@@ -441,93 +971,136 @@
                     <i class="bi bi-pc-display"></i>
                     <span>IT Assets</span>
                 </a>
+
             {% endif %}
 
+
+            <!-- ASSET ASSIGNMENTS -->
+
+            {% url 'admin_assignment_list' as assignment_list_url %}
+
+            {% if assignment_list_url %}
+
+                <a
+                    href="{{ assignment_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET REQUESTS -->
+
             {% url 'admin_asset_requests' as asset_requests_url %}
+
             {% if asset_requests_url %}
+
                 <a
                     href="{{ asset_requests_url }}"
-                    class="sidebar-link"
+                    class="sidebar-link "
                 >
                     <i class="bi bi-clipboard-check"></i>
                     <span>Asset Requests</span>
                 </a>
+
             {% endif %}
 
-            {% url 'admin_asset_incident_list' as incident_url %}
-            {% if incident_url %}
+
+            <!-- DAMAGED / LOST -->
+
+            {% url 'admin_asset_incident_list' as incident_list_url %}
+
+            {% if incident_list_url %}
+
                 <a
-                    href="{{ incident_url }}"
+                    href="{{ incident_list_url }}"
                     class="sidebar-link"
                 >
-                    <i class="bi bi-exclamation-triangle"></i>
+                    <i class="bi bi-exclamation-triangle-fill"></i>
                     <span>Damaged / Lost</span>
                 </a>
+
             {% endif %}
 
-            <div class="nav-section-title">
-                Management
-            </div>
+
+            <!-- MAINTENANCE -->
+
+            {% url 'maintenance_list' as maintenance_url %}
+
+            {% if maintenance_url %}
+
+                <a
+                    href="{{ maintenance_url }}"
+                    class="sidebar-link active"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance</span>
+                </a>
+
+            {% endif %}
+
+                        <!-- SOFTWARE LICENSES -->
 
             <a
-                href="{% url 'maintenance_list' %}"
-                class="sidebar-link active"
+                href="{% url 'software_license_list' %}"
+                class="sidebar-link"
             >
-                <i class="bi bi-tools"></i>
-                <span>Maintenance</span>
+                <i class="bi bi-key-fill"></i>
+                <span>Software Licenses</span>
             </a>
 
-            {% url 'department_list' as department_url %}
-            {% if department_url %}
-                <a
-                    href="{{ department_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-diagram-3"></i>
-                    <span>Departments</span>
-                </a>
-            {% endif %}
 
-            {% url 'reports_home' as reports_url %}
-            {% if reports_url %}
-                <a
-                    href="{{ reports_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-bar-chart-line"></i>
-                    <span>Reports & Analytics</span>
-                </a>
-            {% endif %}
+            <!-- DEPARTMENTS -->
 
-            {% url 'notifications' as notifications_url %}
-            {% if notifications_url %}
-                <a
-                    href="{{ notifications_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-bell"></i>
-                    <span>Notifications</span>
-                </a>
-            {% endif %}
+            <a
+                href="{% url 'super_admin_department_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-building-fill"></i>
+                <span>Departments</span>
+            </a>
 
-            <div class="nav-section-title">
+
+            <!-- REPORTS -->
+
+            <a
+                href="{% url 'reports:home' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <span>Reports &amp; Analytics</span>
+            </a>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <a
+                href="{% url 'notifications:list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bell-fill"></i>
+                <span>Notifications</span>
+            </a>
+
+
+            <!-- SYSTEM -->
+
+            <div class="sidebar-section-title">
                 System
             </div>
 
-            {% url 'audit_log_list' as audit_url %}
-            {% if audit_url %}
-                <a
-                    href="{{ audit_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-shield-check"></i>
-                    <span>Audit Logs</span>
-                </a>
-            {% endif %}
-
         </nav>
 
-        <div class="sidebar-footer">
+
+        <div class="sidebar-spacer"></div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="sidebar-bottom">
 
             <form
                 method="post"
@@ -538,9 +1111,9 @@
 
                 <button
                     type="submit"
-                    class="sidebar-logout"
+                    class="logout-button"
                 >
-                    <i class="bi bi-box-arrow-right"></i>
+                    <i class="bi bi-box-arrow-left"></i>
                     <span>Logout</span>
                 </button>
 

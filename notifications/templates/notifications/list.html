@@ -1,0 +1,1169 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Notifications | ITARMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
+    <style>
+
+        /* =========================================================
+           PAGE LAYOUT
+        ========================================================= */
+
+        .admin-main {
+            margin-left: 250px !important;
+            width: calc(100% - 250px) !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background: #f6f8fb;
+        }
+
+        .notifications-page {
+            padding: 30px;
+        }
+
+
+        /* =========================================================
+           PAGE HEADER
+        ========================================================= */
+
+        .notifications-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .header-left h1 {
+            margin: 0 0 7px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #172033;
+            letter-spacing: -0.3px;
+        }
+
+        .header-left p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+
+        /* =========================================================
+           UNREAD SUMMARY
+        ========================================================= */
+
+        .unread-summary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border-radius: 10px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .unread-summary .count {
+            min-width: 24px;
+            height: 24px;
+            padding: 0 7px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           MARK ALL BUTTON
+        ========================================================= */
+
+        .mark-all-form {
+            margin: 0;
+        }
+
+        .mark-all-button {
+            border: 1px solid #dbe2ea;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .mark-all-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #111827;
+            transform: translateY(-1px);
+        }
+
+        .mark-all-button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+
+        /* =========================================================
+           NOTIFICATION CARD
+        ========================================================= */
+
+        .notifications-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .notification-card {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 18px 20px;
+            box-shadow: 0 3px 14px rgba(15, 23, 42, 0.04);
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .notification-card:hover {
+            border-color: #d6dce5;
+            box-shadow: 0 7px 20px rgba(15, 23, 42, 0.07);
+            transform: translateY(-1px);
+        }
+
+        .notification-card.unread {
+            border-left: 4px solid #4f46e5;
+            background: #fcfcff;
+        }
+
+
+        /* =========================================================
+           NOTIFICATION ICON
+        ========================================================= */
+
+        .notification-icon {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .notification-icon.info {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .notification-icon.warning {
+            background: #fffbeb;
+            color: #d97706;
+        }
+
+        .notification-icon.success {
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        .notification-icon.danger {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+
+        /* =========================================================
+           NOTIFICATION CONTENT
+        ========================================================= */
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 7px;
+        }
+
+        .notification-title {
+            margin: 0;
+            color: #172033;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .notification-card.unread .notification-title {
+            color: #111827;
+        }
+
+        .notification-time {
+            color: #8a94a6;
+            font-size: 12px;
+            white-space: nowrap;
+            padding-top: 2px;
+        }
+
+        .notification-message {
+            margin: 0;
+            color: #5f6877;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+
+        /* =========================================================
+           META
+        ========================================================= */
+
+        .notification-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .notification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .notification-badge.type {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .notification-badge.info {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .notification-badge.warning {
+            background: #fffbeb;
+            color: #b45309;
+        }
+
+        .notification-badge.success {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .notification-badge.danger {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .reference-text {
+            color: #8a94a6;
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           READ ACTION
+        ========================================================= */
+
+        .notification-action {
+            flex-shrink: 0;
+            align-self: center;
+        }
+
+        .notification-open-button {
+            border: 1px solid #dbe2ea;
+            background: #ffffff;
+            color: #475569;
+            border-radius: 9px;
+            padding: 8px 11px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .notification-open-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #111827;
+        }
+
+        .read-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #9ca3af;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           UNREAD DOT
+        ========================================================= */
+
+        .unread-dot {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4f46e5;
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty-state {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 60px 25px;
+            text-align: center;
+            box-shadow: 0 3px 14px rgba(15, 23, 42, 0.04);
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 17px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 27px;
+        }
+
+        .empty-state h3 {
+            margin: 0 0 7px;
+            color: #172033;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            margin: 0;
+            color: #7b8494;
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .notifications-footer {
+            margin-top: 28px;
+            padding: 18px 0 4px;
+            border-top: 1px solid #e5e7eb;
+            color: #8a94a6;
+            font-size: 12px;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 992px) {
+
+            .notifications-page {
+                padding: 24px;
+            }
+
+            .notifications-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .header-actions {
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+        }
+
+        @media (max-width: 768px) {
+
+            .admin-main {
+                margin-left: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .notifications-page {
+                padding: 20px 16px;
+            }
+
+            .notification-card {
+                padding: 16px;
+            }
+
+            .notification-top {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .notification-time {
+                white-space: normal;
+            }
+
+            .notification-action {
+                align-self: flex-start;
+            }
+
+        }
+
+        @media (max-width: 576px) {
+
+            .header-left h1 {
+                font-size: 23px;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .unread-summary,
+            .mark-all-button {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .notification-card {
+                gap: 12px;
+                padding: 14px;
+            }
+
+            .notification-icon {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                font-size: 17px;
+            }
+
+            .notification-title {
+                font-size: 14px;
+            }
+
+            .notification-message {
+                font-size: 12.5px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="dashboard-layout">
+
+
+    <!-- =====================================================
+         SHARED SUPER ADMIN SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
+
+        <div class="sidebar-brand">
+
+            <h2 class="brand-title">
+                ITARMS
+            </h2>
+
+            <div class="brand-subtitle">
+                Super Admin Panel
+            </div>
+
+        </div>
+
+
+        <!-- CURRENT USER -->
+
+        <div class="sidebar-user">
+
+            <div class="sidebar-user-inner">
+
+                <div class="user-avatar">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+
+                <div class="user-details">
+
+                    <div class="user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Super Administrator
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SIDEBAR NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <!-- MAIN -->
+
+            <div class="sidebar-section-title">
+                Main
+            </div>
+
+
+            <a
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link "
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+
+            <!-- MANAGEMENT -->
+
+            <div class="sidebar-section-title">
+                Management
+            </div>
+
+
+            <!-- IT ASSETS -->
+
+            {% url 'asset_list' as asset_list_url %}
+
+            {% if asset_list_url %}
+
+                <a
+                    href="{{ asset_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET ASSIGNMENTS -->
+
+            {% url 'admin_assignment_list' as assignment_list_url %}
+
+            {% if assignment_list_url %}
+
+                <a
+                    href="{{ assignment_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET REQUESTS -->
+
+            {% url 'admin_asset_requests' as asset_requests_url %}
+
+            {% if asset_requests_url %}
+
+                <a
+                    href="{{ asset_requests_url }}"
+                    class="sidebar-link "
+                >
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- DAMAGED / LOST -->
+
+            {% url 'admin_asset_incident_list' as incident_list_url %}
+
+            {% if incident_list_url %}
+
+                <a
+                    href="{{ incident_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- MAINTENANCE -->
+
+            {% url 'maintenance_list' as maintenance_url %}
+
+            {% if maintenance_url %}
+
+                <a
+                    href="{{ maintenance_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance</span>
+                </a>
+
+            {% endif %}
+
+                        <!-- SOFTWARE LICENSES -->
+
+            <a
+                href="{% url 'software_license_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-key-fill"></i>
+                <span>Software Licenses</span>
+            </a>
+
+
+            <!-- DEPARTMENTS -->
+
+            <a
+                href="{% url 'super_admin_department_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-building-fill"></i>
+                <span>Departments</span>
+            </a>
+
+
+            <!-- REPORTS -->
+
+            <a
+                href="{% url 'reports:home' %}"
+                class="sidebar-link "
+            >
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <span>Reports &amp; Analytics</span>
+            </a>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <a
+                href="{% url 'notifications:list' %}"
+                class="sidebar-link active"
+            >
+                <i class="bi bi-bell-fill"></i>
+                <span>Notifications</span>
+            </a>
+
+
+            <!-- SYSTEM -->
+
+            <div class="sidebar-section-title">
+                System
+            </div>
+
+        </nav>
+
+
+        <div class="sidebar-spacer"></div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="sidebar-bottom">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
+    <main class="admin-main">
+
+
+        <div class="notifications-page">
+
+
+            <!-- =====================================================
+                 HEADER
+            ====================================================== -->
+
+            <div class="notifications-header">
+
+                <div class="header-left">
+
+                    <h1>
+                        Notifications
+                    </h1>
+
+                    <p>
+                        View and manage system notifications related to your account and ITARMS activities.
+                    </p>
+
+                </div>
+
+
+                <div class="header-actions">
+
+                    <div class="unread-summary">
+
+                        <i class="bi bi-envelope-fill"></i>
+
+                        <span>
+                            Unread
+                        </span>
+
+                        <span class="count">
+                            {{ unread_count }}
+                        </span>
+
+                    </div>
+
+
+                    {% if unread_count > 0 %}
+
+                    <form
+                        method="post"
+                        action="{% url 'notifications:mark_all_read' %}"
+                        class="mark-all-form"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="mark-all-button"
+                        >
+                            <i class="bi bi-check2-all"></i>
+                            Mark All as Read
+                        </button>
+
+                    </form>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================================================
+                 NOTIFICATIONS
+            ====================================================== -->
+
+            {% if notifications %}
+
+            <div class="notifications-container">
+
+                {% for notification in notifications %}
+
+                <article
+                    class="notification-card {% if not notification.is_read %}unread{% endif %}"
+                >
+
+
+                    {% if not notification.is_read %}
+
+                    <span
+                        class="unread-dot"
+                        title="Unread notification"
+                    ></span>
+
+                    {% endif %}
+
+
+                    <!-- ICON -->
+
+                    <div
+                        class="notification-icon
+                        {% if notification.severity == 'WARNING' %}
+                            warning
+                        {% elif notification.severity == 'SUCCESS' %}
+                            success
+                        {% elif notification.severity == 'DANGER' %}
+                            danger
+                        {% else %}
+                            info
+                        {% endif %}"
+                    >
+
+                        {% if notification.notification_type == 'ASSET_REQUEST' %}
+
+                            <i class="bi bi-clipboard-check"></i>
+
+                        {% elif notification.notification_type == 'MAINTENANCE' %}
+
+                            <i class="bi bi-tools"></i>
+
+                        {% elif notification.notification_type == 'LICENSE_EXPIRY' %}
+
+                            <i class="bi bi-key-fill"></i>
+
+                        {% elif notification.notification_type == 'WARRANTY_EXPIRY' %}
+
+                            <i class="bi bi-shield-exclamation"></i>
+
+                        {% elif notification.notification_type == 'EMPLOYEE_EVENT' %}
+
+                            <i class="bi bi-person-badge-fill"></i>
+
+                        {% else %}
+
+                            <i class="bi bi-info-circle-fill"></i>
+
+                        {% endif %}
+
+                    </div>
+
+
+
+                    <!-- CONTENT -->
+
+                    <div class="notification-content">
+
+
+                        <div class="notification-top">
+
+                            <h2 class="notification-title">
+                                {{ notification.title }}
+                            </h2>
+
+                            <time
+                                class="notification-time"
+                                datetime="{{ notification.created_at|date:'c' }}"
+                            >
+                                {{ notification.created_at|date:"M d, Y • h:i A" }}
+                            </time>
+
+                        </div>
+
+
+                        <p class="notification-message">
+                            {{ notification.message }}
+                        </p>
+
+
+                        <div class="notification-meta">
+
+
+                            <span class="notification-badge type">
+
+                                <i class="bi bi-tag-fill"></i>
+
+                                {{ notification.get_notification_type_display }}
+
+                            </span>
+
+
+                            {% if notification.severity == 'WARNING' %}
+
+                                <span class="notification-badge warning">
+                                    <i class="bi bi-exclamation-circle-fill"></i>
+                                    Warning
+                                </span>
+
+                            {% elif notification.severity == 'SUCCESS' %}
+
+                                <span class="notification-badge success">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Success
+                                </span>
+
+                            {% elif notification.severity == 'DANGER' %}
+
+                                <span class="notification-badge danger">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    Danger
+                                </span>
+
+                            {% else %}
+
+                                <span class="notification-badge info">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    Information
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if notification.reference_type %}
+
+                            <span class="reference-text">
+
+                                {{ notification.reference_type }}
+
+                                {% if notification.reference_id %}
+                                    #{{ notification.reference_id }}
+                                {% endif %}
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ACTION -->
+
+                    <div class="notification-action">
+
+                        {% if not notification.is_read %}
+
+                        <form
+                            method="post"
+                            action="{% url 'notifications:mark_read' notification.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="notification-open-button"
+                                title="Mark notification as read"
+                            >
+                                <i class="bi bi-check2"></i>
+                                Mark Read
+                            </button>
+
+                        </form>
+
+                        {% else %}
+
+                        <span class="read-label">
+                            <i class="bi bi-check2-circle"></i>
+                            Read
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+
+            {% else %}
+
+
+            <!-- =====================================================
+                 EMPTY STATE
+            ====================================================== -->
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+
+                    <i class="bi bi-bell-slash"></i>
+
+                </div>
+
+                <h3>
+                    No Notifications
+                </h3>
+
+                <p>
+                    You currently have no notifications to review.
+                </p>
+
+            </div>
+
+
+            {% endif %}
+
+
+
+            <!-- =====================================================
+                 FOOTER
+            ====================================================== -->
+
+            <div class="notifications-footer">
+
+                ITARMS Notifications
+                <span aria-hidden="true">•</span>
+                System alerts and activity updates
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+
+
+<!-- =============================================================
+     MOBILE SIDEBAR SCRIPT
+============================================================== -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const sidebar = document.getElementById("adminSidebar");
+
+        if (!sidebar) {
+            return;
+        }
+
+        const sidebarLinks =
+            sidebar.querySelectorAll(".sidebar-link");
+
+        sidebarLinks.forEach(function (link) {
+
+            link.addEventListener("click", function () {
+
+                if (window.innerWidth <= 768) {
+
+                    sidebar.classList.remove("open");
+
+                }
+
+            });
+
+        });
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

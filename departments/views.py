@@ -712,3 +712,233 @@ def department_manager_process_asset_request(
     return redirect(
         "department_manager_asset_requests"
     )
+
+# ============================================================================
+# SUPER ADMIN - DEPARTMENT MANAGEMENT
+# ============================================================================
+
+
+def super_admin_required(user):
+    """
+    Returns True only for an authenticated, active Super Admin.
+    """
+
+    return (
+        user.is_authenticated
+        and user.role == User.Role.SUPER_ADMIN
+        and user.is_active
+    )
+
+
+def get_super_admin_department(request, department_id):
+    """
+    Returns a department for Super Admin operations.
+
+    Access is restricted to active Super Admin users.
+    """
+
+    if not super_admin_required(request.user):
+        raise PermissionDenied(
+            "Only an active Super Admin can manage departments."
+        )
+
+    return get_object_or_404(
+        Department,
+        pk=department_id,
+    )
+
+
+@login_required
+def super_admin_department_list(request):
+    """
+    Display all departments for the Super Admin.
+
+    Departments are ordered by name for consistent administration.
+    """
+
+    if not super_admin_required(request.user):
+        raise PermissionDenied(
+            "Only an active Super Admin can access department management."
+        )
+
+    departments = (
+        Department.objects
+        .all()
+        .order_by("name")
+    )
+
+    return render(
+        request,
+        "departments/super_admin_department_list.html",
+        {
+            "departments": departments,
+        },
+    )
+
+
+@login_required
+def super_admin_department_create(request):
+    """
+    Create a new department.
+
+    Only an active Super Admin can create departments.
+    """
+
+    if not super_admin_required(request.user):
+        raise PermissionDenied(
+            "Only an active Super Admin can create departments."
+        )
+
+    from .forms import DepartmentForm
+
+    if request.method == "POST":
+        form = DepartmentForm(request.POST)
+
+        if form.is_valid():
+            with transaction.atomic():
+                department = form.save()
+
+                create_audit_log(
+                    user=request.user,
+                    action=AuditLog.Action.CREATE,
+                    module="Departments",
+                    object_type="Department",
+                    object_id=department.id,
+                    description=(
+                        f"Super Admin '{request.user.username}' "
+                        f"created department '{department.name}' "
+                        f"with code '{department.code}'."
+                    ),
+                    ip_address=request.META.get("REMOTE_ADDR"),
+                )
+
+            return redirect(
+                "super_admin_department_list"
+            )
+
+    else:
+        form = DepartmentForm()
+
+    return render(
+        request,
+        "departments/super_admin_department_form.html",
+        {
+            "form": form,
+            "page_title": "Add Department",
+            "submit_label": "Create Department",
+        },
+    )
+
+
+@login_required
+def super_admin_department_edit(
+    request,
+    department_id,
+):
+    """
+    Edit an existing department.
+
+    Only an active Super Admin can modify departments.
+    """
+
+    department = get_super_admin_department(
+        request,
+        department_id,
+    )
+
+    from .forms import DepartmentForm
+
+    if request.method == "POST":
+        form = DepartmentForm(
+            request.POST,
+            instance=department,
+        )
+
+        if form.is_valid():
+            with transaction.atomic():
+                department = form.save()
+
+                create_audit_log(
+                    user=request.user,
+                    action=AuditLog.Action.UPDATE,
+                    module="Departments",
+                    object_type="Department",
+                    object_id=department.id,
+                    description=(
+                        f"Super Admin '{request.user.username}' "
+                        f"updated department '{department.name}' "
+                        f"with code '{department.code}'."
+                    ),
+                    ip_address=request.META.get("REMOTE_ADDR"),
+                )
+
+            return redirect(
+                "super_admin_department_list"
+            )
+
+    else:
+        form = DepartmentForm(
+            instance=department,
+        )
+
+    return render(
+        request,
+        "departments/super_admin_department_form.html",
+        {
+            "form": form,
+            "department": department,
+            "page_title": "Edit Department",
+            "submit_label": "Save Changes",
+        },
+    )
+
+
+@login_required
+def super_admin_department_delete(
+    request,
+    department_id,
+):
+    """
+    Delete an existing department.
+
+    Deletion is intentionally restricted to POST requests to prevent
+    accidental deletion through a normal GET request.
+
+    The department must also not have dependent records that prevent
+    deletion at the database level.
+    """
+
+    department = get_super_admin_department(
+        request,
+        department_id,
+    )
+
+    if request.method != "POST":
+        raise PermissionDenied(
+            "Department deletion must use POST."
+        )
+
+    department_name = department.name
+    department_code = department.code
+    department_id_value = department.id
+
+    with transaction.atomic():
+        department.delete()
+
+        create_audit_log(
+            user=request.user,
+            action=AuditLog.Action.DELETE,
+            module="Departments",
+            object_type="Department",
+            object_id=department_id_value,
+            description=(
+                f"Super Admin '{request.user.username}' "
+                f"deleted department '{department_name}' "
+                f"with code '{department_code}'."
+            ),
+            ip_address=request.META.get("REMOTE_ADDR"),
+        )
+
+    return redirect(
+        "super_admin_department_list"
+    )

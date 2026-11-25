@@ -1,0 +1,1499 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ page_title }} | ITARMS Super Admin
+    </title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <!-- Shared Super Admin CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
+    <!-- Department Form Page CSS Only -->
+    <style>
+
+        /* ================================================================
+           PAGE CONTENT
+        ================================================================ */
+
+        .department-form-page {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+
+        /* ================================================================
+           PAGE HEADER
+        ================================================================ */
+
+        .department-form-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .department-form-heading {
+            min-width: 0;
+        }
+
+        .department-form-title {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1.65rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .department-form-subtitle {
+            margin: 7px 0 0;
+            color: #64748b;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .department-back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #334155;
+            text-decoration: none;
+            font-size: 0.87rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .department-back-button:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #0f172a;
+            transform: translateY(-1px);
+        }
+
+
+        /* ================================================================
+           FORM CARD
+        ================================================================ */
+
+        .department-form-card {
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.055);
+        }
+
+        .department-form-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 19px 22px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .department-form-header-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            border-radius: 9px;
+            background: #dbeafe;
+            color: #2563eb;
+            font-size: 1rem;
+        }
+
+        .department-form-card-title {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .department-form-card-subtitle {
+            margin: 3px 0 0;
+            color: #64748b;
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+
+
+        /* ================================================================
+           FORM BODY
+        ================================================================ */
+
+        .department-form-body {
+            padding: 26px 22px;
+        }
+
+        .department-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .department-form-field {
+            min-width: 0;
+        }
+
+        .department-form-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+
+        /* ================================================================
+           LABELS
+        ================================================================ */
+
+        .department-form-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #334155;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .department-required {
+            color: #dc2626;
+        }
+
+        .department-field-help {
+            margin: 6px 0 0;
+            color: #94a3b8;
+            font-size: 0.74rem;
+            line-height: 1.5;
+        }
+
+
+        /* ================================================================
+           INPUTS
+        ================================================================ */
+
+        .department-form-control {
+            width: 100%;
+            min-height: 42px;
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 0.86rem;
+            line-height: 1.5;
+            transition:
+                border-color 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.18s ease;
+        }
+
+        .department-form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .department-form-control:hover {
+            border-color: #94a3b8;
+        }
+
+        .department-form-control:focus {
+            border-color: #2563eb;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        textarea.department-form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+
+        /* ================================================================
+           DJANGO FORM ERROR STATE
+        ================================================================ */
+
+        .department-field-errors {
+            margin-top: 6px;
+        }
+
+        .department-field-error {
+            margin: 0;
+            color: #dc2626;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .department-input-error {
+            border-color: #ef4444;
+        }
+
+        .department-input-error:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.10);
+        }
+
+
+        /* ================================================================
+           NON-FIELD FORM ERRORS
+        ================================================================ */
+
+        .department-form-errors {
+            margin-bottom: 22px;
+            padding: 13px 15px;
+            border: 1px solid #fecaca;
+            border-radius: 9px;
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .department-form-errors-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 7px;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .department-form-errors ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .department-form-errors li {
+            margin: 3px 0;
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+
+
+        /* ================================================================
+           ACTIVE CHECKBOX
+        ================================================================ */
+
+        .department-active-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            min-height: 42px;
+            padding: 11px 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .department-active-checkbox {
+            width: 17px;
+            height: 17px;
+            flex: 0 0 17px;
+            margin-top: 1px;
+            accent-color: #2563eb;
+            cursor: pointer;
+        }
+
+        .department-active-content {
+            min-width: 0;
+        }
+
+        .department-active-title {
+            display: block;
+            margin: 0;
+            color: #334155;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .department-active-description {
+            margin: 3px 0 0;
+            color: #64748b;
+            font-size: 0.74rem;
+            line-height: 1.45;
+        }
+
+
+        /* ================================================================
+           FORM ACTIONS
+        ================================================================ */
+
+        .department-form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 17px 22px;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .department-form-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                transform 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .department-cancel-button {
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #475569;
+        }
+
+        .department-cancel-button:hover {
+            border-color: #94a3b8;
+            background: #f8fafc;
+            color: #0f172a;
+            transform: translateY(-1px);
+        }
+
+        .department-submit-button {
+            border: 1px solid #2563eb;
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .department-submit-button:hover {
+            border-color: #1d4ed8;
+            background: #1d4ed8;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.18);
+        }
+
+
+        /* ================================================================
+           EDIT INFORMATION
+        ================================================================ */
+
+        .department-edit-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 11px 13px;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #1e40af;
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+
+        .department-edit-info i {
+            flex: 0 0 auto;
+        }
+
+
+        /* ================================================================
+           RESPONSIVE
+        ================================================================ */
+
+        @media (max-width: 700px) {
+
+            .department-form-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .department-back-button {
+                width: 100%;
+            }
+
+            .department-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .department-form-field.full-width {
+                grid-column: auto;
+            }
+
+            .department-form-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .department-form-button {
+                width: 100%;
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .department-form-title {
+                font-size: 1.4rem;
+            }
+
+            .department-form-subtitle {
+                font-size: 0.84rem;
+            }
+
+            .department-form-card-header {
+                padding: 16px;
+            }
+
+            .department-form-body {
+                padding: 20px 16px;
+            }
+
+            .department-form-actions {
+                padding: 15px 16px;
+            }
+
+        }
+
+        /* =========================================================
+   DEPARTMENT PAGE - TOPBAR
+   ========================================================= */
+
+.admin-topbar {
+    width: 100%;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    margin-bottom: 22px;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.sidebar-toggle {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #dbe1e8;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #334155;
+
+    font-size: 20px;
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+    background: #eef2f7;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+.sidebar-toggle:active {
+    transform: scale(0.96);
+}
+
+.topbar-title {
+    margin: 0;
+    color: #111827;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+}
+
+.topbar-subtitle {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   DEPARTMENT PAGE - FOOTER
+   ========================================================= */
+
+.admin-footer {
+    width: 100%;
+    min-height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    margin-top: 28px;
+    padding: 16px 24px;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+}
+
+.admin-footer span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+}
+
+.admin-footer span:last-child {
+    color: #475569;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   TOPBAR + FOOTER RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .admin-topbar {
+        min-height: 70px;
+        padding: 15px 18px;
+        margin-bottom: 18px;
+        border-radius: 10px;
+    }
+
+    .topbar-left {
+        gap: 12px;
+    }
+
+    .sidebar-toggle {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        font-size: 18px;
+    }
+
+    .topbar-title {
+        font-size: 20px;
+    }
+
+    .topbar-subtitle {
+        font-size: 13px;
+        margin-top: 3px;
+    }
+
+    .admin-footer {
+        min-height: auto;
+        margin-top: 22px;
+        padding: 14px 18px;
+
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+
+        border-radius: 9px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .admin-topbar {
+        padding: 13px 14px;
+    }
+
+    .topbar-title {
+        font-size: 18px;
+    }
+
+    .topbar-subtitle {
+        font-size: 12px;
+    }
+
+    .sidebar-toggle {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+
+    .admin-footer {
+        padding: 13px 14px;
+        font-size: 12px;
+    }
+}
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         SHARED SUPER ADMIN SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
+
+        <div class="sidebar-brand">
+
+            <h2 class="brand-title">
+                ITARMS
+            </h2>
+
+            <div class="brand-subtitle">
+                Super Admin Panel
+            </div>
+
+        </div>
+
+
+        <!-- CURRENT USER -->
+
+        <div class="sidebar-user">
+
+            <div class="sidebar-user-inner">
+
+                <div class="user-avatar">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+
+                <div class="user-details">
+
+                    <div class="user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Super Administrator
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SIDEBAR NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <!-- MAIN -->
+
+            <div class="sidebar-section-title">
+                Main
+            </div>
+
+
+            <a
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link "
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+
+            <!-- MANAGEMENT -->
+
+            <div class="sidebar-section-title">
+                Management
+            </div>
+
+
+            <!-- IT ASSETS -->
+
+            {% url 'asset_list' as asset_list_url %}
+
+            {% if asset_list_url %}
+
+                <a
+                    href="{{ asset_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET ASSIGNMENTS -->
+
+            {% url 'admin_assignment_list' as assignment_list_url %}
+
+            {% if assignment_list_url %}
+
+                <a
+                    href="{{ assignment_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET REQUESTS -->
+
+            {% url 'admin_asset_requests' as asset_requests_url %}
+
+            {% if asset_requests_url %}
+
+                <a
+                    href="{{ asset_requests_url }}"
+                    class="sidebar-link "
+                >
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- DAMAGED / LOST -->
+
+            {% url 'admin_asset_incident_list' as incident_list_url %}
+
+            {% if incident_list_url %}
+
+                <a
+                    href="{{ incident_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- MAINTENANCE -->
+
+            {% url 'maintenance_list' as maintenance_url %}
+
+            {% if maintenance_url %}
+
+                <a
+                    href="{{ maintenance_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance</span>
+                </a>
+
+            {% endif %}
+
+                        <!-- SOFTWARE LICENSES -->
+
+            <a
+                href="{% url 'software_license_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-key-fill"></i>
+                <span>Software Licenses</span>
+            </a>
+
+
+            <!-- DEPARTMENTS -->
+
+            <a
+                href="{% url 'super_admin_department_list' %}"
+                class="sidebar-link active"
+            >
+                <i class="bi bi-building-fill"></i>
+                <span>Departments</span>
+            </a>
+
+
+            <!-- REPORTS -->
+
+            <a
+                href="{% url 'reports:home' %}"
+                class="sidebar-link "
+            >
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <span>Reports &amp; Analytics</span>
+            </a>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <a
+                href="{% url 'notifications:list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bell-fill"></i>
+                <span>Notifications</span>
+            </a>
+
+
+            <!-- SYSTEM -->
+
+            <div class="sidebar-section-title">
+                System
+            </div>
+
+        </nav>
+
+
+        <div class="sidebar-spacer"></div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="sidebar-bottom">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- ================================================================
+         ADMIN MAIN
+    ================================================================ -->
+
+    <main class="admin-main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="admin-topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    type="button"
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Toggle navigation"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+
+                <div>
+
+                    <h1 class="topbar-title">
+                        {{ page_title }}
+                    </h1>
+
+                    <p class="topbar-subtitle">
+                        Manage organizational department information.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE CONTENT -->
+
+        <div class="page-content">
+
+            <section class="department-form-page">
+
+
+                <!-- PAGE HEADER -->
+
+                <div class="department-form-header">
+
+                    <div class="department-form-heading">
+
+                        <h2 class="department-form-title">
+                            {{ page_title }}
+                        </h2>
+
+                        <p class="department-form-subtitle">
+                            Enter accurate department information using
+                            the fields below.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'super_admin_department_list' %}"
+                        class="department-back-button"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                        <span>Back to Departments</span>
+                    </a>
+
+                </div>
+
+
+                <!-- FORM CARD -->
+
+                <div class="department-form-card">
+
+
+                    <!-- CARD HEADER -->
+
+                    <div class="department-form-card-header">
+
+                        <div class="department-form-header-icon">
+
+                            {% if department %}
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            {% else %}
+
+                                <i class="bi bi-building-add"></i>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div>
+
+                            <h3 class="department-form-card-title">
+                                Department Information
+                            </h3>
+
+                            <p class="department-form-card-subtitle">
+                                All department fields are managed from this form.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FORM -->
+
+                    <form
+                        method="post"
+                        novalidate
+                    >
+
+                        {% csrf_token %}
+
+
+                        <div class="department-form-body">
+
+
+                            <!-- NON-FIELD ERRORS -->
+
+                            {% if form.non_field_errors %}
+
+                                <div class="department-form-errors">
+
+                                    <div class="department-form-errors-title">
+
+                                        <i class="bi bi-exclamation-circle-fill"></i>
+
+                                        <span>
+                                            Please correct the following errors.
+                                        </span>
+
+                                    </div>
+
+
+                                    <ul>
+
+                                        {% for error in form.non_field_errors %}
+
+                                            <li>
+                                                {{ error }}
+                                            </li>
+
+                                        {% endfor %}
+
+                                    </ul>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <div class="department-form-grid">
+
+
+                                <!-- DEPARTMENT NAME -->
+
+                                <div class="department-form-field">
+
+                                    <label
+                                        for="{{ form.name.id_for_label }}"
+                                        class="department-form-label"
+                                    >
+                                        Department Name
+                                        <span class="department-required">
+                                            *
+                                        </span>
+                                    </label>
+
+
+                                    <input
+                                        type="text"
+                                        name="{{ form.name.html_name }}"
+                                        id="{{ form.name.id_for_label }}"
+                                        value="{{ form.name.value|default_if_none:'' }}"
+                                        class="department-form-control{% if form.name.errors %} department-input-error{% endif %}"
+                                        placeholder="Enter department name"
+                                        maxlength="100"
+                                        autocomplete="organization"
+                                        required
+                                    >
+
+
+                                    <p class="department-field-help">
+                                        Enter the official name of the department.
+                                    </p>
+
+
+                                    {% if form.name.errors %}
+
+                                        <div class="department-field-errors">
+
+                                            {% for error in form.name.errors %}
+
+                                                <p class="department-field-error">
+                                                    {{ error }}
+                                                </p>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- DEPARTMENT CODE -->
+
+                                <div class="department-form-field">
+
+                                    <label
+                                        for="{{ form.code.id_for_label }}"
+                                        class="department-form-label"
+                                    >
+                                        Department Code
+                                        <span class="department-required">
+                                            *
+                                        </span>
+                                    </label>
+
+
+                                    <input
+                                        type="text"
+                                        name="{{ form.code.html_name }}"
+                                        id="{{ form.code.id_for_label }}"
+                                        value="{{ form.code.value|default_if_none:'' }}"
+                                        class="department-form-control{% if form.code.errors %} department-input-error{% endif %}"
+                                        placeholder="e.g. IT, HR, FIN"
+                                        maxlength="30"
+                                        autocomplete="off"
+                                        required
+                                    >
+
+
+                                    <p class="department-field-help">
+                                        Use a unique short code for this department.
+                                    </p>
+
+
+                                    {% if form.code.errors %}
+
+                                        <div class="department-field-errors">
+
+                                            {% for error in form.code.errors %}
+
+                                                <p class="department-field-error">
+                                                    {{ error }}
+                                                </p>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- DESCRIPTION -->
+
+                                <div class="department-form-field full-width">
+
+                                    <label
+                                        for="{{ form.description.id_for_label }}"
+                                        class="department-form-label"
+                                    >
+                                        Description
+                                    </label>
+
+
+                                    <textarea
+                                        name="{{ form.description.html_name }}"
+                                        id="{{ form.description.id_for_label }}"
+                                        class="department-form-control{% if form.description.errors %} department-input-error{% endif %}"
+                                        placeholder="Enter department description"
+                                        rows="5"
+                                    >{{ form.description.value|default_if_none:'' }}</textarea>
+
+
+                                    <p class="department-field-help">
+                                        Provide a brief description of the department
+                                        and its organizational purpose.
+                                    </p>
+
+
+                                    {% if form.description.errors %}
+
+                                        <div class="department-field-errors">
+
+                                            {% for error in form.description.errors %}
+
+                                                <p class="department-field-error">
+                                                    {{ error }}
+                                                </p>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- ACTIVE DEPARTMENT -->
+
+                                <div class="department-form-field full-width">
+
+                                    <label class="department-form-label">
+                                        Department Status
+                                    </label>
+
+
+                                    <div class="department-active-box">
+
+                                        <input
+                                            type="checkbox"
+                                            name="{{ form.is_active.html_name }}"
+                                            id="{{ form.is_active.id_for_label }}"
+                                            class="department-active-checkbox"
+                                            {% if form.is_active.value %}checked{% endif %}
+                                        >
+
+
+                                        <div class="department-active-content">
+
+                                            <label
+                                                for="{{ form.is_active.id_for_label }}"
+                                                class="department-active-title"
+                                            >
+                                                Active Department
+                                            </label>
+
+                                            <p class="department-active-description">
+                                                Keep this department active and
+                                                available for normal organizational
+                                                operations.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {% if form.is_active.errors %}
+
+                                        <div class="department-field-errors">
+
+                                            {% for error in form.is_active.errors %}
+
+                                                <p class="department-field-error">
+                                                    {{ error }}
+                                                </p>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            {% if department %}
+
+                                <div class="department-edit-info">
+
+                                    <i class="bi bi-info-circle-fill"></i>
+
+                                    <span>
+                                        You are editing the existing
+                                        <strong>{{ department.name }}</strong>
+                                        department.
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- FORM ACTIONS -->
+
+                        <div class="department-form-actions">
+
+                            <a
+                                href="{% url 'super_admin_department_list' %}"
+                                class="department-form-button department-cancel-button"
+                            >
+                                <i class="bi bi-x-lg"></i>
+                                <span>Cancel</span>
+                            </a>
+
+
+                            <button
+                                type="submit"
+                                class="department-form-button department-submit-button"
+                            >
+
+                                {% if department %}
+
+                                    <i class="bi bi-check2-circle"></i>
+                                    <span>{{ submit_label }}</span>
+
+                                {% else %}
+
+                                    <i class="bi bi-plus-circle"></i>
+                                    <span>{{ submit_label }}</span>
+
+                                {% endif %}
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <footer class="admin-footer">
+
+            <span>
+                ITARMS &copy; {% now "Y" %}
+            </span>
+
+            <span>
+                Super Admin Panel
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+    <!-- ================================================================
+         PAGE SCRIPT
+    ================================================================ -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                /*
+                 * Mobile sidebar toggle.
+                 *
+                 * Sidebar styling remains inside
+                 * super_admin_dashboard.css.
+                 */
+
+                const sidebarToggle =
+                    document.getElementById(
+                        "sidebarToggle"
+                    );
+
+                const adminSidebar =
+                    document.getElementById(
+                        "adminSidebar"
+                    );
+
+                const sidebarOverlay =
+                    document.getElementById(
+                        "sidebarOverlay"
+                    );
+
+
+                if (
+                    sidebarToggle &&
+                    adminSidebar
+                ) {
+
+                    sidebarToggle.addEventListener(
+                        "click",
+                        function () {
+
+                            adminSidebar.classList.toggle(
+                                "sidebar-open"
+                            );
+
+
+                            if (sidebarOverlay) {
+
+                                sidebarOverlay.classList.toggle(
+                                    "show"
+                                );
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                if (
+                    sidebarOverlay &&
+                    adminSidebar
+                ) {
+
+                    sidebarOverlay.addEventListener(
+                        "click",
+                        function () {
+
+                            adminSidebar.classList.remove(
+                                "sidebar-open"
+                            );
+
+                            sidebarOverlay.classList.remove(
+                                "show"
+                            );
+
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

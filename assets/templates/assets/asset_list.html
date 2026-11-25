@@ -4,6 +4,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -13,15 +14,37 @@
 
     <title>Asset Management | ITARMS</title>
 
+
+    <!-- =========================================================
+         BOOTSTRAP
+    ========================================================== -->
+
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- =========================================================
+         SHARED SUPER ADMIN CSS
+    ========================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
+
     <style>
+
         /* =========================================================
-           ITARMS ASSET LIST
-           Complete page-specific styling
+           ITARMS ASSET MANAGEMENT
+           Page-specific styling
         ========================================================= */
 
         :root {
@@ -36,6 +59,7 @@
             --warning-soft: #fff7ed;
 
             --danger: #dc2626;
+            --danger-dark: #b91c1c;
             --danger-soft: #fef2f2;
 
             --purple: #7c3aed;
@@ -46,6 +70,7 @@
 
             --text: #334155;
             --muted: #64748b;
+
             --border: #e2e8f0;
             --background: #f4f7fb;
             --white: #ffffff;
@@ -57,23 +82,26 @@
                 0 12px 30px rgba(15, 23, 42, 0.08);
 
             --shadow-lg:
-                0 24px 60px rgba(15, 23, 42, 0.12);
+                0 24px 60px rgba(15, 23, 42, 0.10);
 
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 22px;
         }
 
+
+        /* =========================================================
+           GLOBAL
+        ========================================================== */
+
         * {
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
 
         body {
             margin: 0;
+
             min-height: 100vh;
 
             font-family:
@@ -90,12 +118,12 @@
             background:
                 radial-gradient(
                     circle at 10% 10%,
-                    rgba(37, 99, 235, 0.08),
+                    rgba(37, 99, 235, 0.055),
                     transparent 28%
                 ),
                 radial-gradient(
                     circle at 90% 5%,
-                    rgba(124, 58, 237, 0.07),
+                    rgba(124, 58, 237, 0.045),
                     transparent 25%
                 ),
                 linear-gradient(
@@ -105,9 +133,16 @@
                 );
         }
 
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+
         a {
             text-decoration: none;
         }
+
 
         button,
         input,
@@ -115,19 +150,42 @@
             font-family: inherit;
         }
 
-        /* =========================================================
-           PAGE WRAPPER
-        ========================================================= */
 
-        .asset-page {
-            width: min(1700px, calc(100% - 36px));
-            margin: 0 auto;
-            padding: 30px 0 50px;
+        /* =========================================================
+           MAIN CONTENT LAYOUT
+        ========================================================== */
+
+        .main-content {
+            margin-left: 250px !important;
+
+            width: calc(100% - 250px) !important;
+
+            min-width: 0 !important;
+            max-width: none !important;
+
+            box-sizing: border-box !important;
+
+            overflow-x: hidden;
         }
 
+
         /* =========================================================
-           TOP HEADER
-        ========================================================= */
+           ASSET PAGE
+        ========================================================== */
+
+        .asset-page {
+            width: 100%;
+            max-width: 1700px;
+
+            margin: 0 auto;
+
+            padding: 28px 28px 45px;
+        }
+
+
+        /* =========================================================
+           PAGE HEADER
+        ========================================================== */
 
         .asset-header {
             position: relative;
@@ -142,7 +200,8 @@
 
             margin-bottom: 20px;
 
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+
             border-radius: var(--radius-lg);
 
             background:
@@ -158,6 +217,7 @@
 
             overflow: hidden;
         }
+
 
         .asset-header::before {
             content: "";
@@ -182,14 +242,19 @@
             pointer-events: none;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
 
+        .header-left {
             position: relative;
             z-index: 1;
+
+            display: flex;
+            align-items: center;
+
+            gap: 16px;
+
+            min-width: 0;
         }
+
 
         .header-icon {
             width: 54px;
@@ -205,9 +270,6 @@
 
             color: #ffffff;
 
-            font-size: 23px;
-            font-weight: 700;
-
             background:
                 linear-gradient(
                     145deg,
@@ -219,8 +281,9 @@
                 0 10px 22px rgba(37, 99, 235, 0.28),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3);
 
-            transform: translateY(-1px);
+            font-size: 22px;
         }
+
 
         .header-kicker {
             margin-bottom: 3px;
@@ -231,8 +294,10 @@
             font-weight: 800;
 
             letter-spacing: 1.4px;
+
             text-transform: uppercase;
         }
+
 
         .header-title {
             margin: 0;
@@ -240,10 +305,12 @@
             color: var(--dark);
 
             font-size: clamp(22px, 2.2vw, 30px);
+
             font-weight: 800;
 
             letter-spacing: -0.7px;
         }
+
 
         .header-description {
             margin: 5px 0 0;
@@ -251,8 +318,10 @@
             color: var(--muted);
 
             font-size: 13px;
+
             line-height: 1.5;
         }
+
 
         .header-actions {
             position: relative;
@@ -260,12 +329,14 @@
 
             display: flex;
             align-items: center;
+
             gap: 10px;
         }
 
+
         /* =========================================================
            BUTTONS
-        ========================================================= */
+        ========================================================== */
 
         .crud-btn {
             min-height: 42px;
@@ -279,6 +350,7 @@
             padding: 10px 17px;
 
             border: 0;
+
             border-radius: 11px;
 
             font-size: 13px;
@@ -292,9 +364,11 @@
                 background 0.2s ease;
         }
 
+
         .crud-btn:hover {
             transform: translateY(-2px);
         }
+
 
         .crud-btn-primary {
             color: #ffffff;
@@ -311,6 +385,7 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.25);
         }
 
+
         .crud-btn-primary:hover {
             color: #ffffff;
 
@@ -318,23 +393,27 @@
                 0 12px 25px rgba(37, 99, 235, 0.32);
         }
 
+
         .btn-icon {
-            font-size: 18px;
+            font-size: 17px;
             line-height: 1;
         }
 
+
         /* =========================================================
            ALERTS
-        ========================================================= */
+        ========================================================== */
 
         .page-alerts {
             margin-bottom: 18px;
         }
 
+
         .page-alert {
             margin-bottom: 10px;
 
             border: 1px solid;
+
             border-radius: 13px;
 
             box-shadow: var(--shadow-sm);
@@ -343,30 +422,37 @@
             font-weight: 600;
         }
 
+
         .page-alert.alert-success {
             color: #166534;
 
             background: var(--success-soft);
+
             border-color: #bbf7d0;
         }
+
 
         .page-alert.alert-danger {
             color: #991b1b;
 
             background: var(--danger-soft);
+
             border-color: #fecaca;
         }
+
 
         .page-alert.alert-info {
             color: #1e40af;
 
             background: var(--primary-soft);
+
             border-color: #bfdbfe;
         }
 
+
         /* =========================================================
            MAIN CRUD CONTAINER
-        ========================================================= */
+        ========================================================== */
 
         .crud-container {
             position: relative;
@@ -374,12 +460,14 @@
             overflow: hidden;
 
             border: 1px solid rgba(255, 255, 255, 0.9);
+
             border-radius: var(--radius-lg);
 
             background: rgba(255, 255, 255, 0.97);
 
             box-shadow: var(--shadow-lg);
         }
+
 
         .crud-container::before {
             content: "";
@@ -401,9 +489,10 @@
                 );
         }
 
+
         /* =========================================================
            CONTROL BAR
-        ========================================================= */
+        ========================================================== */
 
         .crud-controls {
             padding: 24px 24px 20px;
@@ -418,6 +507,7 @@
                 );
         }
 
+
         .controls-heading {
             display: flex;
             align-items: center;
@@ -428,12 +518,14 @@
             margin-bottom: 18px;
         }
 
+
         .controls-title-wrap {
             display: flex;
             align-items: center;
 
             gap: 11px;
         }
+
 
         .controls-icon {
             width: 38px;
@@ -450,8 +542,8 @@
             background: var(--primary-soft);
 
             font-size: 18px;
-            font-weight: 800;
         }
+
 
         .controls-title {
             margin: 0;
@@ -462,6 +554,7 @@
             font-weight: 800;
         }
 
+
         .controls-subtitle {
             margin: 3px 0 0;
 
@@ -469,6 +562,7 @@
 
             font-size: 12px;
         }
+
 
         .record-summary {
             display: flex;
@@ -481,6 +575,7 @@
             font-size: 12px;
             font-weight: 600;
         }
+
 
         .record-count {
             min-width: 30px;
@@ -502,9 +597,10 @@
             font-weight: 800;
         }
 
+
         /* =========================================================
            FILTER FORM
-        ========================================================= */
+        ========================================================== */
 
         .filter-grid {
             display: grid;
@@ -521,9 +617,11 @@
             align-items: end;
         }
 
+
         .filter-field {
             min-width: 0;
         }
+
 
         .filter-label {
             display: block;
@@ -536,12 +634,15 @@
             font-weight: 800;
 
             letter-spacing: 0.4px;
+
             text-transform: uppercase;
         }
+
 
         .input-wrap {
             position: relative;
         }
+
 
         .search-symbol {
             position: absolute;
@@ -553,10 +654,11 @@
 
             color: #94a3b8;
 
-            font-size: 17px;
+            font-size: 16px;
 
             pointer-events: none;
         }
+
 
         .filter-input,
         .filter-select {
@@ -566,6 +668,7 @@
             padding: 9px 12px;
 
             border: 1px solid #dbe3ee;
+
             border-radius: 10px;
 
             outline: none;
@@ -584,13 +687,16 @@
                 box-shadow 0.2s ease;
         }
 
+
         .filter-input.search-input {
             padding-left: 39px;
         }
 
+
         .filter-input::placeholder {
             color: #a0aec0;
         }
+
 
         .filter-input:focus,
         .filter-select:focus {
@@ -600,10 +706,13 @@
                 0 0 0 3px rgba(59, 130, 246, 0.11);
         }
 
+
         .filter-actions {
             display: flex;
+
             gap: 8px;
         }
+
 
         .filter-submit {
             height: 43px;
@@ -611,6 +720,7 @@
             padding: 0 18px;
 
             border: 0;
+
             border-radius: 10px;
 
             color: #ffffff;
@@ -635,12 +745,14 @@
                 box-shadow 0.2s ease;
         }
 
+
         .filter-submit:hover {
             transform: translateY(-1px);
 
             box-shadow:
                 0 10px 20px rgba(37, 99, 235, 0.27);
         }
+
 
         .filter-reset {
             height: 43px;
@@ -652,6 +764,7 @@
             padding: 0 15px;
 
             border: 1px solid #dbe3ee;
+
             border-radius: 10px;
 
             color: #475569;
@@ -666,16 +779,19 @@
                 border-color 0.2s ease;
         }
 
+
         .filter-reset:hover {
             color: var(--dark);
 
             background: #f8fafc;
+
             border-color: #cbd5e1;
         }
 
+
         /* =========================================================
-           LIVE SEARCH INDICATOR
-        ========================================================= */
+           LIVE SEARCH
+        ========================================================== */
 
         .live-search-info {
             min-height: 20px;
@@ -687,13 +803,15 @@
             font-size: 11px;
         }
 
+
         .live-search-info strong {
             color: var(--primary);
         }
 
+
         /* =========================================================
-           TABLE HEADER
-        ========================================================= */
+           TABLE TOOLBAR
+        ========================================================== */
 
         .table-toolbar {
             display: flex;
@@ -709,6 +827,7 @@
             background: #ffffff;
         }
 
+
         .inventory-title {
             display: flex;
             align-items: center;
@@ -723,6 +842,7 @@
             font-weight: 800;
         }
 
+
         .inventory-dot {
             width: 9px;
             height: 9px;
@@ -735,6 +855,7 @@
                 0 0 0 5px rgba(37, 99, 235, 0.09);
         }
 
+
         .toolbar-note {
             color: var(--muted);
 
@@ -742,14 +863,17 @@
             font-weight: 600;
         }
 
+
         /* =========================================================
            TABLE
-        ========================================================= */
+        ========================================================== */
 
         .table-wrapper {
             width: 100%;
+
             overflow-x: auto;
         }
+
 
         .asset-table {
             width: 100%;
@@ -759,8 +883,10 @@
             margin: 0;
 
             border-collapse: separate;
+
             border-spacing: 0;
         }
+
 
         .asset-table thead th {
             padding: 13px 15px;
@@ -780,10 +906,12 @@
             font-weight: 800;
 
             letter-spacing: 0.7px;
+
             text-transform: uppercase;
 
             white-space: nowrap;
         }
+
 
         .asset-table tbody td {
             padding: 15px;
@@ -803,26 +931,31 @@
                 background 0.18s ease;
         }
 
+
         .asset-table tbody tr:last-child td {
             border-bottom: 0;
         }
 
+
         .asset-table tbody tr:hover td {
             background: #f8fbff;
         }
+
 
         .asset-table tbody tr {
             transition:
                 transform 0.18s ease;
         }
 
+
         .asset-table tbody tr:hover {
             transform: translateX(1px);
         }
 
+
         /* =========================================================
            ASSET CELLS
-        ========================================================= */
+        ========================================================== */
 
         .asset-id {
             display: inline-flex;
@@ -842,6 +975,14 @@
             letter-spacing: 0.2px;
         }
 
+
+        .asset-id:hover {
+            color: #1e40af;
+
+            background: #dbeafe;
+        }
+
+
         .asset-name {
             max-width: 220px;
 
@@ -851,9 +992,12 @@
             font-weight: 750;
 
             white-space: nowrap;
+
             overflow: hidden;
+
             text-overflow: ellipsis;
         }
+
 
         .asset-secondary {
             color: #94a3b8;
@@ -861,14 +1005,17 @@
             font-size: 11px;
         }
 
+
         .cell-main {
             color: #334155;
+
             font-weight: 650;
         }
 
+
         /* =========================================================
            STATUS BADGES
-        ========================================================= */
+        ========================================================== */
 
         .status-badge {
             display: inline-flex;
@@ -888,6 +1035,7 @@
             white-space: nowrap;
         }
 
+
         .status-badge::before {
             content: "";
 
@@ -902,39 +1050,52 @@
                 0 0 0 3px rgba(255, 255, 255, 0.7);
         }
 
+
         .status-available {
             color: #15803d;
+
             background: #ecfdf3;
         }
 
+
         .status-assigned {
             color: #1d4ed8;
+
             background: #eff6ff;
         }
 
+
         .status-maintenance {
             color: #b45309;
+
             background: #fff7ed;
         }
+
 
         .status-damaged {
             color: #c2410c;
+
             background: #fff7ed;
         }
 
+
         .status-lost {
             color: #b91c1c;
+
             background: #fef2f2;
         }
 
+
         .status-neutral {
             color: #475569;
+
             background: #f1f5f9;
         }
 
+
         /* =========================================================
            ACTIONS
-        ========================================================= */
+        ========================================================== */
 
         .action-group {
             display: flex;
@@ -945,6 +1106,7 @@
             white-space: nowrap;
         }
 
+
         .action-btn {
             min-height: 32px;
 
@@ -952,9 +1114,12 @@
             align-items: center;
             justify-content: center;
 
+            gap: 5px;
+
             padding: 6px 10px;
 
             border: 1px solid #dbe3ee;
+
             border-radius: 8px;
 
             color: #475569;
@@ -968,6 +1133,7 @@
                 all 0.18s ease;
         }
 
+
         .action-btn:hover {
             color: #1d4ed8;
 
@@ -978,6 +1144,7 @@
             transform: translateY(-1px);
         }
 
+
         .action-btn-edit {
             color: #6d28d9;
 
@@ -985,6 +1152,7 @@
 
             background: #faf5ff;
         }
+
 
         .action-btn-edit:hover {
             color: #5b21b6;
@@ -994,9 +1162,343 @@
             background: #f5f3ff;
         }
 
+
+        /* =========================================================
+           DELETE ACTION
+        ========================================================== */
+
+        .action-btn-delete {
+            color: #b91c1c;
+
+            border-color: #fecaca;
+
+            background: #fff7f7;
+
+            cursor: pointer;
+        }
+
+
+        .action-btn-delete:hover {
+            color: #991b1b;
+
+            border-color: #fca5a5;
+
+            background: #fef2f2;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================================================
+           DELETE CONFIRMATION MODAL
+        ========================================================== */
+
+        .delete-modal {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 10000;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background:
+                rgba(15, 23, 42, 0.55);
+
+            backdrop-filter: blur(5px);
+
+            opacity: 0;
+
+            visibility: hidden;
+
+            pointer-events: none;
+
+            transition:
+                opacity 0.22s ease,
+                visibility 0.22s ease;
+        }
+
+
+        .delete-modal.show {
+            opacity: 1;
+
+            visibility: visible;
+
+            pointer-events: auto;
+        }
+
+
+        .delete-modal-card {
+            width: min(100%, 470px);
+
+            position: relative;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(255, 255, 255, 0.85);
+
+            border-radius: 20px;
+
+            background: #ffffff;
+
+            box-shadow:
+                0 30px 80px rgba(15, 23, 42, 0.22);
+
+            transform:
+                translateY(15px)
+                scale(0.97);
+
+            transition:
+                transform 0.22s ease;
+        }
+
+
+        .delete-modal.show .delete-modal-card {
+            transform:
+                translateY(0)
+                scale(1);
+        }
+
+
+        .delete-modal-top-line {
+            height: 4px;
+
+            width: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #ef4444,
+                    #dc2626,
+                    #b91c1c
+                );
+        }
+
+
+        .delete-modal-content {
+            padding: 28px 28px 24px;
+
+            text-align: center;
+        }
+
+
+        .delete-modal-icon {
+            width: 64px;
+            height: 64px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 17px;
+
+            border-radius: 18px;
+
+            color: #dc2626;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #fef2f2,
+                    #fee2e2
+                );
+
+            box-shadow:
+                inset 0 1px 0 #ffffff,
+                0 10px 24px rgba(220, 38, 38, 0.12);
+
+            font-size: 28px;
+        }
+
+
+        .delete-modal-title {
+            margin: 0 0 8px;
+
+            color: var(--dark);
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.3px;
+        }
+
+
+        .delete-modal-text {
+            max-width: 390px;
+
+            margin: 0 auto;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            line-height: 1.65;
+        }
+
+
+        .delete-asset-preview {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin: 20px 0 0;
+
+            padding: 13px 15px;
+
+            border: 1px solid #fee2e2;
+
+            border-radius: 12px;
+
+            text-align: left;
+
+            background: #fff7f7;
+        }
+
+
+        .delete-asset-preview-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            color: #dc2626;
+
+            background: #fee2e2;
+
+            font-size: 17px;
+        }
+
+
+        .delete-asset-preview-label {
+            margin-bottom: 2px;
+
+            color: #94a3b8;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            letter-spacing: 0.7px;
+
+            text-transform: uppercase;
+        }
+
+
+        .delete-asset-preview-name {
+            color: #7f1d1d;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            word-break: break-word;
+        }
+
+
+        .delete-modal-actions {
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            padding: 18px 28px 24px;
+
+            border-top: 1px solid #f1f5f9;
+
+            background: #fbfdff;
+        }
+
+
+        .delete-modal-btn {
+            min-height: 42px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 7px;
+
+            padding: 10px 17px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.18s ease;
+        }
+
+
+        .delete-modal-btn:hover {
+            transform: translateY(-1px);
+        }
+
+
+        .delete-modal-cancel {
+            color: #475569;
+
+            border: 1px solid #dbe3ee;
+
+            background: #ffffff;
+        }
+
+
+        .delete-modal-cancel:hover {
+            color: var(--dark);
+
+            border-color: #cbd5e1;
+
+            background: #f8fafc;
+        }
+
+
+        .delete-modal-confirm {
+            color: #ffffff;
+
+            border: 1px solid #dc2626;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ef4444,
+                    #b91c1c
+                );
+
+            box-shadow:
+                0 8px 18px rgba(220, 38, 38, 0.20);
+        }
+
+
+        .delete-modal-confirm:hover {
+            color: #ffffff;
+
+            box-shadow:
+                0 11px 23px rgba(220, 38, 38, 0.28);
+        }
+
+
         /* =========================================================
            EMPTY STATE
-        ========================================================= */
+        ========================================================== */
 
         .empty-state {
             display: none;
@@ -1007,6 +1509,7 @@
 
             background: #ffffff;
         }
+
 
         .empty-icon {
             width: 62px;
@@ -1036,6 +1539,7 @@
             font-size: 26px;
         }
 
+
         .empty-title {
             margin: 0 0 6px;
 
@@ -1045,6 +1549,7 @@
             font-weight: 800;
         }
 
+
         .empty-text {
             max-width: 430px;
 
@@ -1053,12 +1558,14 @@
             color: var(--muted);
 
             font-size: 12px;
+
             line-height: 1.6;
         }
 
+
         /* =========================================================
            PAGINATION
-        ========================================================= */
+        ========================================================== */
 
         .pagination-bar {
             display: flex;
@@ -1079,6 +1586,7 @@
                 );
         }
 
+
         .pagination-info {
             color: var(--muted);
 
@@ -1086,9 +1594,11 @@
             font-weight: 600;
         }
 
+
         .pagination-info strong {
             color: var(--dark);
         }
+
 
         .pagination-controls {
             display: flex;
@@ -1096,6 +1606,7 @@
 
             gap: 5px;
         }
+
 
         .page-btn {
             min-width: 34px;
@@ -1108,6 +1619,7 @@
             padding: 0 9px;
 
             border: 1px solid #dbe3ee;
+
             border-radius: 8px;
 
             color: #475569;
@@ -1123,6 +1635,7 @@
                 all 0.18s ease;
         }
 
+
         .page-btn:hover:not(:disabled) {
             color: var(--primary);
 
@@ -1130,6 +1643,7 @@
 
             background: #eff6ff;
         }
+
 
         .page-btn.active {
             color: #ffffff;
@@ -1147,10 +1661,13 @@
                 0 5px 12px rgba(37, 99, 235, 0.20);
         }
 
+
         .page-btn:disabled {
             opacity: 0.45;
+
             cursor: not-allowed;
         }
+
 
         .page-dots {
             display: inline-flex;
@@ -1164,9 +1681,10 @@
             font-size: 12px;
         }
 
+
         /* =========================================================
-           FOOTER
-        ========================================================= */
+           PAGE FOOTER
+        ========================================================== */
 
         .page-footer {
             display: flex;
@@ -1176,6 +1694,7 @@
             gap: 15px;
 
             margin-top: 14px;
+
             padding: 0 4px;
 
             color: #94a3b8;
@@ -1183,12 +1702,14 @@
             font-size: 10px;
         }
 
+
         .footer-status {
             display: inline-flex;
             align-items: center;
 
             gap: 6px;
         }
+
 
         .footer-status-dot {
             width: 6px;
@@ -1202,9 +1723,10 @@
                 0 0 0 3px rgba(34, 197, 94, 0.10);
         }
 
+
         /* =========================================================
            RESPONSIVE
-        ========================================================= */
+        ========================================================== */
 
         @media (max-width: 1200px) {
 
@@ -1213,90 +1735,154 @@
                     repeat(2, minmax(0, 1fr));
             }
 
+
             .filter-field.search-field {
                 grid-column: 1 / -1;
             }
+
 
             .filter-actions {
                 justify-content: flex-end;
             }
         }
 
+
         @media (max-width: 768px) {
 
-            .asset-page {
-                width: min(100% - 20px, 1700px);
-                padding-top: 15px;
+            .main-content {
+                margin-left: 0 !important;
+
+                width: 100% !important;
+
+                max-width: 100% !important;
             }
+
+
+            .asset-page {
+                width: 100%;
+
+                padding:
+                    18px 14px 35px;
+            }
+
 
             .asset-header {
                 flex-direction: column;
+
                 align-items: stretch;
 
                 padding: 20px;
             }
 
+
             .header-left {
                 align-items: flex-start;
             }
+
 
             .header-actions {
                 width: 100%;
             }
 
+
             .header-actions .crud-btn {
                 width: 100%;
             }
+
 
             .crud-controls {
                 padding: 18px;
             }
 
+
             .filter-grid {
                 grid-template-columns: 1fr;
             }
+
 
             .filter-field.search-field {
                 grid-column: auto;
             }
 
+
             .filter-actions {
                 width: 100%;
             }
+
 
             .filter-submit,
             .filter-reset {
                 flex: 1;
             }
 
+
             .table-toolbar {
+                align-items: flex-start;
+
+                flex-direction: column;
+
                 padding: 15px 18px;
             }
 
+
             .pagination-bar {
                 flex-direction: column;
+
                 align-items: stretch;
 
                 padding: 14px 18px;
             }
 
+
             .pagination-info {
                 text-align: center;
             }
 
+
             .pagination-controls {
                 justify-content: center;
+
                 flex-wrap: wrap;
             }
 
+
             .page-footer {
                 flex-direction: column;
+
                 align-items: center;
+
                 text-align: center;
+            }
+
+
+            .delete-modal-content {
+                padding: 24px 20px 20px;
+            }
+
+
+            .delete-modal-actions {
+                padding: 16px 20px 20px;
+            }
+
+
+            .delete-modal-actions .delete-modal-btn {
+                flex: 1;
             }
         }
 
+
         @media (max-width: 480px) {
+
+            .asset-page {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+
+            .asset-header {
+                padding: 17px;
+            }
+
 
             .header-icon {
                 width: 46px;
@@ -1305,22 +1891,28 @@
                 font-size: 19px;
             }
 
+
             .header-title {
                 font-size: 21px;
             }
+
 
             .header-description {
                 font-size: 12px;
             }
 
+
             .controls-heading {
                 align-items: flex-start;
+
                 flex-direction: column;
             }
+
 
             .record-summary {
                 align-self: flex-start;
             }
+
 
             .page-btn {
                 min-width: 31px;
@@ -1328,675 +1920,1182 @@
 
                 padding: 0 7px;
             }
+
+
+            .delete-modal {
+                padding: 12px;
+            }
+
+
+            .delete-modal-title {
+                font-size: 18px;
+            }
+
+
+            .delete-modal-text {
+                font-size: 12px;
+            }
+
+
+            .delete-modal-actions {
+                flex-direction: column-reverse;
+            }
+
+
+            .delete-modal-actions .delete-modal-btn {
+                width: 100%;
+            }
         }
+
     </style>
+
 </head>
+
 
 <body>
 
-<div class="asset-page">
+
+<div class="dashboard-layout">
+
 
     <!-- =====================================================
-         PAGE HEADER
+         SHARED SUPER ADMIN SIDEBAR
     ====================================================== -->
 
-    <header class="asset-header">
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
 
-        <div class="header-left">
+        <div class="sidebar-brand">
 
-            <div class="header-icon">
-                ▦
+            <h2 class="brand-title">
+                ITARMS
+            </h2>
+
+            <div class="brand-subtitle">
+                Super Admin Panel
             </div>
 
-            <div>
+        </div>
 
-                <div class="header-kicker">
-                    ITARMS / Asset Management
+
+        <!-- CURRENT USER -->
+
+        <div class="sidebar-user">
+
+            <div class="sidebar-user-inner">
+
+                <div class="user-avatar">
+                    <i class="bi bi-shield-lock-fill"></i>
                 </div>
 
-                <h1 class="header-title">
-                    Asset Management
-                </h1>
+                <div class="user-details">
 
-                <p class="header-description">
-                    Manage, monitor and maintain your organization's
-                    IT assets from one centralized workspace.
-                </p>
+                    <div class="user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Super Administrator
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
-        {% if can_manage %}
 
-            <div class="header-actions">
+        <!-- SIDEBAR NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <!-- MAIN -->
+
+            <div class="sidebar-section-title">
+                Main
+            </div>
+
+
+            <a
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+
+            <!-- MANAGEMENT -->
+
+            <div class="sidebar-section-title">
+                Management
+            </div>
+
+
+            <!-- IT ASSETS -->
+
+            {% url 'asset_list' as asset_list_url %}
+
+            {% if asset_list_url %}
 
                 <a
-                    href="{% url 'asset_create' %}"
-                    class="crud-btn crud-btn-primary"
+                    href="{{ asset_list_url }}"
+                    class="sidebar-link active"
                 >
-                    <span class="btn-icon">＋</span>
-                    Add New Asset
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
                 </a>
 
+            {% endif %}
+
+
+            <!-- ASSET ASSIGNMENTS -->
+
+            {% url 'admin_assignment_list' as assignment_list_url %}
+
+            {% if assignment_list_url %}
+
+                <a
+                    href="{{ assignment_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- ASSET REQUESTS -->
+
+            {% url 'admin_asset_requests' as asset_requests_url %}
+
+            {% if asset_requests_url %}
+
+                <a
+                    href="{{ asset_requests_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- DAMAGED / LOST -->
+
+            {% url 'admin_asset_incident_list' as incident_list_url %}
+
+            {% if incident_list_url %}
+
+                <a
+                    href="{{ incident_list_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+            {% endif %}
+
+
+            <!-- MAINTENANCE -->
+
+            {% url 'maintenance_list' as maintenance_url %}
+
+            {% if maintenance_url %}
+
+                <a
+                    href="{{ maintenance_url }}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance</span>
+                </a>
+
+            {% endif %}
+
+                        <!-- SOFTWARE LICENSES -->
+
+            <a
+                href="{% url 'software_license_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-key-fill"></i>
+                <span>Software Licenses</span>
+            </a>
+
+
+            <!-- DEPARTMENTS -->
+
+            <a
+                href="{% url 'super_admin_department_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-building-fill"></i>
+                <span>Departments</span>
+            </a>
+
+
+            <!-- REPORTS -->
+
+            <a
+                href="{% url 'reports:home' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <span>Reports &amp; Analytics</span>
+            </a>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <a
+                href="{% url 'notifications:list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bell-fill"></i>
+                <span>Notifications</span>
+            </a>
+
+
+            <!-- SYSTEM -->
+
+            <div class="sidebar-section-title">
+                System
             </div>
 
-        {% endif %}
-
-    </header>
+        </nav>
 
 
-    <!-- =====================================================
-         MESSAGES
-    ====================================================== -->
+        <div class="sidebar-spacer"></div>
 
-    {% if messages %}
 
-        <div class="page-alerts">
+        <!-- LOGOUT -->
 
-            {% for message in messages %}
+        <div class="sidebar-bottom">
 
-                <div
-                    class="alert page-alert
-                    {% if message.tags == 'error' %}
-                        alert-danger
-                    {% elif message.tags == 'success' %}
-                        alert-success
-                    {% else %}
-                        alert-info
-                    {% endif %}
-                    alert-dismissible fade show"
-                    role="alert"
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
                 >
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </button>
 
-                    {{ message }}
-
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                    ></button>
-
-                </div>
-
-            {% endfor %}
+            </form>
 
         </div>
 
-    {% endif %}
+    </aside>
 
 
-    <!-- =====================================================
-         MAIN CRUD PAGE
-    ====================================================== -->
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
 
-    <main class="crud-container">
+    <main class="main-content">
 
-        <!-- FILTER / SEARCH AREA -->
 
-        <section class="crud-controls">
+        <div class="asset-page">
 
-            <div class="controls-heading">
 
-                <div class="controls-title-wrap">
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
 
-                    <div class="controls-icon">
-                        ⌕
+            <header class="asset-header">
+
+                <div class="header-left">
+
+                    <div class="header-icon">
+
+                        <i class="bi bi-pc-display"></i>
+
                     </div>
+
 
                     <div>
 
-                        <h2 class="controls-title">
-                            Search & Filter
-                        </h2>
+                        <div class="header-kicker">
+                            ITARMS / Asset Management
+                        </div>
 
-                        <p class="controls-subtitle">
-                            Quickly find and organize asset records.
+
+                        <h1 class="header-title">
+                            Asset Management
+                        </h1>
+
+
+                        <p class="header-description">
+                            Manage, monitor and maintain your organization's
+                            IT assets from one centralized workspace.
                         </p>
 
                     </div>
 
                 </div>
 
-                <div class="record-summary">
 
-                    <span>
-                        Total Records
-                    </span>
+                {% if can_manage %}
 
-                    <span
-                        class="record-count"
-                        id="totalRecordCount"
-                    >
-                        0
-                    </span>
+                    <div class="header-actions">
+
+                        <a
+                            href="{% url 'asset_create' %}"
+                            class="crud-btn crud-btn-primary"
+                        >
+
+                            <span class="btn-icon">
+                                <i class="bi bi-plus-lg"></i>
+                            </span>
+
+                            Add New Asset
+
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </header>
+
+
+            <!-- =================================================
+                 MESSAGES
+            ================================================== -->
+
+            {% if messages %}
+
+                <div class="page-alerts">
+
+                    {% for message in messages %}
+
+                        <div
+                            class="alert page-alert
+                            {% if message.tags == 'error' %}
+                                alert-danger
+                            {% elif message.tags == 'success' %}
+                                alert-success
+                            {% else %}
+                                alert-info
+                            {% endif %}
+                            alert-dismissible fade show"
+                            role="alert"
+                        >
+
+                            {{ message }}
+
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                            ></button>
+
+                        </div>
+
+                    {% endfor %}
 
                 </div>
 
-            </div>
+            {% endif %}
 
 
-            <!-- SERVER-SIDE FILTER FORM -->
+            <!-- =================================================
+                 MAIN CRUD CONTAINER
+            ================================================== -->
 
-            <form
-                method="get"
-                id="assetFilterForm"
-            >
+            <main class="crud-container">
 
-                <div class="filter-grid">
 
-                    <!-- SEARCH -->
+                <!-- FILTER / SEARCH AREA -->
 
-                    <div class="filter-field search-field">
+                <section class="crud-controls">
 
-                        <label
-                            for="liveSearch"
-                            class="filter-label"
-                        >
-                            Search Assets
-                        </label>
 
-                        <div class="input-wrap">
+                    <div class="controls-heading">
 
-                            <span class="search-symbol">
-                                ⌕
+                        <div class="controls-title-wrap">
+
+                            <div class="controls-icon">
+
+                                <i class="bi bi-search"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <h2 class="controls-title">
+                                    Search &amp; Filter
+                                </h2>
+
+
+                                <p class="controls-subtitle">
+                                    Quickly find and organize asset records.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="record-summary">
+
+                            <span>
+                                Total Records
                             </span>
 
-                            <input
-                                type="text"
-                                id="liveSearch"
-                                name="q"
-                                value="{{ search_query }}"
-                                class="filter-input search-input"
-                                placeholder="Search by ID, name, serial number, brand, model, department..."
-                                autocomplete="off"
+
+                            <span
+                                class="record-count"
+                                id="totalRecordCount"
                             >
+                                0
+                            </span>
 
                         </div>
 
                     </div>
 
 
-                    <!-- CATEGORY -->
+                    <!-- SERVER-SIDE FILTER FORM -->
 
-                    <div class="filter-field">
+                    <form
+                        method="get"
+                        id="assetFilterForm"
+                    >
 
-                        <label
-                            for="categoryFilter"
-                            class="filter-label"
-                        >
-                            Category
-                        </label>
+                        <div class="filter-grid">
 
-                        <select
-                            id="categoryFilter"
-                            name="category"
-                            class="filter-select"
-                        >
 
-                            <option value="">
-                                All Categories
-                            </option>
+                            <!-- SEARCH -->
 
-                            {% for value, label in categories %}
+                            <div class="filter-field search-field">
 
-                                <option
-                                    value="{{ value }}"
-                                    {% if selected_category == value %}
-                                        selected
-                                    {% endif %}
+                                <label
+                                    for="liveSearch"
+                                    class="filter-label"
                                 >
-                                    {{ label }}
-                                </option>
+                                    Search Assets
+                                </label>
 
-                            {% endfor %}
 
-                        </select>
+                                <div class="input-wrap">
 
-                    </div>
+                                    <span class="search-symbol">
 
+                                        <i class="bi bi-search"></i>
 
-                    <!-- STATUS -->
+                                    </span>
 
-                    <div class="filter-field">
 
-                        <label
-                            for="statusFilter"
-                            class="filter-label"
-                        >
-                            Status
-                        </label>
+                                    <input
+                                        type="text"
+                                        id="liveSearch"
+                                        name="q"
+                                        value="{{ search_query }}"
+                                        class="filter-input search-input"
+                                        placeholder="Search by ID, name, serial number, brand, model, department..."
+                                        autocomplete="off"
+                                    >
 
-                        <select
-                            id="statusFilter"
-                            name="status"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                All Statuses
-                            </option>
-
-                            {% for value, label in statuses %}
-
-                                <option
-                                    value="{{ value }}"
-                                    {% if selected_status == value %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    {{ label }}
-                                </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- CONDITION -->
-
-                    <div class="filter-field">
-
-                        <label
-                            for="conditionFilter"
-                            class="filter-label"
-                        >
-                            Condition
-                        </label>
-
-                        <select
-                            id="conditionFilter"
-                            name="condition"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                All Conditions
-                            </option>
-
-                            {% for value, label in conditions %}
-
-                                <option
-                                    value="{{ value }}"
-                                    {% if selected_condition == value %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    {{ label }}
-                                </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- ACTIONS -->
-
-                    <div class="filter-actions">
-
-                        <button
-                            type="submit"
-                            class="filter-submit"
-                        >
-                            Apply
-                        </button>
-
-                        <a
-                            href="{% url 'asset_list' %}"
-                            class="filter-reset"
-                        >
-                            Reset
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </form>
-
-
-            <div
-                class="live-search-info"
-                id="liveSearchInfo"
-            >
-                Showing all loaded asset records.
-            </div>
-
-        </section>
-
-
-        <!-- TABLE TOOLBAR -->
-
-        <div class="table-toolbar">
-
-            <h2 class="inventory-title">
-
-                <span class="inventory-dot"></span>
-
-                Asset Inventory
-
-            </h2>
-
-            <span class="toolbar-note">
-                Manage and review current asset records
-            </span>
-
-        </div>
-
-
-        <!-- =================================================
-             ASSET TABLE
-        ================================================== -->
-
-        <div class="table-wrapper">
-
-            <table
-                class="asset-table"
-                id="assetTable"
-            >
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Asset ID
-                        </th>
-
-                        <th>
-                            Asset Name
-                        </th>
-
-                        <th>
-                            Category
-                        </th>
-
-                        <th>
-                            Brand / Model
-                        </th>
-
-                        <th>
-                            Serial Number
-                        </th>
-
-                        <th>
-                            Department
-                        </th>
-
-                        <th>
-                            Condition
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                        <th>
-                            Actions
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="assetTableBody">
-
-                    {% for asset in assets %}
-
-                        <tr class="asset-row">
-
-                            <!-- ASSET ID -->
-
-                            <td>
-
-                                <a
-                                    href="{% url 'asset_detail' asset.id %}"
-                                    class="asset-id"
-                                >
-                                    {{ asset.asset_id }}
-                                </a>
-
-                            </td>
-
-
-                            <!-- ASSET NAME -->
-
-                            <td>
-
-                                <div
-                                    class="asset-name"
-                                    title="{{ asset.asset_name }}"
-                                >
-                                    {{ asset.asset_name }}
                                 </div>
 
-                            </td>
+                            </div>
 
 
                             <!-- CATEGORY -->
 
-                            <td>
+                            <div class="filter-field">
 
-                                <span class="cell-main">
-                                    {{ asset.get_category_display }}
-                                </span>
-
-                            </td>
-
-
-                            <!-- BRAND / MODEL -->
-
-                            <td>
-
-                                <span class="cell-main">
-                                    {{ asset.brand_model }}
-                                </span>
-
-                            </td>
+                                <label
+                                    for="categoryFilter"
+                                    class="filter-label"
+                                >
+                                    Category
+                                </label>
 
 
-                            <!-- SERIAL -->
+                                <select
+                                    id="categoryFilter"
+                                    name="category"
+                                    class="filter-select"
+                                >
 
-                            <td>
-
-                                <span class="cell-main">
-                                    {{ asset.serial_number }}
-                                </span>
-
-                            </td>
-
-
-                            <!-- DEPARTMENT -->
-
-                            <td>
-
-                                {% if asset.department %}
-
-                                    <span class="cell-main">
-                                        {{ asset.department.name }}
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="asset-secondary">
-                                        Not assigned
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
+                                    <option value="">
+                                        All Categories
+                                    </option>
 
 
-                            <!-- CONDITION -->
+                                    {% for value, label in categories %}
 
-                            <td>
+                                        <option
+                                            value="{{ value }}"
+                                            {% if selected_category == value %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ label }}
+                                        </option>
 
-                                <span class="cell-main">
-                                    {{ asset.get_condition_display }}
-                                </span>
+                                    {% endfor %}
 
-                            </td>
+                                </select>
+
+                            </div>
 
 
                             <!-- STATUS -->
 
-                            <td>
+                            <div class="filter-field">
 
-                                {% if asset.status == "AVAILABLE" %}
+                                <label
+                                    for="statusFilter"
+                                    class="filter-label"
+                                >
+                                    Status
+                                </label>
 
-                                    <span class="status-badge status-available">
-                                        {{ asset.get_status_display }}
-                                    </span>
 
-                                {% elif asset.status == "ASSIGNED" %}
+                                <select
+                                    id="statusFilter"
+                                    name="status"
+                                    class="filter-select"
+                                >
 
-                                    <span class="status-badge status-assigned">
-                                        {{ asset.get_status_display }}
-                                    </span>
+                                    <option value="">
+                                        All Statuses
+                                    </option>
 
-                                {% elif asset.status == "UNDER_MAINTENANCE" %}
 
-                                    <span class="status-badge status-maintenance">
-                                        {{ asset.get_status_display }}
-                                    </span>
+                                    {% for value, label in statuses %}
 
-                                {% elif asset.status == "DAMAGED" %}
+                                        <option
+                                            value="{{ value }}"
+                                            {% if selected_status == value %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ label }}
+                                        </option>
 
-                                    <span class="status-badge status-damaged">
-                                        {{ asset.get_status_display }}
-                                    </span>
+                                    {% endfor %}
 
-                                {% elif asset.status == "LOST" %}
+                                </select>
 
-                                    <span class="status-badge status-lost">
-                                        {{ asset.get_status_display }}
-                                    </span>
+                            </div>
 
-                                {% else %}
 
-                                    <span class="status-badge status-neutral">
-                                        {{ asset.get_status_display }}
-                                    </span>
+                            <!-- CONDITION -->
 
-                                {% endif %}
+                            <div class="filter-field">
 
-                            </td>
+                                <label
+                                    for="conditionFilter"
+                                    class="filter-label"
+                                >
+                                    Condition
+                                </label>
+
+
+                                <select
+                                    id="conditionFilter"
+                                    name="condition"
+                                    class="filter-select"
+                                >
+
+                                    <option value="">
+                                        All Conditions
+                                    </option>
+
+
+                                    {% for value, label in conditions %}
+
+                                        <option
+                                            value="{{ value }}"
+                                            {% if selected_condition == value %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ label }}
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
 
 
                             <!-- ACTIONS -->
 
-                            <td>
+                            <div class="filter-actions">
 
-                                <div class="action-group">
+                                <button
+                                    type="submit"
+                                    class="filter-submit"
+                                >
 
-                                    <a
-                                        href="{% url 'asset_detail' asset.id %}"
-                                        class="action-btn"
-                                    >
-                                        View
-                                    </a>
+                                    <i class="bi bi-funnel-fill me-1"></i>
 
-                                    {% if can_manage %}
+                                    Apply
 
-                                        <a
-                                            href="{% url 'asset_update' asset.id %}"
-                                            class="action-btn action-btn-edit"
-                                        >
-                                            Edit
-                                        </a>
-
-                                    {% endif %}
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                    {% empty %}
-
-                        <!-- Django-side empty state -->
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
+                                </button>
 
 
-            <!-- JAVASCRIPT EMPTY / NO SEARCH RESULTS -->
+                                <a
+                                    href="{% url 'asset_list' %}"
+                                    class="filter-reset"
+                                >
 
-            <div
-                class="empty-state"
-                id="emptyState"
-            >
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i>
 
-                <div class="empty-icon">
-                    ◇
+                                    Reset
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+
+                    <div
+                        class="live-search-info"
+                        id="liveSearchInfo"
+                    >
+                        Showing all loaded asset records.
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     TABLE TOOLBAR
+                ================================================== -->
+
+                <div class="table-toolbar">
+
+                    <h2 class="inventory-title">
+
+                        <span class="inventory-dot"></span>
+
+                        Asset Inventory
+
+                    </h2>
+
+
+                    <span class="toolbar-note">
+                        Manage and review current asset records
+                    </span>
+
                 </div>
 
-                <h3 class="empty-title">
-                    No Assets Found
-                </h3>
 
-                <p class="empty-text">
-                    No asset records match your current search.
-                    Try another keyword or reset the filters.
-                </p>
+                <!-- =================================================
+                     ASSET TABLE
+                ================================================== -->
 
-            </div>
+                <div class="table-wrapper">
 
-        </div>
+                    <table
+                        class="asset-table"
+                        id="assetTable"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Asset ID
+                                </th>
+
+                                <th>
+                                    Asset Name
+                                </th>
+
+                                <th>
+                                    Category
+                                </th>
+
+                                <th>
+                                    Brand / Model
+                                </th>
+
+                                <th>
+                                    Serial Number
+                                </th>
+
+                                <th>
+                                    Department
+                                </th>
+
+                                <th>
+                                    Condition
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
 
 
-        <!-- =================================================
-             PAGINATION
-        ================================================== -->
+                        <tbody id="assetTableBody">
 
-        <div
-            class="pagination-bar"
-            id="paginationBar"
-        >
+                            {% for asset in assets %}
 
-            <div
-                class="pagination-info"
-                id="paginationInfo"
-            >
-                Showing 0 of 0 records
-            </div>
+                                <tr class="asset-row">
 
-            <div
-                class="pagination-controls"
-                id="paginationControls"
-            ></div>
+
+                                    <!-- ASSET ID -->
+
+                                    <td>
+
+                                        <a
+                                            href="{% url 'asset_detail' asset.id %}"
+                                            class="asset-id"
+                                        >
+
+                                            <i class="bi bi-hash me-1"></i>
+
+                                            {{ asset.asset_id }}
+
+                                        </a>
+
+                                    </td>
+
+
+                                    <!-- ASSET NAME -->
+
+                                    <td>
+
+                                        <div
+                                            class="asset-name"
+                                            title="{{ asset.asset_name }}"
+                                        >
+                                            {{ asset.asset_name }}
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- CATEGORY -->
+
+                                    <td>
+
+                                        <span class="cell-main">
+                                            {{ asset.get_category_display }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- BRAND / MODEL -->
+
+                                    <td>
+
+                                        <span class="cell-main">
+                                            {{ asset.brand_model }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- SERIAL -->
+
+                                    <td>
+
+                                        <span class="cell-main">
+                                            {{ asset.serial_number }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- DEPARTMENT -->
+
+                                    <td>
+
+                                        {% if asset.department %}
+
+                                            <span class="cell-main">
+                                                {{ asset.department.name }}
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="asset-secondary">
+                                                Not assigned
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- CONDITION -->
+
+                                    <td>
+
+                                        <span class="cell-main">
+                                            {{ asset.get_condition_display }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+                                        {% if asset.status == "AVAILABLE" %}
+
+                                            <span class="status-badge status-available">
+                                                {{ asset.get_status_display }}
+                                            </span>
+
+                                        {% elif asset.status == "ASSIGNED" %}
+
+                                            <span class="status-badge status-assigned">
+                                                {{ asset.get_status_display }}
+                                            </span>
+
+                                        {% elif asset.status == "UNDER_MAINTENANCE" %}
+
+                                            <span class="status-badge status-maintenance">
+                                                {{ asset.get_status_display }}
+                                            </span>
+
+                                        {% elif asset.status == "DAMAGED" %}
+
+                                            <span class="status-badge status-damaged">
+                                                {{ asset.get_status_display }}
+                                            </span>
+
+                                        {% elif asset.status == "LOST" %}
+
+                                            <span class="status-badge status-lost">
+                                                {{ asset.get_status_display }}
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status-badge status-neutral">
+                                                {{ asset.get_status_display }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- ACTIONS -->
+
+                                    <td>
+
+                                        <div class="action-group">
+
+
+                                            <!-- VIEW -->
+
+                                            <a
+                                                href="{% url 'asset_detail' asset.id %}"
+                                                class="action-btn"
+                                            >
+
+                                                <i class="bi bi-eye"></i>
+
+                                                View
+
+                                            </a>
+
+
+                                            <!-- EDIT -->
+
+                                            {% if can_manage %}
+
+                                                <a
+                                                    href="{% url 'asset_update' asset.id %}"
+                                                    class="action-btn action-btn-edit"
+                                                >
+
+                                                    <i class="bi bi-pencil-square"></i>
+
+                                                    Edit
+
+                                                </a>
+
+
+                                                <!-- DELETE -->
+
+                                                <button
+                                                    type="button"
+                                                    class="action-btn action-btn-delete delete-asset-btn"
+                                                    data-delete-url="{% url 'asset_delete' asset.id %}"
+                                                    data-asset-id="{{ asset.asset_id }}"
+                                                    data-asset-name="{{ asset.asset_name }}"
+                                                    aria-label="Delete {{ asset.asset_name }}"
+                                                >
+
+                                                    <i class="bi bi-trash3-fill"></i>
+
+                                                    Delete
+
+                                                </button>
+
+                                            {% endif %}
+
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            {% empty %}
+
+                                <!-- Django-side empty state -->
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- JAVASCRIPT EMPTY STATE -->
+
+                    <div
+                        class="empty-state"
+                        id="emptyState"
+                    >
+
+                        <div class="empty-icon">
+
+                            <i class="bi bi-inbox"></i>
+
+                        </div>
+
+
+                        <h3 class="empty-title">
+                            No Assets Found
+                        </h3>
+
+
+                        <p class="empty-text">
+                            No asset records match your current search.
+                            Try another keyword or reset the filters.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     PAGINATION
+                ================================================== -->
+
+                <div
+                    class="pagination-bar"
+                    id="paginationBar"
+                >
+
+                    <div
+                        class="pagination-info"
+                        id="paginationInfo"
+                    >
+                        Showing 0 of 0 records
+                    </div>
+
+
+                    <div
+                        class="pagination-controls"
+                        id="paginationControls"
+                    ></div>
+
+                </div>
+
+            </main>
+
+
+            <!-- =================================================
+                 FOOTER
+            ================================================== -->
+
+            <footer class="page-footer">
+
+                <div>
+                    ITARMS · IT Asset &amp; Resource Management System
+                </div>
+
+
+                <div class="footer-status">
+
+                    <span class="footer-status-dot"></span>
+
+                    Asset management workspace active
+
+                </div>
+
+            </footer>
+
 
         </div>
 
     </main>
 
+</div>
 
-    <!-- FOOTER -->
 
-    <footer class="page-footer">
+<!-- =========================================================
+     DELETE CONFIRMATION MODAL
+========================================================= -->
 
-        <div>
-            ITARMS · IT Asset & Resource Management System
+<div
+    class="delete-modal"
+    id="deleteConfirmModal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteModalTitle"
+>
+
+
+    <div class="delete-modal-card">
+
+
+        <div class="delete-modal-top-line"></div>
+
+
+        <div class="delete-modal-content">
+
+
+            <div class="delete-modal-icon">
+
+                <i class="bi bi-trash3-fill"></i>
+
+            </div>
+
+
+            <h2
+                class="delete-modal-title"
+                id="deleteModalTitle"
+            >
+                Delete Asset?
+            </h2>
+
+
+            <p class="delete-modal-text">
+
+                Are you sure you want to permanently delete this
+                asset record? This action cannot be undone.
+
+            </p>
+
+
+            <div class="delete-asset-preview">
+
+
+                <div class="delete-asset-preview-icon">
+
+                    <i class="bi bi-pc-display"></i>
+
+                </div>
+
+
+                <div>
+
+                    <div class="delete-asset-preview-label">
+                        Asset
+                    </div>
+
+
+                    <div
+                        class="delete-asset-preview-name"
+                        id="deleteAssetPreview"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="footer-status">
 
-            <span class="footer-status-dot"></span>
+        <div class="delete-modal-actions">
 
-            Asset management workspace active
+
+            <button
+                type="button"
+                class="delete-modal-btn delete-modal-cancel"
+                id="deleteModalCancel"
+            >
+
+                <i class="bi bi-x-lg"></i>
+
+                Cancel
+
+            </button>
+
+
+            <form
+                method="post"
+                id="deleteAssetForm"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="delete-modal-btn delete-modal-confirm"
+                >
+
+                    <i class="bi bi-trash3-fill"></i>
+
+                    Delete Asset
+
+                </button>
+
+            </form>
+
 
         </div>
 
-    </footer>
+    </div>
 
 </div>
 
@@ -2011,60 +3110,220 @@
 
 
 <!-- =========================================================
-     LIVE SEARCH + PAGINATION
+     LIVE SEARCH + PAGINATION + DELETE MODAL
 ========================================================= -->
 
 <script>
 
     document.addEventListener("DOMContentLoaded", function () {
 
+
+        /* =====================================================
+           ELEMENTS
+        ====================================================== */
+
         const searchInput =
             document.getElementById("liveSearch");
 
+
         const tableBody =
             document.getElementById("assetTableBody");
+
 
         const rows = Array.from(
             tableBody.querySelectorAll(".asset-row")
         );
 
+
         const emptyState =
             document.getElementById("emptyState");
+
 
         const paginationControls =
             document.getElementById("paginationControls");
 
+
         const paginationInfo =
             document.getElementById("paginationInfo");
 
+
         const totalRecordCount =
             document.getElementById("totalRecordCount");
+
 
         const liveSearchInfo =
             document.getElementById("liveSearchInfo");
 
 
+        const deleteModal =
+            document.getElementById("deleteConfirmModal");
+
+
+        const deleteAssetForm =
+            document.getElementById("deleteAssetForm");
+
+
+        const deleteModalCancel =
+            document.getElementById("deleteModalCancel");
+
+
+        const deleteAssetPreview =
+            document.getElementById("deleteAssetPreview");
+
+
+        const deleteButtons =
+            document.querySelectorAll(".delete-asset-btn");
+
+
         const recordsPerPage = 10;
 
+
         let currentPage = 1;
+
 
         let filteredRows = [...rows];
 
 
-        /*
-         * -------------------------------------------------------
-         * INITIAL TOTAL
-         * -------------------------------------------------------
-         */
+        /* =====================================================
+           DELETE MODAL
+        ====================================================== */
 
-        totalRecordCount.textContent = rows.length;
+        function openDeleteModal(button) {
+
+            const deleteUrl =
+                button.dataset.deleteUrl;
 
 
-        /*
-         * -------------------------------------------------------
-         * SEARCH
-         * -------------------------------------------------------
-         */
+            const assetId =
+                button.dataset.assetId || "";
+
+
+            const assetName =
+                button.dataset.assetName || "";
+
+
+            deleteAssetForm.action =
+                deleteUrl;
+
+
+            deleteAssetPreview.textContent =
+                assetId + " · " + assetName;
+
+
+            deleteModal.classList.add("show");
+
+
+            deleteModal.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+
+            document.body.classList.add(
+                "modal-open"
+            );
+
+
+            deleteModalCancel.focus();
+
+        }
+
+
+        function closeDeleteModal() {
+
+            deleteModal.classList.remove(
+                "show"
+            );
+
+
+            deleteModal.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+
+            document.body.classList.remove(
+                "modal-open"
+            );
+
+
+            deleteAssetForm.action = "";
+
+        }
+
+
+        deleteButtons.forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    openDeleteModal(this);
+
+                }
+            );
+
+        });
+
+
+        deleteModalCancel.addEventListener(
+            "click",
+            function () {
+
+                closeDeleteModal();
+
+            }
+        );
+
+
+        /* Close when clicking outside modal card */
+
+        deleteModal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target === deleteModal
+                ) {
+
+                    closeDeleteModal();
+
+                }
+
+            }
+        );
+
+
+        /* Close with Escape */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape" &&
+                    deleteModal.classList.contains("show")
+                ) {
+
+                    closeDeleteModal();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           INITIAL TOTAL
+        ====================================================== */
+
+        totalRecordCount.textContent =
+            rows.length;
+
+
+        /* =====================================================
+           SEARCH
+        ====================================================== */
 
         function filterRecords() {
 
@@ -2074,126 +3333,173 @@
                     .toLowerCase();
 
 
-            filteredRows = rows.filter(function (row) {
+            filteredRows =
+                rows.filter(function (row) {
 
-                const rowText =
-                    row.textContent
-                        .toLowerCase()
-                        .replace(/\s+/g, " ");
+                    const rowText =
+                        row.textContent
+                            .toLowerCase()
+                            .replace(/\s+/g, " ");
 
-                return rowText.includes(searchTerm);
 
-            });
+                    return rowText.includes(
+                        searchTerm
+                    );
+
+                });
 
 
             currentPage = 1;
 
+
             updateTable();
+
         }
 
 
-        /*
-         * -------------------------------------------------------
-         * PAGINATION
-         * -------------------------------------------------------
-         */
+        /* =====================================================
+           TOTAL PAGES
+        ====================================================== */
 
         function getTotalPages() {
 
-            if (filteredRows.length === 0) {
+            if (
+                filteredRows.length === 0
+            ) {
+
                 return 1;
+
             }
 
+
             return Math.ceil(
-                filteredRows.length / recordsPerPage
+                filteredRows.length /
+                recordsPerPage
             );
+
         }
 
+
+        /* =====================================================
+           PAGINATION
+        ====================================================== */
 
         function renderPagination() {
 
             paginationControls.innerHTML = "";
 
+
             const totalPages =
                 getTotalPages();
 
 
-            /*
-             * Previous
-             */
+            /* Previous */
 
             const previousButton =
-                document.createElement("button");
+                document.createElement(
+                    "button"
+                );
 
-            previousButton.type = "button";
 
-            previousButton.className = "page-btn";
+            previousButton.type =
+                "button";
 
-            previousButton.innerHTML = "‹";
+
+            previousButton.className =
+                "page-btn";
+
+
+            previousButton.innerHTML =
+                '<i class="bi bi-chevron-left"></i>';
+
 
             previousButton.disabled =
                 currentPage === 1;
+
 
             previousButton.addEventListener(
                 "click",
                 function () {
 
-                    if (currentPage > 1) {
+                    if (
+                        currentPage > 1
+                    ) {
 
                         currentPage--;
 
                         updateTable();
+
                     }
 
                 }
             );
+
 
             paginationControls.appendChild(
                 previousButton
             );
 
 
-            /*
-             * Page Numbers
-             */
+            /* Page Numbers */
 
-            const pages = getVisiblePages(
-                currentPage,
-                totalPages
-            );
+            const pages =
+                getVisiblePages(
+                    currentPage,
+                    totalPages
+                );
 
 
             pages.forEach(function (page) {
 
-                if (page === "...") {
+                if (
+                    page === "..."
+                ) {
 
                     const dots =
-                        document.createElement("span");
+                        document.createElement(
+                            "span"
+                        );
 
-                    dots.className = "page-dots";
 
-                    dots.textContent = "...";
+                    dots.className =
+                        "page-dots";
+
+
+                    dots.textContent =
+                        "...";
+
 
                     paginationControls.appendChild(
                         dots
                     );
 
+
                     return;
+
                 }
 
 
                 const pageButton =
-                    document.createElement("button");
+                    document.createElement(
+                        "button"
+                    );
 
-                pageButton.type = "button";
+
+                pageButton.type =
+                    "button";
+
 
                 pageButton.className =
                     "page-btn";
 
-                pageButton.textContent = page;
+
+                pageButton.textContent =
+                    page;
 
 
-                if (page === currentPage) {
+                if (
+                    page === currentPage
+                ) {
 
                     pageButton.classList.add(
                         "active"
@@ -2206,7 +3512,8 @@
                     "click",
                     function () {
 
-                        currentPage = page;
+                        currentPage =
+                            page;
 
                         updateTable();
 
@@ -2221,21 +3528,29 @@
             });
 
 
-            /*
-             * Next
-             */
+            /* Next */
 
             const nextButton =
-                document.createElement("button");
+                document.createElement(
+                    "button"
+                );
 
-            nextButton.type = "button";
 
-            nextButton.className = "page-btn";
+            nextButton.type =
+                "button";
 
-            nextButton.innerHTML = "›";
+
+            nextButton.className =
+                "page-btn";
+
+
+            nextButton.innerHTML =
+                '<i class="bi bi-chevron-right"></i>';
+
 
             nextButton.disabled =
                 currentPage === totalPages;
+
 
             nextButton.addEventListener(
                 "click",
@@ -2255,6 +3570,7 @@
                 }
             );
 
+
             paginationControls.appendChild(
                 nextButton
             );
@@ -2262,22 +3578,23 @@
         }
 
 
-        /*
-         * -------------------------------------------------------
-         * VISIBLE PAGE NUMBERS
-         * -------------------------------------------------------
-         */
+        /* =====================================================
+           VISIBLE PAGE NUMBERS
+        ====================================================== */
 
         function getVisiblePages(
             current,
             total
         ) {
 
-            if (total <= 7) {
+            if (
+                total <= 7
+            ) {
 
                 return Array.from(
                     { length: total },
-                    (_, index) => index + 1
+                    (_, index) =>
+                        index + 1
                 );
 
             }
@@ -2289,7 +3606,9 @@
             pages.push(1);
 
 
-            if (current > 4) {
+            if (
+                current > 4
+            ) {
 
                 pages.push("...");
 
@@ -2297,7 +3616,11 @@
 
 
             const start =
-                Math.max(2, current - 1);
+                Math.max(
+                    2,
+                    current - 1
+                );
+
 
             const end =
                 Math.min(
@@ -2317,7 +3640,10 @@
             }
 
 
-            if (current < total - 3) {
+            if (
+                current <
+                total - 3
+            ) {
 
                 pages.push("...");
 
@@ -2328,20 +3654,20 @@
 
 
             return pages;
+
         }
 
 
-        /*
-         * -------------------------------------------------------
-         * UPDATE TABLE
-         * -------------------------------------------------------
-         */
+        /* =====================================================
+           UPDATE TABLE
+        ====================================================== */
 
         function updateTable() {
 
             rows.forEach(function (row) {
 
-                row.style.display = "none";
+                row.style.display =
+                    "none";
 
             });
 
@@ -2359,7 +3685,8 @@
                 totalPages
             ) {
 
-                currentPage = totalPages;
+                currentPage =
+                    totalPages;
 
             }
 
@@ -2371,7 +3698,8 @@
 
             const endIndex =
                 Math.min(
-                    startIndex + recordsPerPage,
+                    startIndex +
+                    recordsPerPage,
                     totalFiltered
                 );
 
@@ -2383,19 +3711,21 @@
                 );
 
 
-            visibleRows.forEach(function (row) {
+            visibleRows.forEach(
+                function (row) {
 
-                row.style.display =
-                    "table-row";
+                    row.style.display =
+                        "table-row";
 
-            });
+                }
+            );
 
 
-            /*
-             * Empty state
-             */
+            /* Empty State */
 
-            if (totalFiltered === 0) {
+            if (
+                totalFiltered === 0
+            ) {
 
                 emptyState.style.display =
                     "block";
@@ -2408,11 +3738,11 @@
             }
 
 
-            /*
-             * Pagination information
-             */
+            /* Pagination Information */
 
-            if (totalFiltered === 0) {
+            if (
+                totalFiltered === 0
+            ) {
 
                 paginationInfo.innerHTML =
                     "Showing <strong>0</strong> of <strong>"
@@ -2433,15 +3763,15 @@
             }
 
 
-            /*
-             * Live search information
-             */
+            /* Live Search Information */
 
             const searchTerm =
                 searchInput.value.trim();
 
 
-            if (searchTerm !== "") {
+            if (
+                searchTerm !== ""
+            ) {
 
                 liveSearchInfo.innerHTML =
                     'Live search: <strong>'
@@ -2467,11 +3797,9 @@
         }
 
 
-        /*
-         * -------------------------------------------------------
-         * LIVE SEARCH EVENT
-         * -------------------------------------------------------
-         */
+        /* =====================================================
+           LIVE SEARCH EVENT
+        ====================================================== */
 
         searchInput.addEventListener(
             "input",
@@ -2479,17 +3807,16 @@
         );
 
 
-        /*
-         * -------------------------------------------------------
-         * INITIAL RENDER
-         * -------------------------------------------------------
-         */
+        /* =====================================================
+           INITIAL RENDER
+        ====================================================== */
 
         updateTable();
 
     });
 
 </script>
+
 
 </body>
 
