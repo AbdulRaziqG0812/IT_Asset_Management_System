@@ -1,0 +1,2545 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>License Assignments | ITARMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f7fb;
+            color: #172033;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        .admin-main {
+            margin-left: 250px !important;
+            width: calc(100% - 250px) !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden;
+            padding: 32px;
+        }
+
+        /* =========================================================
+           PAGE HEADER
+        ========================================================= */
+
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .page-header-left {
+            min-width: 0;
+        }
+
+        .page-title {
+            margin: 0;
+            color: #172033;
+            font-size: 28px;
+            font-weight: 750;
+            line-height: 1.25;
+        }
+
+        .page-subtitle {
+            margin: 8px 0 0;
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .header-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 650;
+            text-decoration: none;
+            white-space: nowrap;
+            transition:
+                background-color 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .back-button {
+            border: 1px solid #d9dee8;
+            background: #ffffff;
+            color: #344054;
+        }
+
+        .back-button:hover {
+            background: #f8fafc;
+            border-color: #c5ccd8;
+            color: #172033;
+            transform: translateY(-1px);
+        }
+
+        .assign-button {
+            border: 1px solid #2563eb;
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .assign-button:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        /* =========================================================
+           LICENSE SUMMARY
+        ========================================================= */
+
+        .license-summary {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            min-width: 0;
+            padding: 17px 18px;
+            background: #ffffff;
+            border: 1px solid #e4e8ef;
+            border-radius: 12px;
+            box-shadow: 0 3px 14px rgba(16, 24, 40, 0.04);
+        }
+
+        .summary-label {
+            margin-bottom: 7px;
+            color: #7a8495;
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .summary-value {
+            color: #172033;
+            font-size: 21px;
+            font-weight: 750;
+        }
+
+        .summary-value.active {
+            color: #198754;
+        }
+
+        .summary-value.available {
+            color: #2563eb;
+        }
+
+        .summary-value.expired {
+            color: #dc3545;
+        }
+
+        /* =========================================================
+           LICENSE INFO CARD
+        ========================================================= */
+
+        .info-card {
+            margin-bottom: 24px;
+            padding: 21px 23px;
+            background: #ffffff;
+            border: 1px solid #e4e8ef;
+            border-radius: 13px;
+            box-shadow: 0 4px 18px rgba(16, 24, 40, 0.04);
+        }
+
+        .info-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .license-name-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .license-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: #eef4ff;
+            color: #2563eb;
+            font-size: 19px;
+        }
+
+        .license-name {
+            margin: 0;
+            color: #172033;
+            font-size: 18px;
+            font-weight: 750;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+
+        .license-key {
+            margin-top: 5px;
+            color: #7a8495;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .license-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 11px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            background: #e8f7ee;
+            color: #198754;
+        }
+
+        .status-expiring {
+            background: #fff4d6;
+            color: #9a6700;
+        }
+
+        .status-expired {
+            background: #fdecec;
+            color: #dc3545;
+        }
+
+        .status-inactive {
+            background: #eef0f3;
+            color: #667085;
+        }
+
+        .license-details {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #edf0f4;
+        }
+
+        .detail-label {
+            margin-bottom: 5px;
+            color: #8a93a3;
+            font-size: 11px;
+            font-weight: 650;
+            text-transform: uppercase;
+            letter-spacing: 0.35px;
+        }
+
+        .detail-value {
+            color: #344054;
+            font-size: 13px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        /* =========================================================
+           ASSIGNMENT CARD
+        ========================================================= */
+
+        .assignments-card {
+            background: #ffffff;
+            border: 1px solid #e4e8ef;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(16, 24, 40, 0.05);
+            overflow: hidden;
+        }
+
+        .assignments-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 20px 23px;
+            border-bottom: 1px solid #e8ebf0;
+        }
+
+        .assignments-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .assignments-heading i {
+            color: #2563eb;
+            font-size: 17px;
+        }
+
+        .assignments-heading h2 {
+            margin: 0;
+            color: #263247;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .assignment-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 25px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: #eef4ff;
+            color: #2563eb;
+            font-size: 11px;
+            font-weight: 750;
+        }
+
+        /* =========================================================
+           SEARCH BAR
+        ========================================================= */
+
+        .assignment-search {
+            padding: 18px 23px;
+            background: #ffffff;
+            border-bottom: 1px solid #e8ebf0;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-input-icon {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            z-index: 2;
+            color: #8a93a3;
+            font-size: 14px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            min-height: 42px;
+            padding: 0 14px 0 39px;
+            border: 1px solid #d9dee8;
+            border-radius: 9px;
+            outline: none;
+            background: #ffffff;
+            color: #344054;
+            font-size: 13px;
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .search-input::placeholder {
+            color: #a0a7b3;
+        }
+
+        .search-input:focus {
+            border-color: #8eb4ff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+        }
+
+        .search-button,
+        .clear-search-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 42px;
+            padding: 0 15px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 650;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition:
+                background-color 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .search-button {
+            border: 1px solid #2563eb;
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .search-button:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+            color: #ffffff;
+        }
+
+        .clear-search-button {
+            border: 1px solid #d9dee8;
+            background: #ffffff;
+            color: #475467;
+        }
+
+        .clear-search-button:hover {
+            background: #f8fafc;
+            border-color: #c5ccd8;
+            color: #172033;
+        }
+
+        .search-result-info {
+            margin-top: 9px;
+            color: #8a93a3;
+            font-size: 11px;
+        }
+
+        .search-result-info strong {
+            color: #667085;
+            font-weight: 700;
+        }
+
+        /* =========================================================
+           TABLE
+        ========================================================= */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .assignment-table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+        }
+
+        .assignment-table th {
+            padding: 13px 17px;
+            border-bottom: 1px solid #e7eaf0;
+            background: #fafbfc;
+            color: #667085;
+            font-size: 11px;
+            font-weight: 750;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 0.35px;
+            white-space: nowrap;
+        }
+
+        .assignment-table td {
+            padding: 16px 17px;
+            border-bottom: 1px solid #eef0f3;
+            color: #344054;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .assignment-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .assignment-table tbody tr:hover {
+            background: #fbfcfe;
+        }
+
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-width: 180px;
+        }
+
+        .employee-avatar {
+            width: 36px;
+            height: 36px;
+            flex: 0 0 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef4ff;
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: 750;
+        }
+
+        .employee-name {
+            color: #263247;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .employee-id {
+            margin-top: 2px;
+            color: #8a93a3;
+            font-size: 11px;
+        }
+
+        .department-name {
+            color: #475467;
+            font-size: 13px;
+        }
+
+        .date-value {
+            color: #475467;
+            white-space: nowrap;
+        }
+
+        .assignment-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .assignment-status.active {
+            background: #e8f7ee;
+            color: #198754;
+        }
+
+        .assignment-status.returned {
+            background: #eef0f3;
+            color: #667085;
+        }
+
+        .assignment-status i {
+            font-size: 10px;
+        }
+
+        .notes-cell {
+            max-width: 230px;
+            color: #667085;
+            line-height: 1.5;
+        }
+
+        .notes-empty {
+            color: #a0a7b3;
+        }
+
+        /* =========================================================
+           PAGINATION
+        ========================================================= */
+
+        .pagination-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 17px 23px;
+            border-top: 1px solid #e8ebf0;
+            background: #ffffff;
+        }
+
+        .pagination-info {
+            color: #7a8495;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .pagination-info strong {
+            color: #475467;
+            font-weight: 700;
+        }
+
+        .pagination-nav {
+            min-width: 0;
+        }
+
+        .pagination-list {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .pagination-link,
+        .pagination-current,
+        .pagination-ellipsis {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 9px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 650;
+            text-decoration: none;
+        }
+
+        .pagination-link {
+            border: 1px solid #d9dee8;
+            background: #ffffff;
+            color: #475467;
+            transition:
+                background-color 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .pagination-link:hover {
+            background: #f8fafc;
+            border-color: #c5ccd8;
+            color: #172033;
+        }
+
+        .pagination-current {
+            border: 1px solid #2563eb;
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .pagination-ellipsis {
+            color: #8a93a3;
+        }
+
+        /* =========================================================
+           RETURN BUTTON
+        ========================================================= */
+
+        .return-form {
+            margin: 0;
+        }
+
+        .return-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 34px;
+            padding: 0 11px;
+            border: 1px solid #d6dbe4;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #475467;
+            font-size: 12px;
+            font-weight: 650;
+            cursor: pointer;
+            transition:
+                background-color 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .return-button:hover {
+            background: #f8fafc;
+            border-color: #c4cad5;
+            color: #172033;
+        }
+
+        /* =========================================================
+           RETURN CONFIRMATION MODAL
+        ========================================================= */
+
+        .return-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.58);
+            backdrop-filter: blur(2px);
+        }
+
+        .return-modal-overlay.show {
+            display: flex;
+        }
+
+        .return-modal {
+            width: 100%;
+            max-width: 450px;
+            padding: 25px;
+            background: #ffffff;
+            border: 1px solid #e4e8ef;
+            border-radius: 16px;
+            box-shadow: 0 24px 65px rgba(15, 23, 42, 0.24);
+            animation: returnModalIn 0.18s ease-out;
+        }
+
+        @keyframes returnModalIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+
+        .return-modal-icon {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: #eef4ff;
+            color: #2563eb;
+            font-size: 22px;
+        }
+
+        .return-modal-title {
+            margin: 0 0 8px;
+            color: #172033;
+            font-size: 19px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        .return-modal-text {
+            margin: 0;
+            color: #667085;
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        .return-modal-details {
+            margin-top: 18px;
+            padding: 14px 15px;
+            background: #f8fafc;
+            border: 1px solid #e8ebf0;
+            border-radius: 10px;
+        }
+
+        .return-detail-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 6px 0;
+        }
+
+        .return-detail-row:first-child {
+            padding-top: 0;
+        }
+
+        .return-detail-row:last-child {
+            padding-bottom: 0;
+        }
+
+        .return-detail-label {
+            color: #8a93a3;
+            font-size: 11px;
+            font-weight: 650;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .return-detail-value {
+            max-width: 60%;
+            color: #344054;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .return-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+            margin-top: 22px;
+        }
+
+        .return-modal-button {
+            min-height: 38px;
+            padding: 0 15px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 650;
+            cursor: pointer;
+            transition:
+                background-color 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .return-modal-cancel {
+            border: 1px solid #d9dee8;
+            background: #ffffff;
+            color: #475467;
+        }
+
+        .return-modal-cancel:hover {
+            background: #f8fafc;
+            border-color: #c5ccd8;
+            color: #172033;
+        }
+
+        .return-modal-submit {
+            border: 1px solid #2563eb;
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .return-modal-submit:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty-state {
+            padding: 55px 25px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f1f4f8;
+            color: #8a93a3;
+            font-size: 24px;
+        }
+
+        .empty-title {
+            margin: 0 0 7px;
+            color: #344054;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .empty-text {
+            max-width: 470px;
+            margin: 0 auto;
+            color: #8a93a3;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .empty-clear-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 16px;
+            min-height: 38px;
+            padding: 0 14px;
+            border: 1px solid #d9dee8;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #475467;
+            font-size: 12px;
+            font-weight: 650;
+            text-decoration: none;
+        }
+
+        .empty-clear-button:hover {
+            background: #f8fafc;
+            color: #172033;
+        }
+
+        /* =========================================================
+           MESSAGES
+        ========================================================= */
+
+        .message-container {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 13px 15px;
+            margin-bottom: 9px;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message.success {
+            border: 1px solid #b7e4c7;
+            background: #f0faf3;
+            color: #146c43;
+        }
+
+        .message.error {
+            border: 1px solid #f1b8bd;
+            background: #fff5f5;
+            color: #842029;
+        }
+
+        .message.warning {
+            border: 1px solid #ffe08a;
+            background: #fffaf0;
+            color: #8a6500;
+        }
+
+        .message.info {
+            border: 1px solid #b8daff;
+            background: #f0f7ff;
+            color: #084298;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1050px) {
+
+            .license-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .license-details {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+        @media (max-width: 900px) {
+
+            .admin-main {
+                padding: 24px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-actions {
+                flex-wrap: wrap;
+            }
+
+            .pagination-wrapper {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .pagination-list {
+                justify-content: flex-start;
+            }
+
+        }
+
+        @media (max-width: 768px) {
+
+            .admin-main {
+                margin-left: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 20px 16px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .info-card-top {
+                flex-direction: column;
+            }
+
+            .search-form {
+                flex-wrap: wrap;
+            }
+
+            .search-input-wrapper {
+                flex: 1 1 100%;
+            }
+
+        }
+
+        @media (max-width: 560px) {
+
+            .admin-main {
+                padding: 16px 12px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .license-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .license-details {
+                grid-template-columns: 1fr;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-button {
+                width: 100%;
+            }
+
+            .info-card,
+            .assignments-header,
+            .assignment-search {
+                padding: 17px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-button,
+            .clear-search-button {
+                width: 100%;
+            }
+
+            .return-modal {
+                padding: 20px;
+            }
+
+            .return-modal-actions {
+                flex-direction: column-reverse;
+            }
+
+            .return-modal-button {
+                width: 100%;
+            }
+
+            .return-detail-row {
+                flex-direction: column;
+                gap: 3px;
+            }
+
+            .return-detail-value {
+                max-width: 100%;
+                text-align: left;
+            }
+
+            .pagination-wrapper {
+                padding: 15px 17px;
+            }
+
+            .pagination-list {
+                width: 100%;
+                justify-content: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         SHARED SUPER ADMIN SIDEBAR
+    ====================================================== -->
+
+<aside class="admin-sidebar" id="adminSidebar">
+
+    <!-- =====================================================
+         BRAND
+    ====================================================== -->
+    <div class="sidebar-brand">
+
+        <div class="brand-icon">
+            <i class="bi bi-pc-display-horizontal"></i>
+        </div>
+
+        <div class="brand-content">
+
+            <h1 class="brand-title">
+                ITARMS
+            </h1>
+
+            {% if request.user.role == "SUPER_ADMIN" %}
+
+                <div class="brand-subtitle">
+                    Super Admin Panel
+                </div>
+
+            {% elif request.user.role == "IT_ADMIN" %}
+
+                <div class="brand-subtitle">
+                    IT Administrator
+                </div>
+
+            {% else %}
+
+                <div class="brand-subtitle">
+                    IT Asset Management
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CURRENT USER
+    ====================================================== -->
+    <div class="sidebar-user">
+
+        <div class="sidebar-user-inner">
+
+            <div class="user-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="user-details">
+
+                <div class="user-name">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </div>
+
+                <div class="user-role">
+
+                    {% if request.user.role == "SUPER_ADMIN" %}
+                        Super Administrator
+
+                    {% elif request.user.role == "IT_ADMIN" %}
+                        IT Administrator
+
+                    {% elif request.user.role == "HR_MANAGER" %}
+                        HR Manager
+
+                    {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+                        Department Manager
+
+                    {% elif request.user.role == "EMPLOYEE" %}
+                        Employee
+
+                    {% else %}
+                        {{ request.user.get_role_display }}
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
+
+    <div class="sidebar-section-title">
+        Main
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <!-- Dashboard -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
+
+            <a
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+        {% else %}
+
+            <a
+                href="{% url 'dashboard:home' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             SUPER ADMIN ONLY
+        ================================================== -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
+
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+        {% endif %}
+
+    </nav>
+
+
+    <!-- =====================================================
+         MANAGEMENT
+    ====================================================== -->
+
+    <div class="sidebar-section-title">
+        Management
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <!-- IT Assets -->
+
+        <a
+            href="{% url 'asset_list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-pc-display"></i>
+            <span>IT Assets</span>
+        </a>
+
+
+        <!-- Asset Assignments -->
+
+        <a
+            href="{% url 'admin_assignment_list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-arrow-left-right"></i>
+            <span>Asset Assignments</span>
+        </a>
+
+
+        <!-- Asset Requests -->
+
+        <a
+            href="{% url 'admin_asset_requests' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-clipboard-check"></i>
+            <span>Asset Requests</span>
+        </a>
+
+
+        <!-- Damaged / Lost -->
+
+        <a
+            href="{% url 'admin_asset_incident_list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>Damaged / Lost</span>
+        </a>
+
+
+        <!-- Maintenance -->
+
+        <a
+            href="{% url 'maintenance_list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-tools"></i>
+            <span>Maintenance</span>
+        </a>
+
+
+        <!-- Software Licenses -->
+
+        <a
+            href="{% url 'software_license_list' %}"
+            class="sidebar-link active"
+        >
+            <i class="bi bi-key-fill"></i>
+            <span>Software Licenses</span>
+        </a>
+
+
+        <!-- =================================================
+             SUPER ADMIN ONLY
+        ================================================== -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
+
+            <!-- Departments -->
+
+            <a
+                href="{% url 'super_admin_department_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>Departments</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- Vendors / Purchases
+             Available to Super Admin + IT Admin
+        -->
+
+        {% if request.user.role == "SUPER_ADMIN" or request.user.role == "IT_ADMIN" %}
+
+            <a
+                href="{% url 'vendors:vendor_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-shop"></i>
+                <span>Vendors / Purchases</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- Reports -->
+
+        {% if request.user.role == "SUPER_ADMIN" or request.user.role == "IT_ADMIN" %}
+
+            <a
+                href="{% url 'reports:home' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-bar-chart-fill"></i>
+                <span>Reports &amp; Analytics</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- Notifications -->
+
+        <a
+            href="{% url 'notifications:list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-bell-fill"></i>
+            <span>Notifications</span>
+        </a>
+
+    </nav>
+
+
+    <!-- =====================================================
+         SYSTEM
+         SUPER ADMIN ONLY
+    ====================================================== -->
+
+    {% if request.user.role == "SUPER_ADMIN" %}
+
+        <div class="sidebar-section-title">
+            System
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="{% url 'reports:audit_log_report' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-shield-lock-fill"></i>
+                <span>Audit Logs</span>
+            </a>
+
+        </nav>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         LOGOUT
+    ====================================================== -->
+
+    <div class="sidebar-bottom">
+
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="logout-button"
+            >
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </button>
+
+        </form>
+
+    </div>
+
+</aside>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================= -->
+
+    <main class="admin-main">
+
+        <div class="page-header">
+
+            <div class="page-header-left">
+
+                <h1 class="page-title">
+                    License Assignments
+                </h1>
+
+                <p class="page-subtitle">
+                    View employees currently assigned to this software license
+                    and review its assignment history.
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <a
+                    href="{% url 'software_license_list' %}"
+                    class="header-button back-button"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Licenses
+                </a>
+
+
+                <a
+                    href="{% url 'software_license_assign' license.id %}"
+                    class="header-button assign-button"
+                >
+                    <i class="bi bi-person-plus-fill"></i>
+                    Assign License
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             LICENSE INFORMATION
+        ====================================================== -->
+
+        <div class="info-card">
+
+            <div class="info-card-top">
+
+                <div class="license-name-wrapper">
+
+                    <div class="license-icon">
+                        <i class="bi bi-key-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <h2 class="license-name">
+                            {{ license.software_name }}
+                        </h2>
+
+                        <div class="license-key">
+                            License Key: {{ license.license_key }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {% if license.status == "ACTIVE" %}
+
+                    <span class="license-status status-active">
+                        Active
+                    </span>
+
+                {% elif license.status == "EXPIRING_SOON" %}
+
+                    <span class="license-status status-expiring">
+                        Expiring Soon
+                    </span>
+
+                {% elif license.status == "EXPIRED" %}
+
+                    <span class="license-status status-expired">
+                        Expired
+                    </span>
+
+                {% else %}
+
+                    <span class="license-status status-inactive">
+                        Inactive
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="license-details">
+
+                <div>
+
+                    <div class="detail-label">
+                        Version
+                    </div>
+
+                    <div class="detail-value">
+
+                        {% if license.version %}
+                            {{ license.version }}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="detail-label">
+                        License Type
+                    </div>
+
+                    <div class="detail-value">
+                        {{ license.get_license_type_display }}
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="detail-label">
+                        Total Licenses
+                    </div>
+
+                    <div class="detail-value">
+                        {{ license.total_licenses }}
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="detail-label">
+                        Available Licenses
+                    </div>
+
+                    <div class="detail-value">
+                        {{ license.available_licenses }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             SUMMARY CARDS
+        ====================================================== -->
+
+        <div class="license-summary">
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Total Licenses
+                </div>
+
+                <div class="summary-value">
+                    {{ license.total_licenses }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Assigned
+                </div>
+
+                <div class="summary-value active">
+                    {{ license.assigned_licenses }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Available
+                </div>
+
+                <div class="summary-value available">
+                    {{ license.available_licenses }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Assignment Records
+                </div>
+
+                <div class="summary-value">
+                    {{ paginator.count }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             ASSIGNMENTS
+        ====================================================== -->
+
+        <div class="assignments-card">
+
+            <div class="assignments-header">
+
+                <div class="assignments-heading">
+
+                    <i class="bi bi-people-fill"></i>
+
+                    <h2>
+                        Assignment History
+                    </h2>
+
+                    <span class="assignment-count">
+                        {{ paginator.count }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SEARCH BAR
+            ================================================== -->
+
+            <div class="assignment-search">
+
+                <form
+                    method="get"
+                    action=""
+                    class="search-form"
+                >
+
+                    <div class="search-input-wrapper">
+
+                        <i class="bi bi-search search-input-icon"></i>
+
+                        <input
+                            type="search"
+                            name="search"
+                            value="{{ search_query }}"
+                            class="search-input"
+                            placeholder="Search employee, ID, department, notes or status..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="search-button"
+                    >
+                        <i class="bi bi-search"></i>
+                        Search
+                    </button>
+
+
+                    {% if search_query %}
+
+                        <a
+                            href="{% url 'software_license_assignment_list' license.id %}"
+                            class="clear-search-button"
+                        >
+                            <i class="bi bi-x-lg"></i>
+                            Clear
+                        </a>
+
+                    {% endif %}
+
+                </form>
+
+
+                {% if search_query %}
+
+                    <div class="search-result-info">
+
+                        Showing
+                        <strong>{{ paginator.count }}</strong>
+                        matching assignment record{{ paginator.count|pluralize }}
+                        for
+                        <strong>"{{ search_query }}"</strong>.
+
+                    </div>
+
+                {% elif paginator.count %}
+
+                    <div class="search-result-info">
+
+                        Showing
+                        <strong>{{ paginator.count }}</strong>
+                        assignment record{{ paginator.count|pluralize }}.
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if assignments %}
+
+                <div class="table-wrapper">
+
+                    <table class="assignment-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Employee</th>
+
+                                <th>Department</th>
+
+                                <th>Assigned Date</th>
+
+                                <th>Returned Date</th>
+
+                                <th>Status</th>
+
+                                <th>Notes</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for assignment in assignments %}
+
+                                <tr>
+
+                                    <!-- EMPLOYEE -->
+
+                                    <td>
+
+                                        <div class="employee-info">
+
+                                            <div class="employee-avatar">
+
+                                                {% if assignment.employee.user.first_name %}
+
+                                                    {{ assignment.employee.user.first_name|first|upper }}
+
+                                                {% else %}
+
+                                                    {{ assignment.employee.user.username|first|upper }}
+
+                                                {% endif %}
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <div class="employee-name">
+
+                                                    {% if assignment.employee.user.get_full_name %}
+
+                                                        {{ assignment.employee.user.get_full_name }}
+
+                                                    {% else %}
+
+                                                        {{ assignment.employee.user.username }}
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                                <div class="employee-id">
+                                                    {{ assignment.employee.employee_id }}
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- DEPARTMENT -->
+
+                                    <td>
+
+                                        <div class="department-name">
+
+                                            {% if assignment.employee.department %}
+
+                                                {{ assignment.employee.department.name }}
+
+                                            {% else %}
+
+                                                Not assigned
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- ASSIGNED DATE -->
+
+                                    <td>
+
+                                        <div class="date-value">
+                                            {{ assignment.assigned_date|date:"d M Y" }}
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- RETURNED DATE -->
+
+                                    <td>
+
+                                        <div class="date-value">
+
+                                            {% if assignment.returned_date %}
+
+                                                {{ assignment.returned_date|date:"d M Y" }}
+
+                                            {% else %}
+
+                                                —
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+                                        {% if assignment.is_active %}
+
+                                            <span class="assignment-status active">
+
+                                                <i class="bi bi-circle-fill"></i>
+
+                                                Active
+
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="assignment-status returned">
+
+                                                <i class="bi bi-check-circle-fill"></i>
+
+                                                Returned
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- NOTES -->
+
+                                    <td>
+
+                                        <div class="notes-cell">
+
+                                            {% if assignment.notes %}
+
+                                                {{ assignment.notes }}
+
+                                            {% else %}
+
+                                                <span class="notes-empty">
+                                                    No notes
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- ACTION -->
+
+                                    <td>
+
+                                        {% if assignment.is_active %}
+
+                                            <form
+                                                method="post"
+                                                action="{% url 'software_license_return' assignment.id %}"
+                                                class="return-form return-assignment-form"
+                                                data-employee-name="{% if assignment.employee.user.get_full_name %}{{ assignment.employee.user.get_full_name|escape }}{% else %}{{ assignment.employee.user.username|escape }}{% endif %}"
+                                                data-license-name="{{ license.software_name|escape }}"
+                                            >
+
+                                                {% csrf_token %}
+
+                                                <button
+                                                    type="button"
+                                                    class="return-button open-return-modal"
+                                                >
+                                                    <i class="bi bi-arrow-return-left"></i>
+                                                    Return
+                                                </button>
+
+                                            </form>
+
+                                        {% else %}
+
+                                            <span style="color:#a0a7b3; font-size:12px;">
+                                                No action
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =================================================
+                     PAGINATION
+                ================================================== -->
+
+                {% if paginator.num_pages > 1 %}
+
+                    <div class="pagination-wrapper">
+
+                        <div class="pagination-info">
+
+                            Showing
+                            <strong>{{ page_obj.start_index }}</strong>
+                            –
+                            <strong>{{ page_obj.end_index }}</strong>
+                            of
+                            <strong>{{ paginator.count }}</strong>
+                            records
+
+                        </div>
+
+
+                        <nav
+                            class="pagination-nav"
+                            aria-label="Assignment history pagination"
+                        >
+
+                            <ul class="pagination-list">
+
+                                {% if page_obj.has_previous %}
+
+                                    <li>
+
+                                        <a
+                                            href="?search={{ search_query|urlencode }}&page=1"
+                                            class="pagination-link"
+                                            aria-label="First page"
+                                        >
+                                            <i class="bi bi-chevron-double-left"></i>
+                                        </a>
+
+                                    </li>
+
+
+                                    <li>
+
+                                        <a
+                                            href="?search={{ search_query|urlencode }}&page={{ page_obj.previous_page_number }}"
+                                            class="pagination-link"
+                                            aria-label="Previous page"
+                                        >
+                                            <i class="bi bi-chevron-left"></i>
+                                        </a>
+
+                                    </li>
+
+                                {% endif %}
+
+
+                                {% for page_number in page_range %}
+
+                                    {% if page_number == page_obj.number %}
+
+                                        <li>
+
+                                            <span
+                                                class="pagination-current"
+                                                aria-current="page"
+                                            >
+                                                {{ page_number }}
+                                            </span>
+
+                                        </li>
+
+                                    {% elif page_number == "…" %}
+
+                                        <li>
+
+                                            <span class="pagination-ellipsis">
+                                                …
+                                            </span>
+
+                                        </li>
+
+                                    {% else %}
+
+                                        <li>
+
+                                            <a
+                                                href="?search={{ search_query|urlencode }}&page={{ page_number }}"
+                                                class="pagination-link"
+                                            >
+                                                {{ page_number }}
+                                            </a>
+
+                                        </li>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+
+                                {% if page_obj.has_next %}
+
+                                    <li>
+
+                                        <a
+                                            href="?search={{ search_query|urlencode }}&page={{ page_obj.next_page_number }}"
+                                            class="pagination-link"
+                                            aria-label="Next page"
+                                        >
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+
+                                    </li>
+
+
+                                    <li>
+
+                                        <a
+                                            href="?search={{ search_query|urlencode }}&page={{ paginator.num_pages }}"
+                                            class="pagination-link"
+                                            aria-label="Last page"
+                                        >
+                                            <i class="bi bi-chevron-double-right"></i>
+                                        </a>
+
+                                    </li>
+
+                                {% endif %}
+
+                            </ul>
+
+                        </nav>
+
+                    </div>
+
+                {% endif %}
+
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+
+                        <i class="bi bi-person-x"></i>
+
+                    </div>
+
+
+                    {% if search_query %}
+
+                        <h3 class="empty-title">
+                            No Matching Assignment Records
+                        </h3>
+
+                        <p class="empty-text">
+
+                            No assignment records match
+                            "<strong>{{ search_query }}</strong>".
+                            Try a different employee name, employee ID,
+                            department, note, or status.
+
+                        </p>
+
+
+                        <a
+                            href="{% url 'software_license_assignment_list' license.id %}"
+                            class="empty-clear-button"
+                        >
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            Clear Search
+                        </a>
+
+                    {% else %}
+
+                        <h3 class="empty-title">
+                            No Assignment Records
+                        </h3>
+
+                        <p class="empty-text">
+
+                            This software license has not been assigned
+                            to any employee yet. Use the Assign License
+                            button above to create the first assignment.
+
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================================
+         RETURN CONFIRMATION MODAL
+    ========================================================= -->
+
+    <div
+        class="return-modal-overlay"
+        id="returnModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="return-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="returnModalTitle"
+        >
+
+            <div class="return-modal-icon">
+
+                <i class="bi bi-arrow-return-left"></i>
+
+            </div>
+
+
+            <h3
+                class="return-modal-title"
+                id="returnModalTitle"
+            >
+                Return Software License?
+            </h3>
+
+
+            <p class="return-modal-text">
+
+                Please confirm that you want to return this software license
+                from the selected employee. The assignment will be marked as
+                returned and the license will become available again.
+
+            </p>
+
+
+            <div class="return-modal-details">
+
+                <div class="return-detail-row">
+
+                    <span class="return-detail-label">
+                        Employee
+                    </span>
+
+                    <span
+                        class="return-detail-value"
+                        id="returnEmployeeName"
+                    >
+                        —
+                    </span>
+
+                </div>
+
+
+                <div class="return-detail-row">
+
+                    <span class="return-detail-label">
+                        Software
+                    </span>
+
+                    <span
+                        class="return-detail-value"
+                        id="returnLicenseName"
+                    >
+                        —
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="return-modal-actions">
+
+                <button
+                    type="button"
+                    class="return-modal-button return-modal-cancel"
+                    id="cancelReturnButton"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="button"
+                    class="return-modal-button return-modal-submit"
+                    id="confirmReturnButton"
+                >
+                    <i class="bi bi-arrow-return-left"></i>
+                    Return License
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         MOBILE SIDEBAR + RETURN MODAL SCRIPT
+    ========================================================= -->
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            /* =====================================================
+               MOBILE SIDEBAR
+            ====================================================== */
+
+            const sidebar =
+                document.getElementById("adminSidebar");
+
+            if (sidebar) {
+
+                const sidebarLinks =
+                    sidebar.querySelectorAll(".sidebar-link");
+
+                sidebarLinks.forEach(function (link) {
+
+                    link.addEventListener("click", function () {
+
+                        if (window.innerWidth <= 768) {
+
+                            sidebar.classList.remove("open");
+
+                        }
+
+                    });
+
+                });
+
+            }
+
+
+            /* =====================================================
+               RETURN CONFIRMATION MODAL
+            ====================================================== */
+
+            const returnModal =
+                document.getElementById("returnModal");
+
+            const cancelReturnButton =
+                document.getElementById("cancelReturnButton");
+
+            const confirmReturnButton =
+                document.getElementById("confirmReturnButton");
+
+            const returnEmployeeName =
+                document.getElementById("returnEmployeeName");
+
+            const returnLicenseName =
+                document.getElementById("returnLicenseName");
+
+            const returnForms =
+                document.querySelectorAll(".return-assignment-form");
+
+
+            let selectedReturnForm = null;
+
+
+            function closeReturnModal() {
+
+                if (!returnModal) {
+                    return;
+                }
+
+                returnModal.classList.remove("show");
+
+                returnModal.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                document.body.style.overflow = "";
+
+                selectedReturnForm = null;
+
+            }
+
+
+            function openReturnModal(form) {
+
+                if (!returnModal || !form) {
+                    return;
+                }
+
+                selectedReturnForm = form;
+
+
+                const employeeName =
+                    form.getAttribute("data-employee-name");
+
+                const licenseName =
+                    form.getAttribute("data-license-name");
+
+
+                if (returnEmployeeName) {
+
+                    returnEmployeeName.textContent =
+                        employeeName || "Selected employee";
+
+                }
+
+
+                if (returnLicenseName) {
+
+                    returnLicenseName.textContent =
+                        licenseName || "Software license";
+
+                }
+
+
+                returnModal.classList.add("show");
+
+                returnModal.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+
+                document.body.style.overflow = "hidden";
+
+            }
+
+
+            returnForms.forEach(function (form) {
+
+                const button =
+                    form.querySelector(".open-return-modal");
+
+                if (!button) {
+                    return;
+                }
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        openReturnModal(form);
+
+                    }
+                );
+
+            });
+
+
+            if (cancelReturnButton) {
+
+                cancelReturnButton.addEventListener(
+                    "click",
+                    closeReturnModal
+                );
+
+            }
+
+
+            if (confirmReturnButton) {
+
+                confirmReturnButton.addEventListener(
+                    "click",
+                    function () {
+
+                        if (selectedReturnForm) {
+
+                            selectedReturnForm.submit();
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            if (returnModal) {
+
+                returnModal.addEventListener(
+                    "click",
+                    function (event) {
+
+                        if (event.target === returnModal) {
+
+                            closeReturnModal();
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            document.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (
+                        event.key === "Escape" &&
+                        returnModal &&
+                        returnModal.classList.contains("show")
+                    ) {
+
+                        closeReturnModal();
+
+                    }
+
+                }
+            );
+
+        });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,3 +1,4 @@
+```html
 {% load static %}
 
 <!DOCTYPE html>
@@ -12,7 +13,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>ITARMS - User Management</title>
+    <title>User Management | ITARMS</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -24,7 +25,6 @@
         rel="stylesheet"
     >
 
-    <!-- Shared Super Admin Dashboard CSS -->
     <link
         rel="stylesheet"
         href="{% static 'css/super_admin_dashboard.css' %}"
@@ -33,87 +33,143 @@
     <style>
 
         /* =========================================================
-           MAIN CONTENT POSITION FIX
-        ========================================================= */
-
-        .dashboard-layout {
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        .main-content {
-            margin-left: 250px !important;
-            width: calc(100% - 250px) !important;
-            min-width: 0 !important;
-            max-width: none !important;
-            box-sizing: border-box !important;
-            overflow-x: hidden;
-        }
-
-
-        /* =========================================================
            USER MANAGEMENT PAGE
         ========================================================= */
 
         .user-management-page {
-            width: 100%;
-            max-width: none;
-            box-sizing: border-box;
-            padding: 30px;
+            padding: 28px;
+            min-height: 100vh;
         }
 
-
-        /* =========================================================
-           PAGE HEADER
-        ========================================================= */
-
-        .user-page-header {
+        .page-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
             gap: 20px;
-            width: 100%;
-            margin-bottom: 26px;
+            margin-bottom: 24px;
         }
 
-        .user-page-heading {
-            min-width: 0;
-        }
-
-        .user-page-heading h1 {
-            margin: 0;
-            color: #111827;
+        .page-header-content h1 {
+            margin: 0 0 7px;
             font-size: 28px;
-            font-weight: 750;
-            line-height: 1.25;
-            letter-spacing: -0.45px;
+            font-weight: 700;
+            color: #172033;
         }
 
-        .user-page-heading p {
-            margin: 7px 0 0;
-            color: #6b7280;
+        .page-header-content p {
+            margin: 0;
+            color: #687386;
             font-size: 14px;
-            line-height: 1.6;
         }
 
-        .user-header-actions {
+        .add-user-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            border-radius: 9px;
+            padding: 11px 17px;
+            background: #1d4ed8;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .add-user-button:hover {
+            background: #1e40af;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================================================
+           DJANGO MESSAGES
+        ========================================================= */
+
+        .user-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .user-message {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+        }
+
+        .user-message-content {
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-shrink: 0;
+            min-width: 0;
         }
 
-        .user-header-button {
-            min-height: 40px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 650;
+        .user-message-content > i {
+            flex: 0 0 auto;
+            font-size: 17px;
+        }
+
+        .user-message-content span {
+            overflow-wrap: anywhere;
+        }
+
+        .user-message-success {
+            background: #ecfdf3;
+            border-color: #bbf7d0;
+            color: #166534;
+        }
+
+        .user-message-error {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+
+        .user-message-warning {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #92400e;
+        }
+
+        .user-message-info {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+
+        .user-message-close {
+            flex: 0 0 auto;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 7px;
-            white-space: nowrap;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: none;
+            border-radius: 7px;
+            background: transparent;
+            color: currentColor;
+            opacity: 0.7;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-message-close:hover {
+            opacity: 1;
+            background: rgba(15, 23, 42, 0.06);
         }
 
 
@@ -121,276 +177,227 @@
            SUMMARY CARDS
         ========================================================= */
 
-        .user-summary-grid {
+        .summary-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 16px;
-            width: 100%;
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
 
-        .user-summary-card {
-            min-width: 0;
-            min-height: 112px;
-            padding: 19px 20px;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
+        .summary-card {
             background: #ffffff;
-            box-shadow:
-                0 2px 5px rgba(15, 23, 42, 0.04),
-                0 8px 22px rgba(15, 23, 42, 0.035);
-            box-sizing: border-box;
-        }
-
-        .user-summary-label {
-            margin-bottom: 9px;
-            color: #6b7280;
-            font-size: 11px;
-            font-weight: 750;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-        }
-
-        .user-summary-value {
-            color: #111827;
-            font-size: 27px;
-            font-weight: 750;
-            line-height: 1;
-        }
-
-        .user-summary-note {
-            margin-top: 7px;
-            color: #9ca3af;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-
-        /* =========================================================
-           MAIN MANAGEMENT CARD
-        ========================================================= */
-
-        .user-management-card {
-            width: 100%;
-            min-width: 0;
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e5e9f0;
             border-radius: 12px;
-            background: #ffffff;
-            box-shadow:
-                0 2px 5px rgba(15, 23, 42, 0.04),
-                0 8px 24px rgba(15, 23, 42, 0.045);
-            box-sizing: border-box;
+            padding: 18px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
         }
 
-
-        /* =========================================================
-           CARD HEADER
-        ========================================================= */
-
-        .user-card-header {
+        .summary-card-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 18px;
-            width: 100%;
-            padding: 19px 22px;
-            border-bottom: 1px solid #e5e7eb;
-            background: #ffffff;
-            box-sizing: border-box;
+            gap: 12px;
+            margin-bottom: 13px;
         }
 
-        .user-card-title-area {
-            min-width: 0;
+        .summary-card-label {
+            color: #697386;
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        .user-card-title {
-            margin: 0;
-            color: #111827;
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.35;
-        }
-
-        .user-card-subtitle {
-            margin: 5px 0 0;
-            color: #6b7280;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        .user-count-badge {
+        .summary-card-icon {
+            width: 36px;
+            height: 36px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 34px;
-            height: 26px;
-            padding: 0 9px;
-            border-radius: 20px;
+            border-radius: 9px;
             background: #eff6ff;
             color: #2563eb;
-            font-size: 12px;
+            font-size: 17px;
+        }
+
+        .summary-card-value {
+            color: #172033;
+            font-size: 25px;
             font-weight: 700;
-            flex-shrink: 0;
+            line-height: 1.1;
         }
 
 
         /* =========================================================
-           FILTER BAR
+           FILTER PANEL
         ========================================================= */
 
-        .user-filter-bar {
+        .filter-panel {
+            background: #ffffff;
+            border: 1px solid #e5e9f0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        }
+
+        .filter-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 180px 180px;
-            gap: 12px;
+            grid-template-columns: minmax(220px, 1.6fr) minmax(170px, 1fr) minmax(150px, 0.8fr);
+            gap: 14px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .filter-control {
             width: 100%;
-            padding: 17px 22px;
-            border-bottom: 1px solid #eef0f3;
-            background: #fafbfc;
-            box-sizing: border-box;
-        }
-
-        .user-search-wrapper {
-            position: relative;
-            min-width: 0;
-        }
-
-        .user-search-wrapper i {
-            position: absolute;
-            top: 50%;
-            left: 13px;
-            color: #9ca3af;
-            font-size: 14px;
-            transform: translateY(-50%);
-            pointer-events: none;
-        }
-
-        .user-search-input,
-        .user-filter-select {
-            width: 100%;
-            min-height: 40px;
-            border: 1px solid #dfe3e8;
+            min-height: 42px;
+            border: 1px solid #d8dee8;
             border-radius: 8px;
             background: #ffffff;
-            color: #374151;
-            font-family: inherit;
-            font-size: 13px;
+            color: #1f2937;
+            padding: 9px 12px;
+            font-size: 14px;
             outline: none;
-            transition:
-                border-color 0.15s ease,
-                box-shadow 0.15s ease;
-            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .user-search-input {
-            padding: 8px 12px 8px 37px;
-        }
-
-        .user-filter-select {
-            padding: 8px 12px;
-            cursor: pointer;
-        }
-
-        .user-search-input::placeholder {
-            color: #9ca3af;
-        }
-
-        .user-search-input:focus,
-        .user-filter-select:focus {
+        .filter-control:focus {
             border-color: #2563eb;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
         }
 
 
         /* =========================================================
-           TABLE
+           TABLE CARD
         ========================================================= */
 
-        .user-table-scroll {
-            width: 100%;
+        .users-card {
+            background: #ffffff;
+            border: 1px solid #e5e9f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        }
+
+        .users-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 18px 20px;
+            border-bottom: 1px solid #e9edf3;
+        }
+
+        .users-card-header h2 {
+            margin: 0;
+            color: #172033;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .users-card-header p {
+            margin: 4px 0 0;
+            color: #7a8495;
+            font-size: 12px;
+        }
+
+        .table-responsive {
             overflow-x: auto;
-            box-sizing: border-box;
         }
 
         .users-table {
             width: 100%;
             min-width: 980px;
             margin: 0;
+            border-collapse: collapse;
         }
 
         .users-table thead th {
-            padding: 14px 18px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 13px 16px;
             background: #f8fafc;
-            color: #4b5563;
-            font-size: 10.5px;
-            font-weight: 750;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
+            border-bottom: 1px solid #e5e9f0;
+            color: #596579;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: left;
             white-space: nowrap;
         }
 
         .users-table tbody td {
-            padding: 15px 18px;
-            border-bottom: 1px solid #eef0f3;
+            padding: 15px 16px;
+            border-bottom: 1px solid #eef1f5;
             color: #374151;
             font-size: 13px;
             vertical-align: middle;
         }
 
         .users-table tbody tr:last-child td {
-            border-bottom: 0;
+            border-bottom: none;
         }
 
-        .users-table tbody tr.user-row {
-            transition: background-color 0.15s ease;
+        .users-table tbody tr:hover {
+            background: #fafcff;
         }
 
-        .users-table tbody tr.user-row:hover {
-            background: #f8fafc;
+        .user-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-width: 210px;
         }
 
-
-        /* =========================================================
-           USER INFORMATION
-        ========================================================= */
-
-        .username {
-            color: #111827;
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            flex: 0 0 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 14px;
             font-weight: 700;
-            white-space: nowrap;
         }
 
-        .email {
+        .user-name-main {
+            color: #1f2937;
+            font-weight: 650;
+            line-height: 1.35;
+        }
+
+        .user-name-sub {
+            margin-top: 2px;
+            color: #8a94a5;
+            font-size: 11px;
+        }
+
+        .user-email {
             color: #4b5563;
-            white-space: nowrap;
+            word-break: break-word;
         }
-
-        .full-name {
-            color: #374151;
-        }
-
-
-        /* =========================================================
-           BADGES
-        ========================================================= */
 
         .role-badge,
         .status-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 25px;
-            padding: 4px 9px;
-            border-radius: 6px;
+            min-height: 28px;
+            padding: 5px 9px;
+            border-radius: 999px;
             font-size: 11px;
             font-weight: 700;
             white-space: nowrap;
         }
 
         .role-badge {
-            background: #eff6ff;
-            color: #1d4ed8;
+            background: #f1f5f9;
+            color: #475569;
         }
 
         .status-active {
@@ -403,309 +410,157 @@
             color: #b91c1c;
         }
 
-
-        /* =========================================================
-           ACTION BUTTONS
-        ========================================================= */
-
         .user-actions {
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 7px;
+            justify-content: flex-end;
+            gap: 6px;
+            flex-wrap: nowrap;
         }
 
         .user-action-button {
-            min-height: 32px;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11.5px;
-            font-weight: 650;
-            white-space: nowrap;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
-        }
-
-        .user-action-button i {
-            font-size: 11px;
-        }
-
-
-        /* =========================================================
-           EMPTY STATE
-        ========================================================= */
-
-        .user-empty-state {
-            display: none;
-            padding: 55px 20px !important;
-            text-align: center;
-            color: #6b7280 !important;
-        }
-
-        .user-empty-state i {
-            display: block;
-            margin-bottom: 11px;
-            color: #9ca3af;
-            font-size: 30px;
-        }
-
-        .user-empty-state strong {
-            display: block;
-            margin-bottom: 4px;
-            color: #374151;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .user-empty-state span {
-            color: #9ca3af;
+            min-height: 32px;
+            border-radius: 7px;
             font-size: 12px;
+            font-weight: 600;
+        }
+
+        .empty-users {
+            padding: 50px 20px;
+            text-align: center;
+            color: #7b8494;
+        }
+
+        .empty-users i {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 34px;
+            color: #a5afbd;
+        }
+
+        .empty-users strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #4b5563;
+            font-size: 14px;
         }
 
 
         /* =========================================================
-           PAGINATION
+           CLIENT PAGINATION
         ========================================================= */
 
-        .user-pagination-wrapper {
+        .table-footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 15px;
-            min-height: 63px;
-            width: 100%;
-            padding: 14px 22px;
-            border-top: 1px solid #eef0f3;
-            background: #ffffff;
-            box-sizing: border-box;
+            padding: 15px 20px;
+            border-top: 1px solid #e9edf3;
         }
 
-        .user-pagination-info {
-            color: #6b7280;
+        .pagination-info {
+            color: #7b8494;
             font-size: 12px;
         }
 
-        .user-pagination {
+        .client-pagination {
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
-        .user-page-button {
+        .pagination-button {
             min-width: 32px;
             height: 32px;
-            padding: 0 8px;
-            border: 1px solid #dfe3e8;
-            border-radius: 6px;
+            padding: 0 9px;
+            border: 1px solid #dce2ea;
+            border-radius: 7px;
             background: #ffffff;
-            color: #4b5563;
+            color: #475569;
             font-size: 12px;
-            font-weight: 650;
+            font-weight: 600;
             cursor: pointer;
-            transition:
-                background-color 0.15s ease,
-                color 0.15s ease,
-                border-color 0.15s ease;
+            transition: all 0.2s ease;
         }
 
-        .user-page-button:hover:not(:disabled) {
+        .pagination-button:hover:not(:disabled) {
             border-color: #2563eb;
             color: #2563eb;
-            background: #f8fbff;
+            background: #eff6ff;
         }
 
-        .user-page-button.active {
+        .pagination-button.active {
             border-color: #2563eb;
             background: #2563eb;
             color: #ffffff;
         }
 
-        .user-page-button:disabled {
+        .pagination-button:disabled {
             cursor: not-allowed;
             opacity: 0.45;
         }
 
-        .user-page-ellipsis {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 24px;
-            color: #9ca3af;
+
+        /* =========================================================
+           MODALS
+        ========================================================= */
+
+        .user-modal .modal-content {
+            border: none;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.20);
+        }
+
+        .user-modal .modal-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e9edf3;
+        }
+
+        .user-modal .modal-title {
+            color: #172033;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .user-modal .modal-body {
+            padding: 20px;
+            color: #5b6575;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .user-modal .modal-footer {
+            padding: 14px 20px;
+            border-top: 1px solid #e9edf3;
+        }
+
+        .delete-warning-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px;
+            margin-top: 14px;
+            border: 1px solid #fecaca;
+            border-radius: 9px;
+            background: #fef2f2;
+            color: #991b1b;
             font-size: 13px;
         }
 
-
-        /* =========================================================
-           CONFIRMATION MODAL
-        ========================================================= */
-
-        .user-confirm-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.52);
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
-            box-sizing: border-box;
+        .delete-warning-box i {
+            margin-top: 2px;
+            flex: 0 0 auto;
         }
 
-        .user-confirm-overlay.show {
-            display: flex;
-        }
-
-        .user-confirm-modal {
-            width: 100%;
-            max-width: 430px;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            background: #ffffff;
-            box-shadow:
-                0 20px 50px rgba(15, 23, 42, 0.20),
-                0 5px 18px rgba(15, 23, 42, 0.10);
-            overflow: hidden;
-            animation: userConfirmAppear 0.18s ease-out;
-        }
-
-        @keyframes userConfirmAppear {
-
-            from {
-                opacity: 0;
-                transform: translateY(10px) scale(0.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-
-        }
-
-        .user-confirm-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 13px;
-            padding: 21px 22px 15px;
-        }
-
-        .user-confirm-icon {
-            width: 42px;
-            height: 42px;
-            flex: 0 0 42px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            font-size: 19px;
-        }
-
-        .user-confirm-icon.activate {
-            background: #ecfdf3;
-            color: #15803d;
-        }
-
-        .user-confirm-icon.deactivate {
-            background: #fef2f2;
-            color: #dc2626;
-        }
-
-        .user-confirm-heading {
-            min-width: 0;
-        }
-
-        .user-confirm-title {
-            margin: 1px 0 4px;
-            color: #111827;
-            font-size: 17px;
-            font-weight: 750;
-            line-height: 1.35;
-        }
-
-        .user-confirm-subtitle {
-            margin: 0;
-            color: #6b7280;
-            font-size: 12.5px;
-            line-height: 1.55;
-        }
-
-        .user-confirm-body {
-            padding: 0 22px 18px;
-        }
-
-        .user-confirm-user {
-            padding: 11px 13px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            background: #f8fafc;
-            color: #374151;
-            font-size: 12.5px;
-            font-weight: 650;
-            word-break: break-word;
-        }
-
-        .user-confirm-actions {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 9px;
-            padding: 14px 22px 18px;
-            border-top: 1px solid #eef0f3;
-            background: #ffffff;
-        }
-
-        .user-confirm-button {
-            min-height: 38px;
-            padding: 8px 15px;
-            border-radius: 7px;
-            font-size: 12.5px;
+        .delete-user-name {
+            color: #172033;
             font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .user-confirm-cancel {
-            border: 1px solid #dfe3e8;
-            background: #ffffff;
-            color: #4b5563;
-        }
-
-        .user-confirm-cancel:hover {
-            background: #f8fafc;
-            color: #111827;
-        }
-
-        .user-confirm-activate {
-            border: 1px solid #15803d;
-            background: #15803d;
-            color: #ffffff;
-        }
-
-        .user-confirm-activate:hover {
-            background: #166534;
-            border-color: #166534;
-        }
-
-        .user-confirm-deactivate {
-            border: 1px solid #dc2626;
-            background: #dc2626;
-            color: #ffffff;
-        }
-
-        .user-confirm-deactivate:hover {
-            background: #b91c1c;
-            border-color: #b91c1c;
-        }
-
-        body.confirm-modal-open {
-            overflow: hidden;
         }
 
 
@@ -715,153 +570,81 @@
 
         @media (max-width: 1100px) {
 
-            .user-filter-bar {
-                grid-template-columns: minmax(0, 1fr) 180px;
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
-            .user-search-wrapper {
+            .filter-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .filter-group:first-child {
                 grid-column: 1 / -1;
             }
 
         }
 
-
-        @media (max-width: 900px) {
-
-            .main-content {
-                margin-left: 250px !important;
-                width: calc(100% - 250px) !important;
-            }
-
-            .user-management-page {
-                padding: 24px 20px 35px;
-            }
-
-            .user-summary-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 12px;
-            }
-
-            .user-summary-card {
-                padding: 16px;
-            }
-
-        }
-
-
         @media (max-width: 768px) {
 
-            .main-content {
-                margin-left: 0 !important;
-                width: 100% !important;
-                max-width: 100% !important;
-            }
-
             .user-management-page {
-                width: 100%;
-                padding: 22px 15px 32px;
+                padding: 20px 15px;
             }
 
-            .user-page-header {
+            .page-header {
                 flex-direction: column;
                 align-items: stretch;
-                margin-bottom: 20px;
             }
 
-            .user-page-heading h1 {
-                font-size: 24px;
-            }
-
-            .user-header-actions {
+            .add-user-button {
                 width: 100%;
+                justify-content: center;
             }
 
-            .user-header-button {
-                width: 100%;
-            }
-
-            .user-summary-grid {
+            .summary-grid {
                 grid-template-columns: 1fr;
-                gap: 12px;
             }
 
-            .user-summary-card {
-                min-height: 100px;
-            }
-
-            .user-card-header {
-                align-items: flex-start;
-                padding: 16px;
-            }
-
-            .user-filter-bar {
+            .filter-grid {
                 grid-template-columns: 1fr;
-                padding: 15px 16px;
             }
 
-            .user-search-wrapper {
+            .filter-group:first-child {
                 grid-column: auto;
             }
 
-            .users-table thead th,
-            .users-table tbody td {
-                padding-left: 13px;
-                padding-right: 13px;
-            }
-
-            .user-pagination-wrapper {
+            .users-card-header {
                 align-items: flex-start;
                 flex-direction: column;
-                padding: 14px 16px;
             }
 
-            .user-pagination {
-                width: 100%;
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 2px;
+            .table-footer {
+                align-items: flex-start;
+                flex-direction: column;
             }
 
-            .user-confirm-modal {
-                max-width: 100%;
+            .user-messages {
+                margin-bottom: 18px;
             }
 
         }
-
 
         @media (max-width: 480px) {
 
             .user-management-page {
-                padding-left: 10px;
-                padding-right: 10px;
+                padding: 16px 10px;
             }
 
-            .user-card-header {
-                flex-direction: column;
+            .page-header-content h1 {
+                font-size: 23px;
+            }
+
+            .user-message {
                 align-items: flex-start;
-                gap: 10px;
             }
 
-            .user-card-title {
-                font-size: 15px;
-            }
-
-            .user-confirm-header {
-                padding: 18px 17px 14px;
-            }
-
-            .user-confirm-body {
-                padding: 0 17px 16px;
-            }
-
-            .user-confirm-actions {
-                padding: 13px 17px 16px;
-                flex-direction: column-reverse;
-                align-items: stretch;
-            }
-
-            .user-confirm-button {
-                width: 100%;
+            .user-message-close {
+                width: 28px;
+                height: 28px;
             }
 
         }
@@ -873,13 +656,9 @@
 
 <body>
 
-
-<div class="dashboard-layout">
-
-
-    <!-- =====================================================
+    <!-- ============================================================
          SHARED SUPER ADMIN SIDEBAR
-    ====================================================== -->
+    ============================================================= -->
 
     <aside
         class="admin-sidebar"
@@ -940,7 +719,7 @@
 
             <a
                 href="{% url 'super_admin_dashboard' %}"
-                class="sidebar-link"
+                class="sidebar-link "
             >
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span>Dashboard</span>
@@ -963,6 +742,8 @@
             </div>
 
 
+            <!-- IT ASSETS -->
+
             {% url 'asset_list' as asset_list_url %}
 
             {% if asset_list_url %}
@@ -977,6 +758,8 @@
 
             {% endif %}
 
+
+            <!-- ASSET ASSIGNMENTS -->
 
             {% url 'admin_assignment_list' as assignment_list_url %}
 
@@ -993,6 +776,8 @@
             {% endif %}
 
 
+            <!-- ASSET REQUESTS -->
+
             {% url 'admin_asset_requests' as asset_requests_url %}
 
             {% if asset_requests_url %}
@@ -1007,6 +792,8 @@
 
             {% endif %}
 
+
+            <!-- DAMAGED / LOST -->
 
             {% url 'admin_asset_incident_list' as incident_list_url %}
 
@@ -1023,6 +810,8 @@
             {% endif %}
 
 
+            <!-- MAINTENANCE -->
+
             {% url 'maintenance_list' as maintenance_url %}
 
             {% if maintenance_url %}
@@ -1037,7 +826,8 @@
 
             {% endif %}
 
-                        <!-- SOFTWARE LICENSES -->
+
+            <!-- SOFTWARE LICENSES -->
 
             <a
                 href="{% url 'software_license_list' %}"
@@ -1048,6 +838,8 @@
             </a>
 
 
+            <!-- DEPARTMENTS -->
+
             <a
                 href="{% url 'super_admin_department_list' %}"
                 class="sidebar-link"
@@ -1057,6 +849,19 @@
             </a>
 
 
+            <!-- VENDORS / PURCHASES -->
+
+            <a
+                href="{% url 'vendors:vendor_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-building"></i>
+                <span>Vendors / Purchases</span>
+            </a>
+
+
+            <!-- REPORTS -->
+
             <a
                 href="{% url 'reports:home' %}"
                 class="sidebar-link"
@@ -1065,6 +870,8 @@
                 <span>Reports &amp; Analytics</span>
             </a>
 
+
+            <!-- NOTIFICATIONS -->
 
             <a
                 href="{% url 'notifications:list' %}"
@@ -1080,6 +887,17 @@
             <div class="sidebar-section-title">
                 System
             </div>
+
+
+            <!-- AUDIT LOGS -->
+
+            <a
+                href="{% url 'reports:audit_log_report' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-journal-text"></i>
+                <span>Audit Logs</span>
+            </a>
 
         </nav>
 
@@ -1113,229 +931,357 @@
     </aside>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          MAIN CONTENT
-    ====================================================== -->
+    ========================================================= -->
 
-    <main class="main-content">
+    <main class="admin-main">
+
+        <div class="user-management-page">
 
 
-        <section class="user-management-page">
+            <!-- =====================================================
+                 PAGE HEADER
+            ===================================================== -->
 
+            <div class="page-header">
 
-            <!-- PAGE HEADER -->
-
-            <header class="user-page-header">
-
-                <div class="user-page-heading">
+                <div class="page-header-content">
 
                     <h1>
                         User Management
                     </h1>
 
                     <p>
-                        Manage ITARMS users, roles and account status.
+                        Manage ITARMS users, roles, account status and access.
                     </p>
 
                 </div>
 
+                <a
+                    href="{% url 'add_user' %}"
+                    class="add-user-button"
+                >
+                    <i class="bi bi-person-plus-fill"></i>
+                    <span>Add User</span>
+                </a>
 
-                <div class="user-header-actions">
+            </div>
 
-                    <a
-                        href="{% url 'add_user' %}"
-                        class="btn btn-primary user-header-button"
-                    >
-                        <i class="bi bi-person-plus-fill"></i>
-                        <span>Add User</span>
-                    </a>
+
+            <!-- =====================================================
+                 DJANGO MESSAGES
+            ===================================================== -->
+
+            {% if messages %}
+
+                <div
+                    class="user-messages"
+                    aria-live="polite"
+                    aria-atomic="true"
+                >
+
+                    {% for message in messages %}
+
+                        <div
+                            class="
+                                user-message
+                                {% if message.tags == 'success' %}
+                                    user-message-success
+                                {% elif message.tags == 'error' %}
+                                    user-message-error
+                                {% elif message.tags == 'warning' %}
+                                    user-message-warning
+                                {% else %}
+                                    user-message-info
+                                {% endif %}
+                            "
+                            role="alert"
+                        >
+
+                            <div class="user-message-content">
+
+                                <i
+                                    class="
+                                        bi
+                                        {% if message.tags == 'success' %}
+                                            bi-check-circle-fill
+                                        {% elif message.tags == 'error' %}
+                                            bi-exclamation-triangle-fill
+                                        {% elif message.tags == 'warning' %}
+                                            bi-exclamation-circle-fill
+                                        {% else %}
+                                            bi-info-circle-fill
+                                        {% endif %}
+                                    "
+                                ></i>
+
+                                <span>
+                                    {{ message }}
+                                </span>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                class="user-message-close"
+                                aria-label="Close message"
+                            >
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+
+                        </div>
+
+                    {% endfor %}
 
                 </div>
 
-            </header>
+            {% endif %}
 
 
-            <!-- SUMMARY CARDS -->
+            <!-- =====================================================
+                 SUMMARY
+            ===================================================== -->
 
-            <div class="user-summary-grid">
+            <div class="summary-grid">
 
+                <div class="summary-card">
 
-                <div class="user-summary-card">
+                    <div class="summary-card-top">
 
-                    <div class="user-summary-label">
-                        Total Users
+                        <span class="summary-card-label">
+                            Total Users
+                        </span>
+
+                        <span class="summary-card-icon">
+                            <i class="bi bi-people-fill"></i>
+                        </span>
+
                     </div>
 
-                    <div
-                        class="user-summary-value"
-                        id="totalUsersCount"
-                    >
+                    <div class="summary-card-value">
                         {{ users|length }}
                     </div>
 
-                    <div class="user-summary-note">
-                        Registered system users
-                    </div>
-
                 </div>
 
 
-                <div class="user-summary-card">
+                <div class="summary-card">
 
-                    <div class="user-summary-label">
-                        Active Users
+                    <div class="summary-card-top">
+
+                        <span class="summary-card-label">
+                            Active Users
+                        </span>
+
+                        <span class="summary-card-icon">
+                            <i class="bi bi-person-check-fill"></i>
+                        </span>
+
                     </div>
 
                     <div
-                        class="user-summary-value"
+                        class="summary-card-value"
                         id="activeUsersCount"
                     >
                         0
                     </div>
 
-                    <div class="user-summary-note">
-                        Currently active accounts
-                    </div>
-
                 </div>
 
 
-                <div class="user-summary-card">
+                <div class="summary-card">
 
-                    <div class="user-summary-label">
-                        Inactive Users
+                    <div class="summary-card-top">
+
+                        <span class="summary-card-label">
+                            Inactive Users
+                        </span>
+
+                        <span class="summary-card-icon">
+                            <i class="bi bi-person-x-fill"></i>
+                        </span>
+
                     </div>
 
                     <div
-                        class="user-summary-value"
+                        class="summary-card-value"
                         id="inactiveUsersCount"
                     >
                         0
                     </div>
 
-                    <div class="user-summary-note">
-                        Deactivated accounts
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-card-top">
+
+                        <span class="summary-card-label">
+                            Super Admins
+                        </span>
+
+                        <span class="summary-card-icon">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </span>
+
+                    </div>
+
+                    <div
+                        class="summary-card-value"
+                        id="superAdminCount"
+                    >
+                        0
                     </div>
 
                 </div>
-
 
             </div>
 
 
-            <!-- USERS CARD -->
+            <!-- =====================================================
+                 FILTERS
+            ===================================================== -->
 
-            <section class="user-management-card">
+            <div class="filter-panel">
 
+                <div class="filter-grid">
 
-                <!-- CARD HEADER -->
+                    <div class="filter-group">
 
-                <div class="user-card-header">
-
-                    <div class="user-card-title-area">
-
-                        <h2 class="user-card-title">
-                            System Users
-                        </h2>
-
-                        <p class="user-card-subtitle">
-                            View and manage registered ITARMS accounts.
-                        </p>
-
-                    </div>
-
-
-                    <span
-                        class="user-count-badge"
-                        id="visibleUserCount"
-                    >
-                        {{ users|length }}
-                    </span>
-
-                </div>
-
-
-                <!-- FILTERS -->
-
-                <div class="user-filter-bar">
-
-
-                    <div class="user-search-wrapper">
-
-                        <i class="bi bi-search"></i>
+                        <label for="userSearch">
+                            Search Users
+                        </label>
 
                         <input
                             type="search"
                             id="userSearch"
-                            class="user-search-input"
-                            placeholder="Search by username, email or name..."
+                            class="filter-control"
+                            placeholder="Search by username, name or email..."
                             autocomplete="off"
                         >
 
                     </div>
 
 
-                    <select
-                        id="roleFilter"
-                        class="user-filter-select"
-                        aria-label="Filter users by role"
-                    >
+                    <div class="filter-group">
 
-                        <option value="">
-                            All Roles
-                        </option>
+                        <label for="roleFilter">
+                            Role
+                        </label>
 
-                        {% for role_value, role_label in role_choices %}
+                        <select
+                            id="roleFilter"
+                            class="filter-control"
+                        >
 
-                            <option value="{{ role_label|lower }}">
-                                {{ role_label }}
+                            <option value="all">
+                                All Roles
                             </option>
 
-                        {% endfor %}
+                            {% for value, label in role_choices %}
 
-                    </select>
+                                <option value="{{ value|lower }}">
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
 
 
-                    <select
-                        id="statusFilter"
-                        class="user-filter-select"
-                        aria-label="Filter users by status"
-                    >
+                    <div class="filter-group">
 
-                        <option value="">
-                            All Statuses
-                        </option>
+                        <label for="statusFilter">
+                            Account Status
+                        </label>
 
-                        <option value="active">
-                            Active
-                        </option>
+                        <select
+                            id="statusFilter"
+                            class="filter-control"
+                        >
 
-                        <option value="inactive">
-                            Inactive
-                        </option>
+                            <option value="all">
+                                All Statuses
+                            </option>
 
-                    </select>
+                            <option value="active">
+                                Active
+                            </option>
 
+                            <option value="inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 USERS TABLE
+            ===================================================== -->
+
+            <section class="users-card">
+
+                <div class="users-card-header">
+
+                    <div>
+
+                        <h2>
+                            System Users
+                        </h2>
+
+                        <p>
+                            View and manage registered ITARMS accounts.
+                        </p>
+
+                    </div>
 
                 </div>
 
 
-                <!-- USERS TABLE -->
+                <div class="table-responsive">
 
-                <div class="user-table-scroll">
-
-                    <table class="table users-table align-middle">
+                    <table
+                        class="users-table"
+                        id="usersTable"
+                    >
 
                         <thead>
 
                             <tr>
 
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Name</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th>
+                                    User
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Role
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Date Joined
+                                </th>
+
+                                <th class="text-end">
+                                    Actions
+                                </th>
 
                             </tr>
 
@@ -1344,162 +1290,192 @@
 
                         <tbody id="usersTableBody">
 
-
                             {% for user in users %}
 
-                            <tr
-                                class="user-row"
-                                data-search="{{ user.username|lower }} {{ user.email|lower }} {{ user.get_full_name|lower }}"
-                                data-role="{{ user.get_role_display|lower }}"
-                                data-status="{% if user.is_active %}active{% else %}inactive{% endif %}"
-                            >
+                                <tr
+                                    class="user-row"
+                                    data-username="{{ user.username|lower }}"
+                                    data-name="{{ user.get_full_name|lower }}"
+                                    data-email="{{ user.email|lower }}"
+                                    data-role="{{ user.role|lower }}"
+                                    data-status="{% if user.is_active %}active{% else %}inactive{% endif %}"
+                                >
 
-                                <td>
-                                    <span class="username">
-                                        {{ user.username }}
-                                    </span>
-                                </td>
+                                    <td>
+
+                                        <div class="user-name-cell">
+
+                                            <div class="user-avatar">
+
+                                                {% if user.get_full_name %}
+                                                    {{ user.get_full_name|first|upper }}
+                                                {% else %}
+                                                    {{ user.username|first|upper }}
+                                                {% endif %}
+
+                                            </div>
+
+                                            <div>
+
+                                                <div class="user-name-main">
+                                                    {{ user.get_full_name|default:user.username }}
+                                                </div>
+
+                                                <div class="user-name-sub">
+                                                    @{{ user.username }}
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
 
 
-                                <td>
-                                    <span class="email">
-                                        {{ user.email }}
-                                    </span>
-                                </td>
+                                    <td>
+
+                                        <div class="user-email">
+                                            {{ user.email|default:"—" }}
+                                        </div>
+
+                                    </td>
 
 
-                                <td>
-                                    <span class="full-name">
+                                    <td>
 
-                                        {% if user.get_full_name %}
-                                            {{ user.get_full_name }}
-                                        {% else %}
-                                            —
-                                        {% endif %}
+                                        <span class="role-badge">
 
-                                    </span>
-                                </td>
+                                            {{ user.get_role_display }}
 
-
-                                <td>
-                                    <span class="role-badge">
-                                        {{ user.get_role_display }}
-                                    </span>
-                                </td>
-
-
-                                <td>
-
-                                    {% if user.is_active %}
-
-                                        <span class="status-badge status-active">
-                                            Active
                                         </span>
 
-                                    {% else %}
-
-                                        <span class="status-badge status-inactive">
-                                            Inactive
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
+                                    </td>
 
 
-                                <td>
-
-                                    <div class="user-actions">
-
-
-                                        <a
-                                            href="{% url 'edit_user' user.id %}"
-                                            class="btn btn-sm btn-outline-primary user-action-button"
-                                        >
-                                            <i class="bi bi-pencil-square"></i>
-                                            <span>Edit</span>
-                                        </a>
-
+                                    <td>
 
                                         {% if user.is_active %}
 
-                                            <form
-                                                method="post"
-                                                action="{% url 'toggle_user_status' user.id %}"
-                                                class="m-0 user-status-form"
-                                                data-action="deactivate"
-                                                data-username="{{ user.username }}"
-                                            >
-
-                                                {% csrf_token %}
-
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-sm btn-outline-danger user-action-button user-status-button"
-                                                >
-                                                    <i class="bi bi-person-x-fill"></i>
-                                                    <span>Deactivate</span>
-                                                </button>
-
-                                            </form>
+                                            <span class="status-badge status-active">
+                                                Active
+                                            </span>
 
                                         {% else %}
 
-                                            <form
-                                                method="post"
-                                                action="{% url 'toggle_user_status' user.id %}"
-                                                class="m-0 user-status-form"
-                                                data-action="activate"
-                                                data-username="{{ user.username }}"
-                                            >
-
-                                                {% csrf_token %}
-
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-sm btn-outline-success user-action-button user-status-button"
-                                                >
-                                                    <i class="bi bi-person-check-fill"></i>
-                                                    <span>Activate</span>
-                                                </button>
-
-                                            </form>
+                                            <span class="status-badge status-inactive">
+                                                Inactive
+                                            </span>
 
                                         {% endif %}
 
+                                    </td>
 
-                                    </div>
 
-                                </td>
+                                    <td>
 
-                            </tr>
+                                        {{ user.date_joined|date:"d M Y" }}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="user-actions">
+
+                                            <a
+                                                href="{% url 'edit_user' user.id %}"
+                                                class="btn btn-sm btn-outline-primary user-action-button"
+                                            >
+                                                <i class="bi bi-pencil-square"></i>
+                                                <span>Edit</span>
+                                            </a>
+
+
+                                            {% if user.id != request.user.id %}
+
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'toggle_user_status' user.id %}"
+                                                    class="m-0"
+                                                >
+
+                                                    {% csrf_token %}
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-sm btn-outline-secondary user-action-button"
+                                                    >
+
+                                                        {% if user.is_active %}
+
+                                                            <i class="bi bi-person-dash-fill"></i>
+                                                            <span>Deactivate</span>
+
+                                                        {% else %}
+
+                                                            <i class="bi bi-person-check-fill"></i>
+                                                            <span>Activate</span>
+
+                                                        {% endif %}
+
+                                                    </button>
+
+                                                </form>
+
+
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'delete_user' user.id %}"
+                                                    class="m-0 user-delete-form"
+                                                    data-username="{{ user.username }}"
+                                                    data-role="{{ user.get_role_display }}"
+                                                >
+
+                                                    {% csrf_token %}
+
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-sm btn-outline-danger user-action-button user-delete-button user-delete-trigger"
+                                                    >
+                                                        <i class="bi bi-trash3-fill"></i>
+                                                        <span>Delete</span>
+                                                    </button>
+
+                                                </form>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            {% empty %}
+
+                                <tr>
+
+                                    <td colspan="6">
+
+                                        <div class="empty-users">
+
+                                            <i class="bi bi-people"></i>
+
+                                            <strong>
+                                                No users found
+                                            </strong>
+
+                                            <span>
+                                                There are currently no user accounts to display.
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
 
                             {% endfor %}
-
-
-                            <!-- FILTER EMPTY STATE -->
-
-                            <tr id="noUsersMessage">
-
-                                <td
-                                    colspan="6"
-                                    class="user-empty-state"
-                                >
-
-                                    <i class="bi bi-people"></i>
-
-                                    <strong>
-                                        No users found
-                                    </strong>
-
-                                    <span>
-                                        No user matches the current search or filters.
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
 
                         </tbody>
 
@@ -1508,1044 +1484,695 @@
                 </div>
 
 
-                <!-- PAGINATION -->
+                <!-- =================================================
+                     TABLE FOOTER / PAGINATION
+                ================================================= -->
 
-                <div class="user-pagination-wrapper">
+                <div class="table-footer">
 
                     <div
-                        class="user-pagination-info"
+                        class="pagination-info"
                         id="paginationInfo"
                     >
                         Showing 0 users
                     </div>
 
-
                     <div
-                        class="user-pagination"
-                        id="paginationControls"
+                        class="client-pagination"
+                        id="clientPagination"
+                    ></div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================================
+         DELETE CONFIRMATION MODAL
+    ========================================================= -->
+
+    <div
+        class="modal fade user-modal"
+        id="deleteUserModal"
+        tabindex="-1"
+        aria-labelledby="deleteUserModalLabel"
+        aria-hidden="true"
+    >
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5
+                        class="modal-title"
+                        id="deleteUserModalLabel"
                     >
+                        Confirm User Deletion
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <p class="mb-0">
+
+                        Are you sure you want to permanently delete
+                        <span
+                            id="deleteUserName"
+                            class="delete-user-name"
+                        ></span>?
+
+                    </p>
+
+
+                    <div class="delete-warning-box">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+                            This action permanently removes the user account.
+                            The system may prevent deletion when protected
+                            records are still associated with the account.
+                            In that situation, deactivate the account instead.
+                        </span>
+
                     </div>
 
                 </div>
 
 
-            </section>
+                <div class="modal-footer">
 
+                    <button
+                        type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
 
-        </section>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        id="confirmDeleteUserButton"
+                    >
+                        <i class="bi bi-trash3-fill me-1"></i>
+                        Delete User
+                    </button>
 
-
-    </main>
-
-
-</div>
-
-
-<!-- =========================================================
-     ACTIVATE / DEACTIVATE CONFIRMATION MODAL
-========================================================= -->
-
-<div
-    class="user-confirm-overlay"
-    id="userConfirmOverlay"
-    aria-hidden="true"
->
-
-    <div
-        class="user-confirm-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="userConfirmTitle"
-    >
-
-        <div class="user-confirm-header">
-
-            <div
-                class="user-confirm-icon"
-                id="userConfirmIcon"
-            >
-                <i id="userConfirmIconSymbol"></i>
-            </div>
-
-
-            <div class="user-confirm-heading">
-
-                <h3
-                    class="user-confirm-title"
-                    id="userConfirmTitle"
-                >
-                    Confirm Action
-                </h3>
-
-                <p
-                    class="user-confirm-subtitle"
-                    id="userConfirmSubtitle"
-                >
-                    Please confirm this account status change.
-                </p>
+                </div>
 
             </div>
-
-        </div>
-
-
-        <div class="user-confirm-body">
-
-            <div
-                class="user-confirm-user"
-                id="userConfirmUser"
-            >
-            </div>
-
-        </div>
-
-
-        <div class="user-confirm-actions">
-
-            <button
-                type="button"
-                class="user-confirm-button user-confirm-cancel"
-                id="userConfirmCancel"
-            >
-                Cancel
-            </button>
-
-
-            <button
-                type="button"
-                class="user-confirm-button"
-                id="userConfirmSubmit"
-            >
-                <i id="userConfirmSubmitIcon"></i>
-                <span id="userConfirmSubmitText">
-                    Confirm
-                </span>
-            </button>
 
         </div>
 
     </div>
 
-</div>
 
+    <!-- =========================================================
+         SCRIPTS
+    ========================================================= -->
 
-<script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
 
-document.addEventListener("DOMContentLoaded", function () {
 
+    <script>
 
-    /* =========================================================
-       ELEMENTS
-    ========================================================= */
+        document.addEventListener("DOMContentLoaded", function () {
 
-    const rows = Array.from(
-        document.querySelectorAll(".user-row")
-    );
+            /* =====================================================
+               DJANGO MESSAGE CLOSE
+            ===================================================== */
 
-    const searchInput =
-        document.getElementById("userSearch");
+            const messageCloseButtons =
+                document.querySelectorAll(".user-message-close");
 
-    const roleFilter =
-        document.getElementById("roleFilter");
+            messageCloseButtons.forEach(function (button) {
 
-    const statusFilter =
-        document.getElementById("statusFilter");
+                button.addEventListener("click", function () {
 
-    const visibleUserCount =
-        document.getElementById("visibleUserCount");
+                    const message =
+                        button.closest(".user-message");
 
-    const totalUsersCount =
-        document.getElementById("totalUsersCount");
+                    if (message) {
+                        message.remove();
+                    }
 
-    const activeUsersCount =
-        document.getElementById("activeUsersCount");
-
-    const inactiveUsersCount =
-        document.getElementById("inactiveUsersCount");
-
-    const noUsersMessage =
-        document.getElementById("noUsersMessage");
-
-    const paginationInfo =
-        document.getElementById("paginationInfo");
-
-    const paginationControls =
-        document.getElementById("paginationControls");
-
-
-    /* =========================================================
-       CONFIRMATION MODAL ELEMENTS
-    ========================================================= */
-
-    const confirmOverlay =
-        document.getElementById(
-            "userConfirmOverlay"
-        );
-
-    const confirmIcon =
-        document.getElementById(
-            "userConfirmIcon"
-        );
-
-    const confirmIconSymbol =
-        document.getElementById(
-            "userConfirmIconSymbol"
-        );
-
-    const confirmTitle =
-        document.getElementById(
-            "userConfirmTitle"
-        );
-
-    const confirmSubtitle =
-        document.getElementById(
-            "userConfirmSubtitle"
-        );
-
-    const confirmUser =
-        document.getElementById(
-            "userConfirmUser"
-        );
-
-    const confirmCancel =
-        document.getElementById(
-            "userConfirmCancel"
-        );
-
-    const confirmSubmit =
-        document.getElementById(
-            "userConfirmSubmit"
-        );
-
-    const confirmSubmitIcon =
-        document.getElementById(
-            "userConfirmSubmitIcon"
-        );
-
-    const confirmSubmitText =
-        document.getElementById(
-            "userConfirmSubmitText"
-        );
-
-
-    let selectedStatusForm = null;
-
-
-    /* =========================================================
-       PAGINATION SETTINGS
-    ========================================================= */
-
-    const rowsPerPage = 10;
-
-    let currentPage = 1;
-
-    let filteredRows = [...rows];
-
-
-    /* =========================================================
-       SUMMARY COUNTS
-    ========================================================= */
-
-    const activeCount =
-        rows.filter(function (row) {
-
-            return row.dataset.status === "active";
-
-        }).length;
-
-
-    const inactiveCount =
-        rows.filter(function (row) {
-
-            return row.dataset.status === "inactive";
-
-        }).length;
-
-
-    totalUsersCount.textContent =
-        rows.length;
-
-    activeUsersCount.textContent =
-        activeCount;
-
-    inactiveUsersCount.textContent =
-        inactiveCount;
-
-
-    /* =========================================================
-       FILTER USERS
-    ========================================================= */
-
-    function filterUsers() {
-
-
-        const searchValue =
-            searchInput.value
-                .trim()
-                .toLowerCase();
-
-
-        const selectedRole =
-            roleFilter.value
-                .trim()
-                .toLowerCase();
-
-
-        const selectedStatus =
-            statusFilter.value
-                .trim()
-                .toLowerCase();
-
-
-        filteredRows =
-            rows.filter(function (row) {
-
-
-                const searchText =
-                    row.dataset.search || "";
-
-
-                const rowRole =
-                    row.dataset.role || "";
-
-
-                const rowStatus =
-                    row.dataset.status || "";
-
-
-                const matchesSearch =
-                    !searchValue ||
-                    searchText.includes(
-                        searchValue
-                    );
-
-
-                const matchesRole =
-                    !selectedRole ||
-                    rowRole === selectedRole;
-
-
-                const matchesStatus =
-                    !selectedStatus ||
-                    rowStatus === selectedStatus;
-
-
-                return (
-                    matchesSearch &&
-                    matchesRole &&
-                    matchesStatus
-                );
+                });
 
             });
 
 
-        currentPage = 1;
+            /* =====================================================
+               OPTIONAL MESSAGE AUTO HIDE
+            ===================================================== */
 
-        renderTable();
+            document
+                .querySelectorAll(".user-message-success")
+                .forEach(function (message) {
 
-    }
+                    setTimeout(function () {
+
+                        if (
+                            message &&
+                            document.body.contains(message)
+                        ) {
+                            message.style.transition =
+                                "opacity 0.3s ease, transform 0.3s ease";
+
+                            message.style.opacity = "0";
+                            message.style.transform =
+                                "translateY(-4px)";
+
+                            setTimeout(function () {
+
+                                if (
+                                    message &&
+                                    document.body.contains(message)
+                                ) {
+                                    message.remove();
+                                }
+
+                            }, 300);
+                        }
+
+                    }, 5000);
+
+                });
 
 
-    /* =========================================================
-       RENDER TABLE
-    ========================================================= */
+            /* =====================================================
+               USER DATA
+            ===================================================== */
 
-    function renderTable() {
-
-
-        const totalPages =
-            Math.max(
-                1,
-                Math.ceil(
-                    filteredRows.length /
-                    rowsPerPage
-                )
+            const rows = Array.from(
+                document.querySelectorAll(".user-row")
             );
 
+            const searchInput =
+                document.getElementById("userSearch");
 
-        if (currentPage > totalPages) {
+            const roleFilter =
+                document.getElementById("roleFilter");
 
-            currentPage =
-                totalPages;
+            const statusFilter =
+                document.getElementById("statusFilter");
 
-        }
+            const paginationInfo =
+                document.getElementById("paginationInfo");
 
+            const paginationContainer =
+                document.getElementById("clientPagination");
 
-        rows.forEach(function (row) {
+            const activeUsersCount =
+                document.getElementById("activeUsersCount");
 
-            row.style.display =
-                "none";
+            const inactiveUsersCount =
+                document.getElementById("inactiveUsersCount");
 
-        });
-
-
-        const startIndex =
-            (currentPage - 1) *
-            rowsPerPage;
-
-
-        const endIndex =
-            startIndex +
-            rowsPerPage;
+            const superAdminCount =
+                document.getElementById("superAdminCount");
 
 
-        const currentRows =
-            filteredRows.slice(
-                startIndex,
-                endIndex
-            );
+            const rowsPerPage = 10;
+
+            let currentPage = 1;
+
+            let filteredRows = [];
 
 
-        currentRows.forEach(function (row) {
+            /* =====================================================
+               SUMMARY COUNTS
+            ===================================================== */
 
-            row.style.display =
-                "";
+            function updateSummaryCounts() {
 
-        });
+                let activeCount = 0;
+                let inactiveCount = 0;
+                let superAdminTotal = 0;
 
+                rows.forEach(function (row) {
 
-        visibleUserCount.textContent =
-            filteredRows.length;
+                    const status =
+                        row.dataset.status;
 
+                    const role =
+                        row.dataset.role;
 
-        if (filteredRows.length === 0) {
+                    if (status === "active") {
+                        activeCount++;
+                    }
 
+                    if (status === "inactive") {
+                        inactiveCount++;
+                    }
 
-            noUsersMessage.style.display =
-                "table-row";
+                    if (role === "super_admin") {
+                        superAdminTotal++;
+                    }
 
+                });
 
-            const emptyCell =
-                noUsersMessage.querySelector(
-                    ".user-empty-state"
-                );
+                activeUsersCount.textContent =
+                    activeCount;
 
+                inactiveUsersCount.textContent =
+                    inactiveCount;
 
-            if (emptyCell) {
-
-                emptyCell.style.display =
-                    "table-cell";
+                superAdminCount.textContent =
+                    superAdminTotal;
 
             }
 
 
-            paginationInfo.textContent =
-                "Showing 0 users";
+            /* =====================================================
+               FILTER
+            ===================================================== */
+
+            function applyFilters() {
+
+                const search =
+                    searchInput.value
+                        .trim()
+                        .toLowerCase();
+
+                const selectedRole =
+                    roleFilter.value;
+
+                const selectedStatus =
+                    statusFilter.value;
 
 
-        } else {
+                filteredRows = rows.filter(function (row) {
+
+                    const username =
+                        row.dataset.username || "";
+
+                    const name =
+                        row.dataset.name || "";
+
+                    const email =
+                        row.dataset.email || "";
+
+                    const role =
+                        row.dataset.role || "";
+
+                    const status =
+                        row.dataset.status || "";
 
 
-            noUsersMessage.style.display =
-                "none";
+                    const matchesSearch =
+                        !search ||
+                        username.includes(search) ||
+                        name.includes(search) ||
+                        email.includes(search);
 
 
-            const showingStart =
-                startIndex + 1;
+                    const matchesRole =
+                        selectedRole === "all" ||
+                        role === selectedRole;
 
 
-            const showingEnd =
-                Math.min(
-                    endIndex,
-                    filteredRows.length
-                );
+                    const matchesStatus =
+                        selectedStatus === "all" ||
+                        status === selectedStatus;
 
 
-            paginationInfo.textContent =
-                `Showing ${showingStart}-${showingEnd} of ${filteredRows.length} users`;
-
-        }
-
-
-        renderPagination(totalPages);
-
-    }
-
-
-    /* =========================================================
-       PAGINATION
-    ========================================================= */
-
-    function renderPagination(totalPages) {
-
-
-        paginationControls.innerHTML =
-            "";
-
-
-        if (
-            filteredRows.length === 0 ||
-            totalPages <= 1
-        ) {
-
-            return;
-
-        }
-
-
-        const previousButton =
-            createPageButton(
-                "‹",
-                currentPage - 1,
-                currentPage === 1
-            );
-
-
-        paginationControls.appendChild(
-            previousButton
-        );
-
-
-        const pageNumbers =
-            getPageNumbers(
-                totalPages
-            );
-
-
-        pageNumbers.forEach(function (page) {
-
-
-            if (page === "...") {
-
-
-                const ellipsis =
-                    document.createElement(
-                        "span"
+                    return (
+                        matchesSearch &&
+                        matchesRole &&
+                        matchesStatus
                     );
 
-
-                ellipsis.className =
-                    "user-page-ellipsis";
+                });
 
 
-                ellipsis.textContent =
-                    "…";
-
-
-                paginationControls.appendChild(
-                    ellipsis
-                );
-
-
-                return;
-
-            }
-
-
-            const button =
-                createPageButton(
-                    page,
-                    page,
-                    false
-                );
-
-
-            if (page === currentPage) {
-
-                button.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            paginationControls.appendChild(
-                button
-            );
-
-        });
-
-
-        const nextButton =
-            createPageButton(
-                "›",
-                currentPage + 1,
-                currentPage === totalPages
-            );
-
-
-        paginationControls.appendChild(
-            nextButton
-        );
-
-    }
-
-
-    function createPageButton(
-        label,
-        page,
-        disabled
-    ) {
-
-
-        const button =
-            document.createElement(
-                "button"
-            );
-
-
-        button.type =
-            "button";
-
-
-        button.className =
-            "user-page-button";
-
-
-        button.textContent =
-            label;
-
-
-        button.disabled =
-            disabled;
-
-
-        button.addEventListener(
-            "click",
-            function () {
-
-
-                if (disabled) {
-
-                    return;
-
-                }
-
-
-                currentPage =
-                    page;
-
+                currentPage = 1;
 
                 renderTable();
 
             }
-        );
 
 
-        return button;
+            /* =====================================================
+               TABLE RENDER
+            ===================================================== */
 
-    }
+            function renderTable() {
 
+                rows.forEach(function (row) {
+                    row.style.display = "none";
+                });
 
-    function getPageNumbers(totalPages) {
 
+                const totalRows =
+                    filteredRows.length;
 
-        if (totalPages <= 7) {
-
-
-            return Array.from(
-                {
-                    length: totalPages
-                },
-                function (_, index) {
-
-                    return index + 1;
-
-                }
-            );
-
-        }
-
-
-        const pages = [1];
-
-
-        if (currentPage > 4) {
-
-            pages.push("...");
-
-        }
-
-
-        const start =
-            Math.max(
-                2,
-                currentPage - 1
-            );
-
-
-        const end =
-            Math.min(
-                totalPages - 1,
-                currentPage + 1
-            );
-
-
-        for (
-            let page = start;
-            page <= end;
-            page++
-        ) {
-
-            pages.push(page);
-
-        }
-
-
-        if (
-            currentPage <
-            totalPages - 3
-        ) {
-
-            pages.push("...");
-
-        }
-
-
-        pages.push(
-            totalPages
-        );
-
-
-        return pages;
-
-    }
-
-
-    /* =========================================================
-       ACTIVATE / DEACTIVATE MODAL
-    ========================================================= */
-
-    function openStatusConfirmation(form) {
-
-
-        selectedStatusForm =
-            form;
-
-
-        const action =
-            form.dataset.action;
-
-
-        const username =
-            form.dataset.username;
-
-
-        const isActivate =
-            action === "activate";
-
-
-        confirmOverlay.classList.add(
-            "show"
-        );
-
-        confirmOverlay.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-
-        document.body.classList.add(
-            "confirm-modal-open"
-        );
-
-
-        confirmUser.textContent =
-            `User: ${username}`;
-
-
-        if (isActivate) {
-
-
-            confirmIcon.className =
-                "user-confirm-icon activate";
-
-
-            confirmIconSymbol.className =
-                "bi bi-person-check-fill";
-
-
-            confirmTitle.textContent =
-                "Activate User?";
-
-
-            confirmSubtitle.textContent =
-                "This user account will become active and the user will be able to access ITARMS according to their assigned permissions.";
-
-
-            confirmSubmit.className =
-                "user-confirm-button user-confirm-activate";
-
-
-            confirmSubmitIcon.className =
-                "bi bi-person-check-fill";
-
-
-            confirmSubmitText.textContent =
-                "Activate User";
-
-
-        } else {
-
-
-            confirmIcon.className =
-                "user-confirm-icon deactivate";
-
-
-            confirmIconSymbol.className =
-                "bi bi-person-x-fill";
-
-
-            confirmTitle.textContent =
-                "Deactivate User?";
-
-
-            confirmSubtitle.textContent =
-                "This user account will be deactivated and the user will no longer be able to access ITARMS until the account is activated again.";
-
-
-            confirmSubmit.className =
-                "user-confirm-button user-confirm-deactivate";
-
-
-            confirmSubmitIcon.className =
-                "bi bi-person-x-fill";
-
-
-            confirmSubmitText.textContent =
-                "Deactivate User";
-
-        }
-
-
-        setTimeout(function () {
-
-            confirmSubmit.focus();
-
-        }, 50);
-
-    }
-
-
-    function closeStatusConfirmation() {
-
-
-        confirmOverlay.classList.remove(
-            "show"
-        );
-
-        confirmOverlay.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-
-        document.body.classList.remove(
-            "confirm-modal-open"
-        );
-
-
-        selectedStatusForm =
-            null;
-
-    }
-
-
-    /* =========================================================
-       STATUS BUTTON EVENTS
-    ========================================================= */
-
-    const statusButtons =
-        document.querySelectorAll(
-            ".user-status-button"
-        );
-
-
-    statusButtons.forEach(function (button) {
-
-
-        button.addEventListener(
-            "click",
-            function () {
-
-
-                const form =
-                    button.closest(
-                        ".user-status-form"
+                const totalPages =
+                    Math.max(
+                        1,
+                        Math.ceil(
+                            totalRows / rowsPerPage
+                        )
                     );
 
 
-                if (!form) {
+                if (currentPage > totalPages) {
+                    currentPage = totalPages;
+                }
 
-                    return;
+
+                const startIndex =
+                    (currentPage - 1) * rowsPerPage;
+
+                const endIndex =
+                    startIndex + rowsPerPage;
+
+
+                const visibleRows =
+                    filteredRows.slice(
+                        startIndex,
+                        endIndex
+                    );
+
+
+                visibleRows.forEach(function (row) {
+                    row.style.display = "";
+                });
+
+
+                if (totalRows === 0) {
+
+                    paginationInfo.textContent =
+                        "Showing 0 users";
+
+                } else {
+
+                    paginationInfo.textContent =
+                        `Showing ${startIndex + 1}-${Math.min(
+                            endIndex,
+                            totalRows
+                        )} of ${totalRows} users`;
 
                 }
 
 
-                openStatusConfirmation(
-                    form
+                renderPagination(totalPages);
+
+            }
+
+
+            /* =====================================================
+               PAGINATION
+            ===================================================== */
+
+            function renderPagination(totalPages) {
+
+                paginationContainer.innerHTML = "";
+
+
+                if (filteredRows.length === 0) {
+                    return;
+                }
+
+
+                const previousButton =
+                    document.createElement("button");
+
+                previousButton.type = "button";
+                previousButton.className =
+                    "pagination-button";
+
+                previousButton.innerHTML =
+                    '<i class="bi bi-chevron-left"></i>';
+
+                previousButton.disabled =
+                    currentPage === 1;
+
+
+                previousButton.addEventListener(
+                    "click",
+                    function () {
+
+                        if (currentPage > 1) {
+
+                            currentPage--;
+
+                            renderTable();
+
+                        }
+
+                    }
+                );
+
+
+                paginationContainer.appendChild(
+                    previousButton
+                );
+
+
+                for (
+                    let page = 1;
+                    page <= totalPages;
+                    page++
+                ) {
+
+                    const pageButton =
+                        document.createElement("button");
+
+                    pageButton.type = "button";
+
+                    pageButton.className =
+                        "pagination-button" +
+                        (
+                            page === currentPage
+                                ? " active"
+                                : ""
+                        );
+
+                    pageButton.textContent =
+                        page;
+
+
+                    pageButton.addEventListener(
+                        "click",
+                        function () {
+
+                            currentPage = page;
+
+                            renderTable();
+
+                        }
+                    );
+
+
+                    paginationContainer.appendChild(
+                        pageButton
+                    );
+
+                }
+
+
+                const nextButton =
+                    document.createElement("button");
+
+                nextButton.type = "button";
+                nextButton.className =
+                    "pagination-button";
+
+                nextButton.innerHTML =
+                    '<i class="bi bi-chevron-right"></i>';
+
+                nextButton.disabled =
+                    currentPage === totalPages;
+
+
+                nextButton.addEventListener(
+                    "click",
+                    function () {
+
+                        if (currentPage < totalPages) {
+
+                            currentPage++;
+
+                            renderTable();
+
+                        }
+
+                    }
+                );
+
+
+                paginationContainer.appendChild(
+                    nextButton
                 );
 
             }
-        );
-
-    });
 
 
-    /* =========================================================
-       CONFIRM STATUS CHANGE
-    ========================================================= */
+            /* =====================================================
+               FILTER EVENTS
+            ===================================================== */
 
-    confirmSubmit.addEventListener(
-        "click",
-        function () {
+            searchInput.addEventListener(
+                "input",
+                applyFilters
+            );
 
+            roleFilter.addEventListener(
+                "change",
+                applyFilters
+            );
 
-            if (!selectedStatusForm) {
-
-                return;
-
-            }
-
-
-            const form =
-                selectedStatusForm;
-
-
-            /*
-             * Submit the original POST form.
-             * CSRF token remains inside the form.
-             */
-
-            closeStatusConfirmation();
+            statusFilter.addEventListener(
+                "change",
+                applyFilters
+            );
 
 
-            form.submit();
+            /* =====================================================
+               DELETE CONFIRMATION
+            ===================================================== */
 
-        }
-    );
-
-
-    /* =========================================================
-       CANCEL MODAL
-    ========================================================= */
-
-    confirmCancel.addEventListener(
-        "click",
-        function () {
-
-            closeStatusConfirmation();
-
-        }
-    );
-
-
-    /* =========================================================
-       CLICK OUTSIDE MODAL
-    ========================================================= */
-
-    confirmOverlay.addEventListener(
-        "click",
-        function (event) {
-
-
-            if (
-                event.target ===
-                confirmOverlay
-            ) {
-
-                closeStatusConfirmation();
-
-            }
-
-        }
-    );
-
-
-    /* =========================================================
-       ESCAPE KEY
-    ========================================================= */
-
-    document.addEventListener(
-        "keydown",
-        function (event) {
-
-
-            if (
-                event.key === "Escape" &&
-                confirmOverlay.classList.contains(
-                    "show"
-                )
-            ) {
-
-                closeStatusConfirmation();
-
-            }
-
-        }
-    );
-
-
-    /* =========================================================
-       FILTER EVENTS
-    ========================================================= */
-
-    searchInput.addEventListener(
-        "input",
-        filterUsers
-    );
-
-
-    roleFilter.addEventListener(
-        "change",
-        filterUsers
-    );
-
-
-    statusFilter.addEventListener(
-        "change",
-        filterUsers
-    );
-
-
-    /* =========================================================
-       MOBILE SIDEBAR
-    ========================================================= */
-
-    const sidebar =
-        document.getElementById(
-            "adminSidebar"
-        );
-
-
-    const sidebarToggle =
-        document.getElementById(
-            "sidebarToggle"
-        );
-
-
-    if (
-        sidebar &&
-        sidebarToggle
-    ) {
-
-
-        sidebarToggle.addEventListener(
-            "click",
-            function () {
-
-                sidebar.classList.toggle(
-                    "mobile-open"
+            const deleteModalElement =
+                document.getElementById(
+                    "deleteUserModal"
                 );
 
-            }
-        );
+            const deleteModal =
+                new bootstrap.Modal(
+                    deleteModalElement
+                );
 
-    }
+            const deleteUserName =
+                document.getElementById(
+                    "deleteUserName"
+                );
+
+            const confirmDeleteUserButton =
+                document.getElementById(
+                    "confirmDeleteUserButton"
+                );
 
 
-    /* =========================================================
-       INITIAL TABLE RENDER
-    ========================================================= */
-
-    renderTable();
+            let selectedDeleteForm = null;
 
 
-});
+            document
+                .querySelectorAll(".user-delete-trigger")
+                .forEach(function (button) {
 
-</script>
+                    button.addEventListener(
+                        "click",
+                        function () {
 
+                            selectedDeleteForm =
+                                button.closest(
+                                    ".user-delete-form"
+                                );
+
+
+                            if (!selectedDeleteForm) {
+                                return;
+                            }
+
+
+                            const username =
+                                selectedDeleteForm.dataset.username ||
+                                "this user";
+
+                            const role =
+                                selectedDeleteForm.dataset.role ||
+                                "";
+
+
+                            deleteUserName.textContent =
+                                `@${username}`;
+
+
+                            if (role) {
+
+                                deleteUserName.textContent +=
+                                    ` (${role})`;
+
+                            }
+
+
+                            deleteModal.show();
+
+                        }
+                    );
+
+                });
+
+
+            confirmDeleteUserButton.addEventListener(
+                "click",
+                function () {
+
+                    if (!selectedDeleteForm) {
+                        return;
+                    }
+
+
+                    confirmDeleteUserButton.disabled =
+                        true;
+
+                    confirmDeleteUserButton.innerHTML =
+                        '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Deleting...';
+
+
+                    selectedDeleteForm.submit();
+
+                }
+            );
+
+
+            deleteModalElement.addEventListener(
+                "hidden.bs.modal",
+                function () {
+
+                    selectedDeleteForm = null;
+
+                    confirmDeleteUserButton.disabled =
+                        false;
+
+                    confirmDeleteUserButton.innerHTML =
+                        '<i class="bi bi-trash3-fill me-1"></i>Delete User';
+
+                }
+            );
+
+
+            /* =====================================================
+               INITIAL LOAD
+            ===================================================== */
+
+            updateSummaryCounts();
+
+            applyFilters();
+
+        });
+
+    </script>
 
 </body>
 
 </html>
+```

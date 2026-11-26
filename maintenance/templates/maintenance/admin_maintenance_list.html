@@ -876,43 +876,85 @@
          SHARED SUPER ADMIN SIDEBAR
     ====================================================== -->
 
-    <aside
-        class="admin-sidebar"
-        id="adminSidebar"
-    >
+<aside class="admin-sidebar" id="adminSidebar">
 
-        <div class="sidebar-brand">
+    <!-- =====================================================
+         BRAND
+    ====================================================== -->
+    <div class="sidebar-brand">
 
-            <h2 class="brand-title">
+        <div class="brand-icon">
+            <i class="bi bi-pc-display-horizontal"></i>
+        </div>
+
+        <div class="brand-content">
+
+            <h1 class="brand-title">
                 ITARMS
-            </h2>
+            </h1>
 
-            <div class="brand-subtitle">
-                Super Admin Panel
-            </div>
+            {% if request.user.role == "SUPER_ADMIN" %}
+
+                <div class="brand-subtitle">
+                    Super Admin Panel
+                </div>
+
+            {% elif request.user.role == "IT_ADMIN" %}
+
+                <div class="brand-subtitle">
+                    IT Administrator
+                </div>
+
+            {% else %}
+
+                <div class="brand-subtitle">
+                    IT Asset Management
+                </div>
+
+            {% endif %}
 
         </div>
 
+    </div>
 
-        <!-- CURRENT USER -->
 
-        <div class="sidebar-user">
+    <!-- =====================================================
+         CURRENT USER
+    ====================================================== -->
+    <div class="sidebar-user">
 
-            <div class="sidebar-user-inner">
+        <div class="sidebar-user-inner">
 
-                <div class="user-avatar">
-                    <i class="bi bi-shield-lock-fill"></i>
+            <div class="user-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="user-details">
+
+                <div class="user-name">
+                    {{ request.user.get_full_name|default:request.user.username }}
                 </div>
 
-                <div class="user-details">
+                <div class="user-role">
 
-                    <div class="user-name">
-                        {{ request.user.get_full_name|default:request.user.username }}
-                    </div>
-
-                    <div class="user-role">
+                    {% if request.user.role == "SUPER_ADMIN" %}
                         Super Administrator
-                    </div>
+
+                    {% elif request.user.role == "IT_ADMIN" %}
+                        IT Administrator
+
+                    {% elif request.user.role == "HR_MANAGER" %}
+                        HR Manager
+
+                    {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+                        Department Manager
+
+                    {% elif request.user.role == "EMPLOYEE" %}
+                        Employee
+
+                    {% else %}
+                        {{ request.user.get_role_display }}
+                    {% endif %}
 
                 </div>
 
@@ -920,27 +962,49 @@
 
         </div>
 
-
-        <!-- SIDEBAR NAVIGATION -->
-
-        <nav class="sidebar-nav">
+    </div>
 
 
-            <!-- MAIN -->
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
 
-            <div class="sidebar-section-title">
-                Main
-            </div>
+    <div class="sidebar-section-title">
+        Main
+    </div>
 
+    <nav class="sidebar-nav">
+
+        <!-- Dashboard -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
 
             <a
                 href="{% url 'super_admin_dashboard' %}"
-                class="sidebar-link "
+                class="sidebar-link"
             >
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span>Dashboard</span>
             </a>
 
+        {% else %}
+
+            <a
+                href="{% url 'dashboard:home' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             SUPER ADMIN ONLY
+        ================================================== -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
 
             <a
                 href="{% url 'user_management' %}"
@@ -950,178 +1014,203 @@
                 <span>User Management</span>
             </a>
 
+        {% endif %}
 
-            <!-- MANAGEMENT -->
-
-            <div class="sidebar-section-title">
-                Management
-            </div>
+    </nav>
 
 
-            <!-- IT ASSETS -->
+    <!-- =====================================================
+         MANAGEMENT
+    ====================================================== -->
 
-            {% url 'asset_list' as asset_list_url %}
+    <div class="sidebar-section-title">
+        Management
+    </div>
 
-            {% if asset_list_url %}
+    <nav class="sidebar-nav">
 
-                <a
-                    href="{{ asset_list_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-pc-display"></i>
-                    <span>IT Assets</span>
-                </a>
+        <!-- IT Assets -->
 
-            {% endif %}
-
-
-            <!-- ASSET ASSIGNMENTS -->
-
-            {% url 'admin_assignment_list' as assignment_list_url %}
-
-            {% if assignment_list_url %}
-
-                <a
-                    href="{{ assignment_list_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-arrow-left-right"></i>
-                    <span>Asset Assignments</span>
-                </a>
-
-            {% endif %}
+        <a
+            href="{% url 'asset_list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-pc-display"></i>
+            <span>IT Assets</span>
+        </a>
 
 
-            <!-- ASSET REQUESTS -->
+        <!-- Asset Assignments -->
 
-            {% url 'admin_asset_requests' as asset_requests_url %}
-
-            {% if asset_requests_url %}
-
-                <a
-                    href="{{ asset_requests_url }}"
-                    class="sidebar-link "
-                >
-                    <i class="bi bi-clipboard-check"></i>
-                    <span>Asset Requests</span>
-                </a>
-
-            {% endif %}
+        <a
+            href="{% url 'admin_assignment_list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-arrow-left-right"></i>
+            <span>Asset Assignments</span>
+        </a>
 
 
-            <!-- DAMAGED / LOST -->
+        <!-- Asset Requests -->
 
-            {% url 'admin_asset_incident_list' as incident_list_url %}
-
-            {% if incident_list_url %}
-
-                <a
-                    href="{{ incident_list_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <span>Damaged / Lost</span>
-                </a>
-
-            {% endif %}
+        <a
+            href="{% url 'admin_asset_requests' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-clipboard-check"></i>
+            <span>Asset Requests</span>
+        </a>
 
 
-            <!-- MAINTENANCE -->
+        <!-- Damaged / Lost -->
 
-            {% url 'maintenance_list' as maintenance_url %}
-
-            {% if maintenance_url %}
-
-                <a
-                    href="{{ maintenance_url }}"
-                    class="sidebar-link active"
-                >
-                    <i class="bi bi-tools"></i>
-                    <span>Maintenance</span>
-                </a>
-
-            {% endif %}
-
-                        <!-- SOFTWARE LICENSES -->
-
-            <a
-                href="{% url 'software_license_list' %}"
-                class="sidebar-link"
-            >
-                <i class="bi bi-key-fill"></i>
-                <span>Software Licenses</span>
-            </a>
+        <a
+            href="{% url 'admin_asset_incident_list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>Damaged / Lost</span>
+        </a>
 
 
-            <!-- DEPARTMENTS -->
+        <!-- Maintenance -->
+
+        <a
+            href="{% url 'maintenance_list' %}"
+            class="sidebar-link active"
+        >
+            <i class="bi bi-tools"></i>
+            <span>Maintenance</span>
+        </a>
+
+
+        <!-- Software Licenses -->
+
+        <a
+            href="{% url 'software_license_list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-key-fill"></i>
+            <span>Software Licenses</span>
+        </a>
+
+
+        <!-- =================================================
+             SUPER ADMIN ONLY
+        ================================================== -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
+
+            <!-- Departments -->
 
             <a
                 href="{% url 'super_admin_department_list' %}"
                 class="sidebar-link"
             >
-                <i class="bi bi-building-fill"></i>
+                <i class="bi bi-diagram-3-fill"></i>
                 <span>Departments</span>
             </a>
 
+        {% endif %}
 
-            <!-- REPORTS -->
+
+        <!-- Vendors / Purchases
+             Available to Super Admin + IT Admin
+        -->
+
+        {% if request.user.role == "SUPER_ADMIN" or request.user.role == "IT_ADMIN" %}
+
+            <a
+                href="{% url 'vendors:vendor_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-shop"></i>
+                <span>Vendors / Purchases</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- Reports -->
+
+        {% if request.user.role == "SUPER_ADMIN" or request.user.role == "IT_ADMIN" %}
 
             <a
                 href="{% url 'reports:home' %}"
                 class="sidebar-link"
             >
-                <i class="bi bi-bar-chart-line-fill"></i>
+                <i class="bi bi-bar-chart-fill"></i>
                 <span>Reports &amp; Analytics</span>
             </a>
 
+        {% endif %}
 
-            <!-- NOTIFICATIONS -->
+
+        <!-- Notifications -->
+
+        <a
+            href="{% url 'notifications:list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-bell-fill"></i>
+            <span>Notifications</span>
+        </a>
+
+    </nav>
+
+
+    <!-- =====================================================
+         SYSTEM
+         SUPER ADMIN ONLY
+    ====================================================== -->
+
+    {% if request.user.role == "SUPER_ADMIN" %}
+
+        <div class="sidebar-section-title">
+            System
+        </div>
+
+        <nav class="sidebar-nav">
 
             <a
-                href="{% url 'notifications:list' %}"
+                href="{% url 'reports:audit_log_report' %}"
                 class="sidebar-link"
             >
-                <i class="bi bi-bell-fill"></i>
-                <span>Notifications</span>
+                <i class="bi bi-shield-lock-fill"></i>
+                <span>Audit Logs</span>
             </a>
-
-
-            <!-- SYSTEM -->
-
-            <div class="sidebar-section-title">
-                System
-            </div>
 
         </nav>
 
+    {% endif %}
 
-        <div class="sidebar-spacer"></div>
 
+    <!-- =====================================================
+         LOGOUT
+    ====================================================== -->
 
-        <!-- LOGOUT -->
+    <div class="sidebar-bottom">
 
-        <div class="sidebar-bottom">
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+        >
 
-            <form
-                method="post"
-                action="{% url 'logout' %}"
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="logout-button"
             >
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </button>
 
-                {% csrf_token %}
+        </form>
 
-                <button
-                    type="submit"
-                    class="logout-button"
-                >
-                    <i class="bi bi-box-arrow-left"></i>
-                    <span>Logout</span>
-                </button>
+    </div>
 
-            </form>
-
-        </div>
-
-    </aside>
+</aside>
 
 
     <!-- MAIN AREA -->

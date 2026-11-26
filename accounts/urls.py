@@ -4,6 +4,7 @@ from django.urls import path
 from .views import (
     add_user,
     complete_employee_exit,
+    delete_user,
     edit_employee,
     edit_user,
     employee_assigned_assets,
@@ -22,7 +23,7 @@ from .views import (
 
 urlpatterns = [
 
-        # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # Super Admin Dashboard
     # ------------------------------------------------------------------
 
@@ -31,6 +32,7 @@ urlpatterns = [
         super_admin_dashboard,
         name="super_admin_dashboard",
     ),
+
     # ------------------------------------------------------------------
     # Employee
     # ------------------------------------------------------------------
@@ -89,6 +91,12 @@ urlpatterns = [
         "toggle-status/<int:user_id>/",
         toggle_user_status,
         name="toggle_user_status",
+    ),
+
+    path(
+        "delete/<int:user_id>/",
+        delete_user,
+        name="delete_user",
     ),
 
     # ------------------------------------------------------------------

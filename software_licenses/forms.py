@@ -2,10 +2,7 @@ from django import forms
 
 from accounts.models import EmployeeProfile
 
-from .models import (
-    SoftwareLicense,
-    SoftwareLicenseAssignment,
-)
+from .models import SoftwareLicense, SoftwareLicenseAssignment
 
 
 class SoftwareLicenseForm(forms.ModelForm):
@@ -115,22 +112,27 @@ class SoftwareLicenseAssignmentForm(forms.ModelForm):
     class Meta:
         model = SoftwareLicenseAssignment
         fields = [
+            "license",
             "employee",
             "assigned_date",
             "notes",
         ]
         widgets = {
+            "license": forms.HiddenInput(),
+
             "employee": forms.Select(
                 attrs={
                     "class": "form-select",
                 }
             ),
+
             "assigned_date": forms.DateInput(
                 attrs={
                     "class": "form-control",
                     "type": "date",
                 }
             ),
+
             "notes": forms.Textarea(
                 attrs={
                     "class": "form-control",
@@ -145,6 +147,13 @@ class SoftwareLicenseAssignmentForm(forms.ModelForm):
 
         self.license_obj = license_obj
 
+        # The license is determined by the URL/view.
+        # It must never be selectable by the user.
+        if license_obj is not None:
+            self.fields["license"].initial = license_obj.pk
+            self.fields["license"].disabled = True
+
+        # Only active employees can receive software licenses.
         self.fields["employee"].queryset = (
             EmployeeProfile.objects
             .filter(
@@ -165,8 +174,23 @@ class SoftwareLicenseAssignmentForm(forms.ModelForm):
             lambda employee: (
                 employee.user.get_full_name().strip()
                 or employee.user.username
-            ) + f" ({employee.employee_id})"
+            )
+            + f" ({employee.employee_id})"
         )
+
+    def clean_license(self):
+        """
+        Always use the license supplied by the view.
+
+        This prevents a user from changing the license through
+        manipulated POST data.
+        """
+        if self.license_obj is None:
+            raise forms.ValidationError(
+                "A software license is required."
+            )
+
+        return self.license_obj
 
     def clean_employee(self):
         employee = self.cleaned_data["employee"]

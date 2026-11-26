@@ -228,7 +228,7 @@
 
 
         /* =========================================================
-           LICENSE TABLE CARD
+           LICENSE CARD
         ========================================================= */
 
         .licenses-card {
@@ -260,6 +260,118 @@
             color: #8a94a6;
             font-size: 12px;
         }
+
+
+        /* =========================================================
+           SEARCH
+        ========================================================= */
+
+        .search-area {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #ffffff;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-input-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid #d7dce2;
+            border-radius: 9px;
+            padding: 9px 13px 9px 38px;
+            color: #273244;
+            background: #ffffff;
+            font-size: 13px;
+            outline: none;
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .search-input::placeholder {
+            color: #9aa2ad;
+        }
+
+        .search-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
+        }
+
+        .search-button,
+        .clear-search-button {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 9px 15px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .search-button {
+            border: 1px solid #4f46e5;
+            background: #4f46e5;
+            color: #ffffff;
+        }
+
+        .search-button:hover {
+            background: #4338ca;
+            border-color: #4338ca;
+            color: #ffffff;
+        }
+
+        .clear-search-button {
+            border: 1px solid #d7dce2;
+            background: #ffffff;
+            color: #475569;
+        }
+
+        .clear-search-button:hover {
+            background: #f8fafc;
+            color: #1f2937;
+        }
+
+        .search-result-info {
+            margin-top: 9px;
+            color: #8a94a6;
+            font-size: 12px;
+        }
+
+        .search-result-info strong {
+            color: #475569;
+        }
+
+
+        /* =========================================================
+           TABLE
+        ========================================================= */
 
         .table-wrapper {
             width: 100%;
@@ -537,6 +649,82 @@
 
 
         /* =========================================================
+           PAGINATION
+        ========================================================= */
+
+        .pagination-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 18px 20px;
+            border-top: 1px solid #e5e7eb;
+            background: #ffffff;
+        }
+
+        .pagination-info {
+            color: #7b8494;
+            font-size: 12px;
+        }
+
+        .pagination-info strong {
+            color: #475569;
+        }
+
+        .pagination-nav {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pagination-link {
+            min-width: 34px;
+            height: 34px;
+            padding: 0 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dbe2ea;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .pagination-link:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1f2937;
+        }
+
+        .pagination-link.active {
+            background: #4f46e5;
+            border-color: #4f46e5;
+            color: #ffffff;
+        }
+
+        .pagination-link.disabled {
+            color: #c1c7d0;
+            background: #f8fafc;
+            border-color: #e5e7eb;
+            pointer-events: none;
+        }
+
+        .pagination-ellipsis {
+            min-width: 30px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+
+        /* =========================================================
            FOOTER
         ========================================================= */
 
@@ -698,6 +886,26 @@
                 flex-direction: column;
             }
 
+            .search-form {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .search-button,
+            .clear-search-button {
+                width: 100%;
+            }
+
+            .pagination-area {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .pagination-nav {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
         }
 
         @media (max-width: 576px) {
@@ -751,43 +959,85 @@
          SHARED SUPER ADMIN SIDEBAR
     ====================================================== -->
 
-    <aside
-        class="admin-sidebar"
-        id="adminSidebar"
-    >
+<aside class="admin-sidebar" id="adminSidebar">
 
-        <div class="sidebar-brand">
+    <!-- =====================================================
+         BRAND
+    ====================================================== -->
+    <div class="sidebar-brand">
 
-            <h2 class="brand-title">
+        <div class="brand-icon">
+            <i class="bi bi-pc-display-horizontal"></i>
+        </div>
+
+        <div class="brand-content">
+
+            <h1 class="brand-title">
                 ITARMS
-            </h2>
+            </h1>
 
-            <div class="brand-subtitle">
-                Super Admin Panel
-            </div>
+            {% if request.user.role == "SUPER_ADMIN" %}
+
+                <div class="brand-subtitle">
+                    Super Admin Panel
+                </div>
+
+            {% elif request.user.role == "IT_ADMIN" %}
+
+                <div class="brand-subtitle">
+                    IT Administrator
+                </div>
+
+            {% else %}
+
+                <div class="brand-subtitle">
+                    IT Asset Management
+                </div>
+
+            {% endif %}
 
         </div>
 
+    </div>
 
-        <!-- CURRENT USER -->
 
-        <div class="sidebar-user">
+    <!-- =====================================================
+         CURRENT USER
+    ====================================================== -->
+    <div class="sidebar-user">
 
-            <div class="sidebar-user-inner">
+        <div class="sidebar-user-inner">
 
-                <div class="user-avatar">
-                    <i class="bi bi-shield-lock-fill"></i>
+            <div class="user-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="user-details">
+
+                <div class="user-name">
+                    {{ request.user.get_full_name|default:request.user.username }}
                 </div>
 
-                <div class="user-details">
+                <div class="user-role">
 
-                    <div class="user-name">
-                        {{ request.user.get_full_name|default:request.user.username }}
-                    </div>
-
-                    <div class="user-role">
+                    {% if request.user.role == "SUPER_ADMIN" %}
                         Super Administrator
-                    </div>
+
+                    {% elif request.user.role == "IT_ADMIN" %}
+                        IT Administrator
+
+                    {% elif request.user.role == "HR_MANAGER" %}
+                        HR Manager
+
+                    {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+                        Department Manager
+
+                    {% elif request.user.role == "EMPLOYEE" %}
+                        Employee
+
+                    {% else %}
+                        {{ request.user.get_role_display }}
+                    {% endif %}
 
                 </div>
 
@@ -795,27 +1045,49 @@
 
         </div>
 
-
-        <!-- SIDEBAR NAVIGATION -->
-
-        <nav class="sidebar-nav">
+    </div>
 
 
-            <!-- MAIN -->
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
 
-            <div class="sidebar-section-title">
-                Main
-            </div>
+    <div class="sidebar-section-title">
+        Main
+    </div>
 
+    <nav class="sidebar-nav">
+
+        <!-- Dashboard -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
 
             <a
                 href="{% url 'super_admin_dashboard' %}"
-                class="sidebar-link "
+                class="sidebar-link"
             >
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span>Dashboard</span>
             </a>
 
+        {% else %}
+
+            <a
+                href="{% url 'dashboard:home' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             SUPER ADMIN ONLY
+        ================================================== -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
 
             <a
                 href="{% url 'user_management' %}"
@@ -825,193 +1097,216 @@
                 <span>User Management</span>
             </a>
 
+        {% endif %}
 
-            <!-- MANAGEMENT -->
-
-            <div class="sidebar-section-title">
-                Management
-            </div>
+    </nav>
 
 
-            <!-- IT ASSETS -->
+    <!-- =====================================================
+         MANAGEMENT
+    ====================================================== -->
 
-            {% url 'asset_list' as asset_list_url %}
+    <div class="sidebar-section-title">
+        Management
+    </div>
 
-            {% if asset_list_url %}
+    <nav class="sidebar-nav">
 
-                <a
-                    href="{{ asset_list_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-pc-display"></i>
-                    <span>IT Assets</span>
-                </a>
+        <!-- IT Assets -->
 
-            {% endif %}
-
-
-            <!-- ASSET ASSIGNMENTS -->
-
-            {% url 'admin_assignment_list' as assignment_list_url %}
-
-            {% if assignment_list_url %}
-
-                <a
-                    href="{{ assignment_list_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-arrow-left-right"></i>
-                    <span>Asset Assignments</span>
-                </a>
-
-            {% endif %}
+        <a
+            href="{% url 'asset_list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-pc-display"></i>
+            <span>IT Assets</span>
+        </a>
 
 
-            <!-- ASSET REQUESTS -->
+        <!-- Asset Assignments -->
 
-            {% url 'admin_asset_requests' as asset_requests_url %}
-
-            {% if asset_requests_url %}
-
-                <a
-                    href="{{ asset_requests_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-clipboard-check"></i>
-                    <span>Asset Requests</span>
-                </a>
-
-            {% endif %}
+        <a
+            href="{% url 'admin_assignment_list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-arrow-left-right"></i>
+            <span>Asset Assignments</span>
+        </a>
 
 
-            <!-- DAMAGED / LOST -->
+        <!-- Asset Requests -->
 
-            {% url 'admin_asset_incident_list' as incident_list_url %}
-
-            {% if incident_list_url %}
-
-                <a
-                    href="{{ incident_list_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <span>Damaged / Lost</span>
-                </a>
-
-            {% endif %}
+        <a
+            href="{% url 'admin_asset_requests' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-clipboard-check"></i>
+            <span>Asset Requests</span>
+        </a>
 
 
-            <!-- MAINTENANCE -->
+        <!-- Damaged / Lost -->
 
-            {% url 'maintenance_list' as maintenance_url %}
-
-            {% if maintenance_url %}
-
-                <a
-                    href="{{ maintenance_url }}"
-                    class="sidebar-link"
-                >
-                    <i class="bi bi-tools"></i>
-                    <span>Maintenance</span>
-                </a>
-
-            {% endif %}
-
-            <!-- SOFTWARE LICENSES -->
-
-            <a
-                href="{% url 'software_license_list' %}"
-                class="sidebar-link active"
-            >
-                <i class="bi bi-key-fill"></i>
-                <span>Software Licenses</span>
-            </a>
+        <a
+            href="{% url 'admin_asset_incident_list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>Damaged / Lost</span>
+        </a>
 
 
-            <!-- DEPARTMENTS -->
+        <!-- Maintenance -->
+
+        <a
+            href="{% url 'maintenance_list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-tools"></i>
+            <span>Maintenance</span>
+        </a>
+
+
+        <!-- Software Licenses -->
+
+        <a
+            href="{% url 'software_license_list' %}"
+            class="sidebar-link active"
+        >
+            <i class="bi bi-key-fill"></i>
+            <span>Software Licenses</span>
+        </a>
+
+
+        <!-- =================================================
+             SUPER ADMIN ONLY
+        ================================================== -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
+
+            <!-- Departments -->
 
             <a
                 href="{% url 'super_admin_department_list' %}"
                 class="sidebar-link"
             >
-                <i class="bi bi-building-fill"></i>
+                <i class="bi bi-diagram-3-fill"></i>
                 <span>Departments</span>
             </a>
 
+        {% endif %}
 
-            <!-- REPORTS -->
+
+        <!-- Vendors / Purchases
+             Available to Super Admin + IT Admin
+        -->
+
+        {% if request.user.role == "SUPER_ADMIN" or request.user.role == "IT_ADMIN" %}
+
+            <a
+                href="{% url 'vendors:vendor_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-shop"></i>
+                <span>Vendors / Purchases</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- Reports -->
+
+        {% if request.user.role == "SUPER_ADMIN" or request.user.role == "IT_ADMIN" %}
 
             <a
                 href="{% url 'reports:home' %}"
                 class="sidebar-link"
             >
-                <i class="bi bi-bar-chart-line-fill"></i>
+                <i class="bi bi-bar-chart-fill"></i>
                 <span>Reports &amp; Analytics</span>
             </a>
 
+        {% endif %}
 
-            <!-- NOTIFICATIONS -->
+
+        <!-- Notifications -->
+
+        <a
+            href="{% url 'notifications:list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-bell-fill"></i>
+            <span>Notifications</span>
+        </a>
+
+    </nav>
+
+
+    <!-- =====================================================
+         SYSTEM
+         SUPER ADMIN ONLY
+    ====================================================== -->
+
+    {% if request.user.role == "SUPER_ADMIN" %}
+
+        <div class="sidebar-section-title">
+            System
+        </div>
+
+        <nav class="sidebar-nav">
 
             <a
-                href="{% url 'notifications:list' %}"
+                href="{% url 'reports:audit_log_report' %}"
                 class="sidebar-link"
             >
-                <i class="bi bi-bell-fill"></i>
-                <span>Notifications</span>
+                <i class="bi bi-shield-lock-fill"></i>
+                <span>Audit Logs</span>
             </a>
-
-
-            <!-- SYSTEM -->
-
-            <div class="sidebar-section-title">
-                System
-            </div>
 
         </nav>
 
+    {% endif %}
 
-        <div class="sidebar-spacer"></div>
 
+    <!-- =====================================================
+         LOGOUT
+    ====================================================== -->
 
-        <!-- LOGOUT -->
+    <div class="sidebar-bottom">
 
-        <div class="sidebar-bottom">
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+        >
 
-            <form
-                method="post"
-                action="{% url 'logout' %}"
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="logout-button"
             >
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </button>
 
-                {% csrf_token %}
+        </form>
 
-                <button
-                    type="submit"
-                    class="logout-button"
-                >
-                    <i class="bi bi-box-arrow-left"></i>
-                    <span>Logout</span>
-                </button>
+    </div>
 
-            </form>
-
-        </div>
-
-    </aside>
+</aside>
 
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          MAIN CONTENT
-    ========================================================== -->
+    ====================================================== -->
 
     <main class="admin-main">
 
         <div class="licenses-page">
 
 
-            <!-- =====================================================
-                 HEADER
-            ====================================================== -->
+            <!-- HEADER -->
 
             <div class="licenses-header">
 
@@ -1044,43 +1339,36 @@
 
 
 
-            <!-- =====================================================
-                 MESSAGES
-            ====================================================== -->
+            <!-- MESSAGES -->
 
             {% if messages %}
 
-            <div class="page-messages">
+                <div class="page-messages">
 
-                {% for message in messages %}
+                    {% for message in messages %}
 
-                    <div
-                        class="page-message
-                        {% if message.tags %}
-                            {{ message.tags }}
-                        {% else %}
-                            info
-                        {% endif %}"
-                    >
-                        {{ message }}
-                    </div>
+                        <div
+                            class="page-message
+                            {% if message.tags %}
+                                {{ message.tags }}
+                            {% else %}
+                                info
+                            {% endif %}"
+                        >
+                            {{ message }}
+                        </div>
 
-                {% endfor %}
+                    {% endfor %}
 
-            </div>
+                </div>
 
             {% endif %}
 
 
 
-            <!-- =====================================================
-                 SUMMARY
-            ====================================================== -->
+            <!-- SUMMARY -->
 
             <div class="summary-grid">
-
-
-                <!-- TOTAL -->
 
                 <div class="summary-card">
 
@@ -1103,8 +1391,6 @@
                 </div>
 
 
-                <!-- ACTIVE -->
-
                 <div class="summary-card">
 
                     <div class="summary-card-top">
@@ -1126,8 +1412,6 @@
                 </div>
 
 
-                <!-- EXPIRING -->
-
                 <div class="summary-card">
 
                     <div class="summary-card-top">
@@ -1148,8 +1432,6 @@
 
                 </div>
 
-
-                <!-- EXPIRED -->
 
                 <div class="summary-card">
 
@@ -1175,9 +1457,7 @@
 
 
 
-            <!-- =====================================================
-                 LICENSE LIST
-            ====================================================== -->
+            <!-- LICENSE CARD -->
 
             <section class="licenses-card">
 
@@ -1199,318 +1479,465 @@
                 </div>
 
 
-                {% if licenses %}
+                <!-- =================================================
+                     SEARCH BAR
+                ================================================== -->
 
-                <div class="table-wrapper">
+                <div class="search-area">
 
-                    <table class="licenses-table">
+                    <form
+                        method="get"
+                        class="search-form"
+                    >
 
-                        <thead>
+                        <div class="search-input-wrapper">
 
-                            <tr>
+                            <i class="bi bi-search search-input-icon"></i>
 
-                                <th>
-                                    Software
-                                </th>
+                            <input
+                                type="search"
+                                name="search"
+                                value="{{ search_query }}"
+                                class="search-input"
+                                placeholder="Search software, version, license key, vendor, type, or status..."
+                                aria-label="Search software licenses"
+                            >
 
-                                <th>
-                                    License Type
-                                </th>
+                        </div>
 
-                                <th>
-                                    License Key
-                                </th>
 
-                                <th>
-                                    Licenses
-                                </th>
+                        <button
+                            type="submit"
+                            class="search-button"
+                        >
+                            <i class="bi bi-search"></i>
+                            Search
+                        </button>
 
-                                <th>
-                                    Vendor
-                                </th>
 
-                                <th>
-                                    Expiry Date
-                                </th>
+                        {% if search_query %}
 
-                                <th>
-                                    Status
-                                </th>
+                            <a
+                                href="{% url 'software_license_list' %}"
+                                class="clear-search-button"
+                            >
+                                <i class="bi bi-x-lg"></i>
+                                Clear
+                            </a>
 
-                                <th>
-                                    Actions
-                                </th>
+                        {% endif %}
 
-                            </tr>
+                    </form>
 
-                        </thead>
 
+                    {% if search_query %}
 
-                        <tbody>
+                        <div class="search-result-info">
 
-                        {% for license in licenses %}
+                            Search results for
+                            <strong>"{{ search_query }}"</strong>
 
-                            <tr>
+                            —
+                            {{ licenses.paginator.count }}
+                            record{{ licenses.paginator.count|pluralize }}
 
+                        </div>
 
-                                <!-- SOFTWARE -->
-
-                                <td>
-
-                                    <div class="software-name">
-                                        {{ license.software_name }}
-                                    </div>
-
-                                    {% if license.version %}
-
-                                        <div class="software-version">
-                                            Version {{ license.version }}
-                                        </div>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <!-- TYPE -->
-
-                                <td>
-
-                                    <span class="license-type">
-                                        {{ license.get_license_type_display }}
-                                    </span>
-
-                                </td>
-
-
-                                <!-- KEY -->
-
-                                <td>
-
-                                    <span class="license-key">
-                                        {{ license.license_key }}
-                                    </span>
-
-                                </td>
-
-
-                                <!-- COUNTS -->
-
-                                <td>
-
-                                    <div class="license-counts">
-
-                                        <span class="license-count-line">
-                                            Total:
-                                            <strong>
-                                                {{ license.total_licenses }}
-                                            </strong>
-                                        </span>
-
-                                        <span class="license-count-line">
-                                            Assigned:
-                                            <strong>
-                                                {{ license.assigned_licenses }}
-                                            </strong>
-                                        </span>
-
-                                        <span class="license-count-line">
-                                            Available:
-                                            <span class="available-count">
-                                                {{ license.available_licenses }}
-                                            </span>
-                                        </span>
-
-                                    </div>
-
-                                </td>
-
-
-                                <!-- VENDOR -->
-
-                                <td>
-
-                                    {% if license.vendor_name %}
-
-                                        <span class="vendor-value">
-                                            {{ license.vendor_name }}
-                                        </span>
-
-                                    {% else %}
-
-                                        <span class="muted-value">
-                                            —
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <!-- EXPIRY -->
-
-                                <td>
-
-                                    {% if license.expiry_date %}
-
-                                        <span class="date-value">
-                                            {{ license.expiry_date|date:"M d, Y" }}
-                                        </span>
-
-                                    {% else %}
-
-                                        <span class="muted-value">
-                                            No expiry
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <!-- STATUS -->
-
-                                <td>
-
-                                    {% if license.status == 'ACTIVE' %}
-
-                                        <span class="status-badge status-active">
-                                            <i class="bi bi-check-circle-fill"></i>
-                                            Active
-                                        </span>
-
-                                    {% elif license.status == 'EXPIRING_SOON' %}
-
-                                        <span class="status-badge status-expiring">
-                                            <i class="bi bi-clock-fill"></i>
-                                            Expiring Soon
-                                        </span>
-
-                                    {% elif license.status == 'EXPIRED' %}
-
-                                        <span class="status-badge status-expired">
-                                            <i class="bi bi-x-circle-fill"></i>
-                                            Expired
-                                        </span>
-
-                                    {% else %}
-
-                                        <span class="status-badge status-inactive">
-                                            <i class="bi bi-dash-circle-fill"></i>
-                                            Inactive
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <!-- ACTIONS -->
-
-                                <td>
-
-                                    <div class="action-group">
-
-
-                                        <!-- ASSIGNMENTS -->
-
-                                        <a
-                                            href="{% url 'software_license_assignment_list' license.id %}"
-                                            class="action-button"
-                                            title="View assignments"
-                                        >
-                                            <i class="bi bi-people-fill"></i>
-                                            Assignments
-                                        </a>
-
-
-                                        <!-- ASSIGN -->
-
-                                        <a
-                                            href="{% url 'software_license_assign' license.id %}"
-                                            class="action-button assign"
-                                            title="Assign this software license"
-                                        >
-                                            <i class="bi bi-person-plus-fill"></i>
-                                            Assign
-                                        </a>
-
-
-                                        <!-- EDIT -->
-
-                                        <a
-                                            href="{% url 'software_license_edit' license.id %}"
-                                            class="action-button edit"
-                                            title="Edit software license"
-                                        >
-                                            <i class="bi bi-pencil-fill"></i>
-                                            Edit
-                                        </a>
-
-
-                                        <!-- DELETE -->
-
-                                        <button
-                                            type="button"
-                                            class="action-button delete delete-license-button"
-                                            data-delete-url="{% url 'software_license_delete' license.id %}"
-                                            data-license-name="{{ license.software_name|escape }}"
-                                            title="Delete software license"
-                                        >
-                                            <i class="bi bi-trash3-fill"></i>
-                                            Delete
-                                        </button>
-
-                                    </div>
-
-                                </td>
-
-
-                            </tr>
-
-                        {% endfor %}
-
-                        </tbody>
-
-                    </table>
+                    {% endif %}
 
                 </div>
+
+
+
+                {% if licenses %}
+
+                    <div class="table-wrapper">
+
+                        <table class="licenses-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Software</th>
+
+                                    <th>License Type</th>
+
+                                    <th>License Key</th>
+
+                                    <th>Licenses</th>
+
+                                    <th>Vendor</th>
+
+                                    <th>Expiry Date</th>
+
+                                    <th>Status</th>
+
+                                    <th>Actions</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                            {% for license in licenses %}
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="software-name">
+                                            {{ license.software_name }}
+                                        </div>
+
+                                        {% if license.version %}
+
+                                            <div class="software-version">
+                                                Version {{ license.version }}
+                                            </div>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="license-type">
+                                            {{ license.get_license_type_display }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="license-key">
+                                            {{ license.license_key }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="license-counts">
+
+                                            <span class="license-count-line">
+                                                Total:
+                                                <strong>
+                                                    {{ license.total_licenses }}
+                                                </strong>
+                                            </span>
+
+                                            <span class="license-count-line">
+                                                Assigned:
+                                                <strong>
+                                                    {{ license.assigned_licenses }}
+                                                </strong>
+                                            </span>
+
+                                            <span class="license-count-line">
+                                                Available:
+                                                <span class="available-count">
+                                                    {{ license.available_licenses }}
+                                                </span>
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        {% if license.vendor_name %}
+
+                                            <span class="vendor-value">
+                                                {{ license.vendor_name }}
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="muted-value">
+                                                —
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        {% if license.expiry_date %}
+
+                                            <span class="date-value">
+                                                {{ license.expiry_date|date:"M d, Y" }}
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="muted-value">
+                                                No expiry
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        {% if license.status == 'ACTIVE' %}
+
+                                            <span class="status-badge status-active">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                Active
+                                            </span>
+
+                                        {% elif license.status == 'EXPIRING_SOON' %}
+
+                                            <span class="status-badge status-expiring">
+                                                <i class="bi bi-clock-fill"></i>
+                                                Expiring Soon
+                                            </span>
+
+                                        {% elif license.status == 'EXPIRED' %}
+
+                                            <span class="status-badge status-expired">
+                                                <i class="bi bi-x-circle-fill"></i>
+                                                Expired
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status-badge status-inactive">
+                                                <i class="bi bi-dash-circle-fill"></i>
+                                                Inactive
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="action-group">
+
+                                            <a
+                                                href="{% url 'software_license_assignment_list' license.id %}"
+                                                class="action-button"
+                                                title="View assignments"
+                                            >
+                                                <i class="bi bi-people-fill"></i>
+                                                Assignments
+                                            </a>
+
+
+                                            <a
+                                                href="{% url 'software_license_assign' license.id %}"
+                                                class="action-button assign"
+                                                title="Assign this software license"
+                                            >
+                                                <i class="bi bi-person-plus-fill"></i>
+                                                Assign
+                                            </a>
+
+
+                                            <a
+                                                href="{% url 'software_license_edit' license.id %}"
+                                                class="action-button edit"
+                                                title="Edit software license"
+                                            >
+                                                <i class="bi bi-pencil-fill"></i>
+                                                Edit
+                                            </a>
+
+
+                                            <button
+                                                type="button"
+                                                class="action-button delete delete-license-button"
+                                                data-delete-url="{% url 'software_license_delete' license.id %}"
+                                                data-license-name="{{ license.software_name|escape }}"
+                                                title="Delete software license"
+                                            >
+                                                <i class="bi bi-trash3-fill"></i>
+                                                Delete
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PAGINATION
+                    ================================================== -->
+
+                    {% if licenses.paginator.num_pages > 1 %}
+
+                        <div class="pagination-area">
+
+                            <div class="pagination-info">
+
+                                Showing
+                                <strong>
+                                    {{ licenses.start_index }}
+                                </strong>
+
+                                to
+
+                                <strong>
+                                    {{ licenses.end_index }}
+                                </strong>
+
+                                of
+
+                                <strong>
+                                    {{ licenses.paginator.count }}
+                                </strong>
+
+                                records
+
+                            </div>
+
+
+                            <nav
+                                class="pagination-nav"
+                                aria-label="Software license pagination"
+                            >
+
+                                {% if licenses.has_previous %}
+
+                                    <a
+                                        href="?{% if search_query %}search={{ search_query|urlencode }}&amp;{% endif %}page={{ licenses.previous_page_number }}"
+                                        class="pagination-link"
+                                        aria-label="Previous page"
+                                    >
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+
+                                {% else %}
+
+                                    <span class="pagination-link disabled">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </span>
+
+                                {% endif %}
+
+
+                                {% for page_num in licenses.paginator.page_range %}
+
+                                    {% if page_num == licenses.number %}
+
+                                        <span class="pagination-link active">
+                                            {{ page_num }}
+                                        </span>
+
+                                    {% elif page_num == 1 or page_num == licenses.paginator.num_pages or page_num >= licenses.number|add:"-2" and page_num <= licenses.number|add:"2" %}
+
+                                        <a
+                                            href="?{% if search_query %}search={{ search_query|urlencode }}&amp;{% endif %}page={{ page_num }}"
+                                            class="pagination-link"
+                                        >
+                                            {{ page_num }}
+                                        </a>
+
+                                    {% elif page_num == licenses.number|add:"-3" or page_num == licenses.number|add:"3" %}
+
+                                        <span class="pagination-ellipsis">
+                                            …
+                                        </span>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+
+                                {% if licenses.has_next %}
+
+                                    <a
+                                        href="?{% if search_query %}search={{ search_query|urlencode }}&amp;{% endif %}page={{ licenses.next_page_number }}"
+                                        class="pagination-link"
+                                        aria-label="Next page"
+                                    >
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+
+                                {% else %}
+
+                                    <span class="pagination-link disabled">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </span>
+
+                                {% endif %}
+
+                            </nav>
+
+                        </div>
+
+                    {% endif %}
 
 
                 {% else %}
 
 
-                <!-- =================================================
-                     EMPTY STATE
-                ================================================== -->
+                    <!-- EMPTY STATE -->
 
-                <div class="empty-state">
+                    <div class="empty-state">
 
-                    <div class="empty-icon">
-                        <i class="bi bi-key"></i>
+                        <div class="empty-icon">
+
+                            <i class="bi bi-key"></i>
+
+                        </div>
+
+                        {% if search_query %}
+
+                            <h3>
+                                No Matching Licenses
+                            </h3>
+
+                            <p>
+                                No software license records matched
+                                "{{ search_query }}".
+                            </p>
+
+                        {% else %}
+
+                            <h3>
+                                No Software Licenses
+                            </h3>
+
+                            <p>
+                                No software licenses have been added yet.
+                            </p>
+
+                        {% endif %}
+
                     </div>
 
-                    <h3>
-                        No Software Licenses
-                    </h3>
-
-                    <p>
-                        No software licenses have been added yet.
-                    </p>
-
-                </div>
-
-
                 {% endif %}
-
 
             </section>
 
 
 
-            <!-- =====================================================
-                 FOOTER
-            ====================================================== -->
+            <!-- FOOTER -->
 
             <div class="licenses-footer">
 
@@ -1547,9 +1974,7 @@
     >
 
         <div class="delete-modal-icon">
-
             <i class="bi bi-trash3-fill"></i>
-
         </div>
 
         <h3 id="deleteModalTitle">
@@ -1598,16 +2023,13 @@
 
 
 
-<!-- =============================================================
-     MOBILE SIDEBAR + DELETE MODAL SCRIPT
-============================================================== -->
-
 <script>
 
     document.addEventListener("DOMContentLoaded", function () {
 
         const sidebar =
             document.getElementById("adminSidebar");
+
 
         if (sidebar) {
 
@@ -1686,6 +2108,7 @@
 
 
                 deleteForm.action = deleteUrl;
+
 
                 if (deleteLicenseName) {
 

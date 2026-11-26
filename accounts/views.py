@@ -1,9 +1,11 @@
 from datetime import date
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.db.models import ProtectedError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -138,8 +140,6 @@ def super_admin_dashboard(request):
     current database records.
     """
 
-    today = timezone.localdate()
-
     total_users = User.objects.count()
 
     total_assets = Asset.objects.count()
@@ -173,7 +173,6 @@ def super_admin_dashboard(request):
         "accounts/super_admin_dashboard.html",
         {
             "user": request.user,
-
             "total_users": total_users,
             "total_assets": total_assets,
             "available_assets": available_assets,
@@ -236,13 +235,18 @@ def employee_assigned_assets(request):
 @login_required
 @user_passes_test(is_super_admin)
 def user_management(request):
-    users = User.objects.all().order_by("username")
+    users = (
+        User.objects
+        .all()
+        .order_by("username")
+    )
 
     return render(
         request,
         "accounts/user_management.html",
         {
             "users": users,
+            "role_choices": User.Role.choices,
         },
     )
 
@@ -345,7 +349,10 @@ def add_user(request):
 @login_required
 @user_passes_test(is_super_admin)
 def edit_user(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+    user = get_object_or_404(
+        User,
+        id=user_id,
+    )
 
     if request.method == "POST":
         username = request.POST.get("username", "").strip()
@@ -469,7 +476,10 @@ def toggle_user_status(request, user_id):
             "User account status can only be changed using POST."
         )
 
-    user = get_object_or_404(User, id=user_id)
+    user = get_object_or_404(
+        User,
+        id=user_id,
+    )
 
     if user.id == request.user.id and user.is_active:
         raise PermissionDenied(
@@ -479,7 +489,10 @@ def toggle_user_status(request, user_id):
     old_status = user.is_active
 
     user.is_active = not user.is_active
-    user.save(update_fields=["is_active"])
+
+    user.save(
+        update_fields=["is_active"]
+    )
 
     create_audit_log(
         user=request.user,
@@ -492,6 +505,179 @@ def toggle_user_status(request, user_id):
             f"from '{old_status}' to '{user.is_active}'."
         ),
         ip_address=get_client_ip(request),
+    )
+
+    return redirect("user_management")
+
+
+@login_required
+@user_passes_test(is_super_admin)
+def delete_user(request, user_id):
+    """
+    Permanently delete a user account only when no protected
+    records are associated with the account.
+
+    Security and data-integrity protections:
+    - Only Super Admin can access this view.
+    - Only POST is accepted.
+    - The currently logged-in Super Admin cannot delete their own account.
+    - The last active Super Admin cannot be deleted.
+    - Protected related records prevent unsafe deletion.
+    - Audit history is preserved after user deletion.
+    """
+
+    if request.method != "POST":
+        raise PermissionDenied(
+            "User accounts can only be deleted using POST."
+        )
+
+    user = get_object_or_404(
+        User,
+        id=user_id,
+    )
+
+    # ------------------------------------------------------------
+    # Prevent self deletion
+    # ------------------------------------------------------------
+
+    if user.id == request.user.id:
+        messages.error(
+            request,
+            "You cannot delete your own account.",
+        )
+        return redirect("user_management")
+
+    # ------------------------------------------------------------
+    # Prevent deletion of the last active Super Admin
+    # ------------------------------------------------------------
+
+    if (
+        user.role == User.Role.SUPER_ADMIN
+        and user.is_active
+    ):
+        active_super_admin_count = (
+            User.objects
+            .filter(
+                role=User.Role.SUPER_ADMIN,
+                is_active=True,
+            )
+            .exclude(id=user.id)
+            .count()
+        )
+
+        if active_super_admin_count == 0:
+            messages.error(
+                request,
+                (
+                    "This user cannot be deleted because the account "
+                    "is the last active Super Admin. "
+                    "Create another active Super Admin before deleting this account."
+                ),
+            )
+            return redirect("user_management")
+
+    username = user.username
+    user_display_name = (
+        user.get_full_name().strip()
+        or user.username
+    )
+    user_role = user.get_role_display()
+    user_id_value = user.id
+
+    # ------------------------------------------------------------
+    # Attempt permanent deletion
+    # ------------------------------------------------------------
+
+    try:
+        with transaction.atomic():
+
+            create_audit_log(
+                user=request.user,
+                action=AuditLog.Action.DELETE,
+                module="User Management",
+                object_type="User",
+                object_id=user_id_value,
+                description=(
+                    f"Super Admin permanently deleted user "
+                    f"'{username}' ({user_display_name}) "
+                    f"with role '{user_role}'."
+                ),
+                ip_address=get_client_ip(request),
+            )
+
+            user.delete()
+
+    except ProtectedError as error:
+
+        # --------------------------------------------------------
+        # Identify the protected record types
+        # --------------------------------------------------------
+
+        protected_types = {}
+
+        for obj in error.protected_objects:
+            model_name = obj.__class__.__name__
+
+            protected_types.setdefault(
+                model_name,
+                0,
+            )
+
+            protected_types[model_name] += 1
+
+        record_labels = {
+            "Assignment": "asset assignment(s)",
+            "AssetRequest": "asset request(s)",
+            "MaintenanceRequest": "maintenance request(s)",
+            "EmployeeProfile": "employee profile",
+            "SoftwareLicenseAssignment": "software license assignment(s)",
+        }
+
+        protected_messages = []
+
+        for model_name, count in protected_types.items():
+            label = record_labels.get(
+                model_name,
+                model_name,
+            )
+
+            protected_messages.append(
+                f"{count} {label}"
+            )
+
+        protected_summary = ", ".join(
+            protected_messages
+        )
+
+        messages.error(
+            request,
+            (
+                f"User '{username}' cannot be permanently deleted "
+                f"because protected records are associated with this "
+                f"account: {protected_summary}. "
+                "Deactivate the account instead to preserve the "
+                "employee's historical records."
+            ),
+        )
+
+        return redirect("user_management")
+
+    except Exception:
+        messages.error(
+            request,
+            (
+                f"User '{username}' could not be deleted because "
+                "the operation encountered an unexpected error."
+            ),
+        )
+
+        return redirect("user_management")
+
+    messages.success(
+        request,
+        (
+            f"User '{username}' was permanently deleted successfully."
+        ),
     )
 
     return redirect("user_management")
@@ -682,13 +868,6 @@ def edit_employee(request, employee_id):
 @login_required
 @user_passes_test(is_hr_or_super_admin)
 def start_employee_resignation(request, employee_id):
-    """
-    Start an employee resignation process.
-
-    HR/Super Admin can initiate resignation.
-    The actual asset return remains an IT-controlled operation.
-    """
-
     if request.method != "POST":
         raise PermissionDenied(
             "Employee resignation can only be started using POST."
@@ -835,13 +1014,6 @@ def start_employee_resignation(request, employee_id):
 @login_required
 @user_passes_test(is_hr_or_super_admin)
 def complete_employee_exit(request, employee_id):
-    """
-    Complete an employee exit.
-
-    Exit cannot be completed while active asset assignments exist.
-    IT must return/close those assignments first.
-    """
-
     if request.method != "POST":
         raise PermissionDenied(
             "Employee exit can only be completed using POST."
@@ -900,6 +1072,7 @@ def complete_employee_exit(request, employee_id):
         employee.asset_return_status = (
             EmployeeProfile.AssetReturnStatus.PENDING
         )
+
         employee.save(
             update_fields=[
                 "asset_return_status",
@@ -933,9 +1106,8 @@ def complete_employee_exit(request, employee_id):
             ]
         )
 
-        # The application account is disabled only after the
-        # employee has actually reached EXITED status.
         employee.user.is_active = False
+
         employee.user.save(
             update_fields=["is_active"]
         )
@@ -987,13 +1159,6 @@ def update_employee_asset_return_status(
     request,
     employee_id,
 ):
-    """
-    HR can update the employee-level return tracking status.
-
-    This does NOT return an actual asset assignment.
-    Actual assignment return remains an IT-controlled operation.
-    """
-
     if request.method != "POST":
         raise PermissionDenied(
             "Asset return status can only be changed using POST."
@@ -1045,6 +1210,7 @@ def update_employee_asset_return_status(
     old_status = employee.asset_return_status
 
     employee.asset_return_status = requested_status
+
     employee.save(
         update_fields=[
             "asset_return_status",
@@ -1079,9 +1245,6 @@ def update_employee_asset_return_status(
 def get_role_redirect(user):
     """
     Return the correct landing page for each authenticated role.
-
-    Keeping all role-based login routing in one place prevents
-    different parts of the login flow from becoming inconsistent.
     """
 
     if user.role == User.Role.SUPER_ADMIN:
@@ -1109,6 +1272,7 @@ def login_view(request):
     """
 
     if request.user.is_authenticated:
+
         if not request.user.is_active:
             logout(request)
 
@@ -1123,10 +1287,14 @@ def login_view(request):
                 },
             )
 
-        redirect_name = get_role_redirect(request.user)
+        redirect_name = get_role_redirect(
+            request.user
+        )
 
         if redirect_name:
-            return redirect(redirect_name)
+            return redirect(
+                redirect_name
+            )
 
         return render(
             request,
@@ -1140,6 +1308,7 @@ def login_view(request):
         )
 
     if request.method == "POST":
+
         username = request.POST.get(
             "username",
             "",
@@ -1202,9 +1371,14 @@ def login_view(request):
                 },
             )
 
-        login(request, user)
+        login(
+            request,
+            user,
+        )
 
-        return redirect(redirect_name)
+        return redirect(
+            redirect_name
+        )
 
     return render(
         request,

@@ -1,3 +1,5 @@
+
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -15,9 +17,14 @@
         rel="stylesheet"
     >
 
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
     <style>
         :root {
-            --sidebar-width: 250px;
+            --sidebar-width: 258px;
             --topbar-height: 70px;
         }
 
@@ -181,7 +188,7 @@
             margin: 0;
             font-size: 22px;
             font-weight: 700;
-            color: #111827;
+            color: #fcfdfe;
         }
 
         .welcome-card p {
@@ -196,12 +203,15 @@
             border-radius: 12px;
             padding: 20px;
             height: 100%;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
         }
 
         .stat-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.07);
+            box-shadow:
+                0 8px 22px rgba(15, 23, 42, 0.07);
         }
 
         .stat-label {
@@ -394,92 +404,364 @@
             }
         }
     </style>
+
+    <!-- Shared Super Admin / IT Admin Sidebar Styling -->
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
 </head>
 
 <body>
 
 <div class="dashboard-wrapper">
 
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
+    <!-- =====================================================
+         SHARED SUPER ADMIN SIDEBAR
+    ====================================================== -->
 
-        <div class="brand">
-            <span>IT</span> ITARMS
+<aside class="admin-sidebar" id="adminSidebar">
+
+    <!-- =====================================================
+         BRAND
+    ====================================================== -->
+    <div class="sidebar-brand">
+
+        <div class="brand-icon">
+            <i class="bi bi-pc-display-horizontal"></i>
         </div>
 
-        <div class="sidebar-section">
-            Main
+        <div class="brand-content">
+
+            <h1 class="brand-title">
+                ITARMS
+            </h1>
+
+            {% if request.user.role == "SUPER_ADMIN" %}
+
+                <div class="brand-subtitle">
+                    Super Admin Panel
+                </div>
+
+            {% elif request.user.role == "IT_ADMIN" %}
+
+                <div class="brand-subtitle">
+                    IT Administrator
+                </div>
+
+            {% else %}
+
+                <div class="brand-subtitle">
+                    IT Asset Management
+                </div>
+
+            {% endif %}
+
         </div>
 
-        <a href="/dashboard/" class="sidebar-link active">
-            <span class="icon">▦</span>
-            <span>Dashboard</span>
-        </a>
+    </div>
 
-        <div class="sidebar-section">
-            Management
+
+    <!-- =====================================================
+         CURRENT USER
+    ====================================================== -->
+    <div class="sidebar-user">
+
+        <div class="sidebar-user-inner">
+
+            <div class="user-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="user-details">
+
+                <div class="user-name">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </div>
+
+                <div class="user-role">
+
+                    {% if request.user.role == "SUPER_ADMIN" %}
+                        Super Administrator
+
+                    {% elif request.user.role == "IT_ADMIN" %}
+                        IT Administrator
+
+                    {% elif request.user.role == "HR_MANAGER" %}
+                        HR Manager
+
+                    {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+                        Department Manager
+
+                    {% elif request.user.role == "EMPLOYEE" %}
+                        Employee
+
+                    {% else %}
+                        {{ request.user.get_role_display }}
+                    {% endif %}
+
+                </div>
+
+            </div>
+
         </div>
 
-        <a href="{% url 'asset_list' %}" class="sidebar-link">
-            <span class="icon">▣</span>
-            <span>Assets</span>
+    </div>
+
+
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
+
+    <div class="sidebar-section-title">
+        Main
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <!-- Dashboard -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
+
+            <a
+                href="{% url 'super_admin_dashboard' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+        {% else %}
+
+            <a
+                href="{% url 'dashboard:home' %}"
+                class="sidebar-link active"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             SUPER ADMIN ONLY
+        ================================================== -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
+
+            <a
+                href="{% url 'user_management' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+
+        {% endif %}
+
+    </nav>
+
+
+    <!-- =====================================================
+         MANAGEMENT
+    ====================================================== -->
+
+    <div class="sidebar-section-title">
+        Management
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <!-- IT Assets -->
+
+        <a
+            href="{% url 'asset_list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-pc-display"></i>
+            <span>IT Assets</span>
         </a>
 
-        <a href="{% url 'admin_asset_incident_list' %}" class="sidebar-link">
-            <span class="icon">⚠</span>
-            <span>Damaged / Lost Reports</span>
+
+        <!-- Asset Assignments -->
+
+        <a
+            href="{% url 'admin_assignment_list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-arrow-left-right"></i>
+            <span>Asset Assignments</span>
         </a>
 
-        <a href="/assignments/" class="sidebar-link">
-            <span class="icon">⇄</span>
-            <span>Assignments</span>
-        </a>
 
-        <a href="{% url 'admin_requests' %}" class="sidebar-link">
-            <span class="icon">▤</span>
+        <!-- Asset Requests -->
+
+        <a
+            href="{% url 'admin_asset_requests' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-clipboard-check"></i>
             <span>Asset Requests</span>
         </a>
 
-        <a href="/maintenance/" class="sidebar-link">
-            <span class="icon">⚙</span>
+
+        <!-- Damaged / Lost -->
+
+        <a
+            href="{% url 'admin_asset_incident_list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>Damaged / Lost</span>
+        </a>
+
+
+        <!-- Maintenance -->
+
+        <a
+            href="{% url 'maintenance_list' %}"
+            class="sidebar-link"
+        >
+            <i class="bi bi-tools"></i>
             <span>Maintenance</span>
         </a>
 
-        <a href="/departments/" class="sidebar-link">
-            <span class="icon">⌂</span>
-            <span>Departments</span>
+
+        <!-- Software Licenses -->
+
+        <a
+            href="{% url 'software_license_list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-key-fill"></i>
+            <span>Software Licenses</span>
         </a>
 
-        <a href="/reports/" class="sidebar-link">
-            <span class="icon">▥</span>
-            <span>Reports</span>
-        </a>
 
-        <a href="/notifications/" class="sidebar-link">
-            <span class="icon">◉</span>
+        <!-- =================================================
+             SUPER ADMIN ONLY
+        ================================================== -->
+
+        {% if request.user.role == "SUPER_ADMIN" %}
+
+            <!-- Departments -->
+
+            <a
+                href="{% url 'super_admin_department_list' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>Departments</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- Vendors / Purchases
+             Available to Super Admin + IT Admin
+        -->
+
+        {% if request.user.role == "SUPER_ADMIN" or request.user.role == "IT_ADMIN" %}
+
+            <a
+                href="{% url 'vendors:vendor_list' %}"
+                class="sidebar-link "
+            >
+                <i class="bi bi-shop"></i>
+                <span>Vendors / Purchases</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- Reports -->
+
+        {% if request.user.role == "SUPER_ADMIN" or request.user.role == "IT_ADMIN" %}
+
+            <a
+                href="{% url 'reports:home' %}"
+                class="sidebar-link "
+            >
+                <i class="bi bi-bar-chart-fill"></i>
+                <span>Reports &amp; Analytics</span>
+            </a>
+
+        {% endif %}
+
+
+        <!-- Notifications -->
+
+        <a
+            href="{% url 'notifications:list' %}"
+            class="sidebar-link "
+        >
+            <i class="bi bi-bell-fill"></i>
             <span>Notifications</span>
         </a>
 
-        <div class="sidebar-section">
-            Account
+    </nav>
+
+
+    <!-- =====================================================
+         SYSTEM
+         SUPER ADMIN ONLY
+    ====================================================== -->
+
+    {% if request.user.role == "SUPER_ADMIN" %}
+
+        <div class="sidebar-section-title">
+            System
         </div>
 
-        <a href="/users/profile/" class="sidebar-link">
-            <span class="icon">●</span>
-            <span>My Profile</span>
-        </a>
+        <nav class="sidebar-nav">
 
-        <a href="/users/logout/" class="sidebar-link">
-            <span class="icon">↪</span>
-            <span>Logout</span>
-        </a>
+            <a
+                href="{% url 'reports:audit_log_report' %}"
+                class="sidebar-link"
+            >
+                <i class="bi bi-shield-lock-fill"></i>
+                <span>Audit Logs</span>
+            </a>
 
-    </aside>
+        </nav>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         LOGOUT
+    ====================================================== -->
+
+    <div class="sidebar-bottom">
+
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="logout-button"
+            >
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </button>
+
+        </form>
+
+    </div>
+
+</aside>
 
     <div
         class="sidebar-overlay"
         id="sidebarOverlay"
     ></div>
+
 
     <!-- Main Content -->
     <main class="main-content">
@@ -512,7 +794,10 @@
 
             <div class="user-area">
 
-                <div class="user-avatar" id="userAvatar">
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
                     U
                 </div>
 
@@ -540,18 +825,36 @@
 
         <!-- Content -->
         <section class="content">
+<div class="welcome-card">
 
-            <div class="welcome-card">
+    <div class="welcome-content">
 
-                <h2 id="welcomeTitle">
-                    Welcome
-                </h2>
+        <div class="welcome-label">
+            <i class="bi bi-grid-1x2-fill"></i>
+            Dashboard Overview
+        </div>
 
-                <p id="welcomeSubtitle">
-                    Loading dashboard information...
-                </p>
+        <h2 id="welcomeTitle">
+            Welcome
+        </h2>
 
-            </div>
+        <p id="welcomeSubtitle">
+            Loading dashboard information...
+        </p>
+
+    </div>
+
+    <div class="welcome-badge">
+
+        <div class="welcome-badge-icon">
+            <i class="bi bi-speedometer2"></i>
+        </div>
+
+        <span>ITARMS Dashboard</span>
+
+    </div>
+
+</div>
 
             <!-- Statistics -->
             <div class="row g-3">
@@ -1008,7 +1311,8 @@
     }
 
     function getStatusClass(status) {
-        const normalized = String(status || "").toUpperCase();
+        const normalized =
+            String(status || "").toUpperCase();
 
         if (
             normalized === "AVAILABLE" ||
@@ -1053,15 +1357,21 @@
     }
 
     function setText(id, value) {
-        const element = document.getElementById(id);
+        const element =
+            document.getElementById(id);
 
         if (element) {
             element.textContent = value ?? 0;
         }
     }
 
-    function renderEmptyRow(elementId, colspan, message) {
-        const element = document.getElementById(elementId);
+    function renderEmptyRow(
+        elementId,
+        colspan,
+        message
+    ) {
+        const element =
+            document.getElementById(elementId);
 
         if (!element) {
             return;
@@ -1069,7 +1379,10 @@
 
         element.innerHTML = `
             <tr>
-                <td colspan="${colspan}" class="empty-state">
+                <td
+                    colspan="${colspan}"
+                    class="empty-state"
+                >
                     ${escapeHtml(message)}
                 </td>
             </tr>
@@ -1077,7 +1390,10 @@
     }
 
     function renderRecentAssets(items) {
-        const table = document.getElementById("recentAssetsTable");
+        const table =
+            document.getElementById(
+                "recentAssetsTable"
+            );
 
         if (!items || items.length === 0) {
             renderEmptyRow(
@@ -1101,7 +1417,9 @@
                 </td>
 
                 <td>
-                    ${escapeHtml(formatLabel(item.category))}
+                    ${escapeHtml(
+                        formatLabel(item.category)
+                    )}
                 </td>
 
                 <td>
@@ -1109,20 +1427,27 @@
                 </td>
 
                 <td>
-                    ${escapeHtml(item.department || "Not assigned")}
+                    ${escapeHtml(
+                        item.department ||
+                        "Not assigned"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(item.location || "Not specified")}
+                    ${escapeHtml(
+                        item.location ||
+                        "Not specified"
+                    )}
                 </td>
             </tr>
         `).join("");
     }
 
     function renderRecentAssignments(items) {
-        const table = document.getElementById(
-            "recentAssignmentsTable"
-        );
+        const table =
+            document.getElementById(
+                "recentAssignmentsTable"
+            );
 
         if (!items || items.length === 0) {
             renderEmptyRow(
@@ -1154,11 +1479,15 @@
                 </td>
 
                 <td>
-                    ${escapeHtml(item.assigned_date || "—")}
+                    ${escapeHtml(
+                        item.assigned_date || "—"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(item.return_date || "—")}
+                    ${escapeHtml(
+                        item.return_date || "—"
+                    )}
                 </td>
 
                 <td>
@@ -1171,9 +1500,10 @@
     }
 
     function renderRecentRequests(items) {
-        const table = document.getElementById(
-            "recentRequestsTable"
-        );
+        const table =
+            document.getElementById(
+                "recentRequestsTable"
+            );
 
         if (!items || items.length === 0) {
             renderEmptyRow(
@@ -1187,7 +1517,10 @@
         table.innerHTML = items.map(item => `
             <tr>
                 <td>
-                    ${escapeHtml(item.asset_name || "Not specified")}
+                    ${escapeHtml(
+                        item.asset_name ||
+                        "Not specified"
+                    )}
                 </td>
 
                 <td>
@@ -1214,9 +1547,10 @@
     }
 
     function renderRecentMaintenance(items) {
-        const table = document.getElementById(
-            "recentMaintenanceTable"
-        );
+        const table =
+            document.getElementById(
+                "recentMaintenanceTable"
+            );
 
         if (!items || items.length === 0) {
             renderEmptyRow(
@@ -1240,7 +1574,9 @@
                 </td>
 
                 <td>
-                    ${escapeHtml(formatLabel(item.request_type))}
+                    ${escapeHtml(
+                        formatLabel(item.request_type)
+                    )}
                 </td>
 
                 <td>
@@ -1256,7 +1592,9 @@
                 </td>
 
                 <td>
-                    ${escapeHtml(item.requested_at || "—")}
+                    ${escapeHtml(
+                        item.requested_at || "—"
+                    )}
                 </td>
             </tr>
         `).join("");
@@ -1274,7 +1612,8 @@
         values,
         label
     ) {
-        const canvas = document.getElementById(canvasId);
+        const canvas =
+            document.getElementById(canvasId);
 
         if (!canvas) {
             return null;
@@ -1324,7 +1663,8 @@
         values,
         label
     ) {
-        const canvas = document.getElementById(canvasId);
+        const canvas =
+            document.getElementById(canvasId);
 
         if (!canvas) {
             return null;
@@ -1416,7 +1756,9 @@
             document.getElementById("welcomeTitle");
 
         const welcomeSubtitle =
-            document.getElementById("welcomeSubtitle");
+            document.getElementById(
+                "welcomeSubtitle"
+            );
 
         const userAvatar =
             document.getElementById("userAvatar");
@@ -1448,7 +1790,8 @@
 
         if (userAvatar) {
             const firstLetter =
-                name.trim().charAt(0).toUpperCase() || "U";
+                name.trim().charAt(0).toUpperCase() ||
+                "U";
 
             userAvatar.textContent = firstLetter;
         }
@@ -1526,9 +1869,11 @@
             const response =
                 await fetch(dashboardUrl, {
                     method: "GET",
+
                     headers: {
                         "Accept": "application/json"
                     },
+
                     credentials: "same-origin"
                 });
 
@@ -1539,6 +1884,7 @@
             ) {
                 window.location.href =
                     "/users/login/";
+
                 return;
             }
 
@@ -1565,10 +1911,15 @@
                 error
             );
 
-            document.getElementById(
-                "welcomeSubtitle"
-            ).textContent =
-                "Unable to load dashboard data. Please try again.";
+            const subtitle =
+                document.getElementById(
+                    "welcomeSubtitle"
+                );
+
+            if (subtitle) {
+                subtitle.textContent =
+                    "Unable to load dashboard data. Please try again.";
+            }
         }
     }
 
@@ -1595,6 +1946,7 @@
             "click",
             function () {
                 sidebar.classList.toggle("show");
+
                 sidebarOverlay.classList.toggle(
                     "show"
                 );

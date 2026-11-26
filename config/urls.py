@@ -65,6 +65,11 @@ urlpatterns = [
         "software-licenses/",
         include("software_licenses.urls"),
     ),
+
+    path(
+        "vendors/",
+        include("vendors.urls"),
+    ),
 ]
 
 

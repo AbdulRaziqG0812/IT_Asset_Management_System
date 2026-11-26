@@ -1,31 +1,22 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import User
 
-from .forms import (
-    SoftwareLicenseAssignmentForm,
-    SoftwareLicenseForm,
-)
-from .models import (
-    SoftwareLicense,
-    SoftwareLicenseAssignment,
-)
+from .forms import SoftwareLicenseAssignmentForm, SoftwareLicenseForm
+from .models import SoftwareLicense, SoftwareLicenseAssignment
 
 
 def is_software_license_admin(user):
-    """
-    Only Super Admin and IT Admin can manage software licenses.
-    """
-
     return (
         user.is_authenticated
         and user.is_active
-        and user.role
-        in {
+        and user.role in {
             User.Role.SUPER_ADMIN,
             User.Role.IT_ADMIN,
         }
@@ -33,11 +24,6 @@ def is_software_license_admin(user):
 
 
 def require_software_license_admin(user):
-    """
-    Raise PermissionDenied when the current user is not
-    authorized to manage software licenses.
-    """
-
     if not is_software_license_admin(user):
         raise PermissionDenied(
             "You do not have permission to manage software licenses."
@@ -46,57 +32,93 @@ def require_software_license_admin(user):
 
 @login_required
 def software_license_list(request):
-    """
-    Display all software licenses.
-
-    Access:
-    - Super Admin
-    - IT Admin
-    """
-
     require_software_license_admin(request.user)
 
-    licenses = (
-        SoftwareLicense.objects
-        .all()
-        .order_by(
-            "software_name",
-            "version",
-            "id",
+    # =========================================================
+    # SEARCH
+    # =========================================================
+
+    search_query = request.GET.get("search", "").strip()
+
+    all_licenses = SoftwareLicense.objects.all()
+
+    licenses_queryset = all_licenses
+
+    if search_query:
+        licenses_queryset = licenses_queryset.filter(
+            Q(software_name__icontains=search_query)
+            | Q(version__icontains=search_query)
+            | Q(license_key__icontains=search_query)
+            | Q(vendor_name__icontains=search_query)
+            | Q(license_type__icontains=search_query)
+            | Q(status__icontains=search_query)
         )
-    )
+
+    # =========================================================
+    # SUMMARY
+    # Summary always represents all licenses.
+    # Search does not change these totals.
+    # =========================================================
 
     summary = {
-        "total": licenses.count(),
-        "active": licenses.filter(
+        "total": all_licenses.count(),
+        "active": all_licenses.filter(
             status=SoftwareLicense.Status.ACTIVE
         ).count(),
-        "expiring_soon": licenses.filter(
+        "expiring_soon": all_licenses.filter(
             status=SoftwareLicense.Status.EXPIRING_SOON
         ).count(),
-        "expired": licenses.filter(
+        "expired": all_licenses.filter(
             status=SoftwareLicense.Status.EXPIRED
         ).count(),
     }
+
+    # =========================================================
+    # ORDERING
+    # =========================================================
+
+    licenses_queryset = licenses_queryset.order_by(
+        "software_name",
+        "version",
+        "id",
+    )
+
+    # =========================================================
+    # PAGINATION
+    # =========================================================
+
+    paginator = Paginator(licenses_queryset, 10)
+
+    page_number = request.GET.get("page", 1)
+
+    page_obj = paginator.get_page(page_number)
+
+    # =========================================================
+    # PAGE RANGE
+    # =========================================================
+
+    page_range = paginator.get_elided_page_range(
+        number=page_obj.number,
+        on_each_side=2,
+        on_ends=1,
+    )
 
     return render(
         request,
         "software_licenses/list.html",
         {
-            "licenses": licenses,
+            "licenses": page_obj,
+            "page_obj": page_obj,
+            "paginator": paginator,
+            "page_range": page_range,
             "summary": summary,
+            "search_query": search_query,
         },
     )
 
 
 @login_required
 def software_license_create(request):
-    """
-    Create a new software license.
-
-    Only POST requests can create records.
-    """
-
     require_software_license_admin(request.user)
 
     if request.method == "POST":
@@ -107,11 +129,8 @@ def software_license_create(request):
 
             messages.success(
                 request,
-                (
-                    f"Software license for "
-                    f"'{license_obj.software_name}' "
-                    "was created successfully."
-                ),
+                f"Software license for '{license_obj.software_name}' "
+                f"was created successfully.",
             )
 
             return redirect("software_license_list")
@@ -132,12 +151,6 @@ def software_license_create(request):
 
 @login_required
 def software_license_edit(request, license_id):
-    """
-    Edit an existing software license.
-
-    Only POST requests can modify the record.
-    """
-
     require_software_license_admin(request.user)
 
     license_obj = get_object_or_404(
@@ -156,11 +169,8 @@ def software_license_edit(request, license_id):
 
             messages.success(
                 request,
-                (
-                    f"Software license for "
-                    f"'{license_obj.software_name}' "
-                    "was updated successfully."
-                ),
+                f"Software license for '{license_obj.software_name}' "
+                f"was updated successfully.",
             )
 
             return redirect("software_license_list")
@@ -184,15 +194,6 @@ def software_license_edit(request, license_id):
 
 @login_required
 def software_license_delete(request, license_id):
-    """
-    Delete a software license.
-
-    Deletion is POST-only.
-
-    A license with existing assignment history cannot be deleted
-    because SoftwareLicenseAssignment uses PROTECT.
-    """
-
     require_software_license_admin(request.user)
 
     if request.method != "POST":
@@ -213,34 +214,23 @@ def software_license_delete(request, license_id):
     except Exception:
         messages.error(
             request,
-            (
-                f"'{software_name}' could not be deleted because "
-                "it is associated with existing assignment records."
-            ),
+            f"'{software_name}' could not be deleted because it is "
+            f"associated with existing assignment records.",
         )
 
         return redirect("software_license_list")
 
     messages.success(
         request,
-        (
-            f"Software license for "
-            f"'{software_name}' was deleted successfully."
-        ),
+        f"Software license for '{software_name}' "
+        f"was deleted successfully.",
     )
 
     return redirect("software_license_list")
 
 
 @login_required
-def software_license_assignment_list(
-    request,
-    license_id,
-):
-    """
-    Display assignment history for one software license.
-    """
-
+def software_license_assignment_list(request, license_id):
     require_software_license_admin(request.user)
 
     license_obj = get_object_or_404(
@@ -248,21 +238,77 @@ def software_license_assignment_list(
         pk=license_id,
     )
 
-    assignments = (
+    # =========================================================
+    # SEARCH
+    # =========================================================
+
+    search_query = request.GET.get("search", "").strip()
+
+    assignments_queryset = (
         SoftwareLicenseAssignment.objects
-        .filter(
-            license=license_obj,
-        )
+        .filter(license=license_obj)
         .select_related(
             "employee",
             "employee__user",
             "employee__department",
         )
-        .order_by(
-            "-is_active",
-            "-assigned_date",
-            "-id",
+    )
+
+    if search_query:
+
+        search_filter = (
+            Q(employee__user__first_name__icontains=search_query)
+            | Q(employee__user__last_name__icontains=search_query)
+            | Q(employee__user__username__icontains=search_query)
+            | Q(employee__employee_id__icontains=search_query)
+            | Q(employee__department__name__icontains=search_query)
+            | Q(notes__icontains=search_query)
         )
+
+        # Allow searching by assignment status.
+        status_query = search_query.lower()
+
+        if status_query == "active":
+            search_filter |= Q(is_active=True)
+
+        elif status_query == "returned":
+            search_filter |= Q(is_active=False)
+
+        assignments_queryset = assignments_queryset.filter(
+            search_filter
+        )
+
+    # =========================================================
+    # ORDERING
+    # =========================================================
+
+    assignments_queryset = assignments_queryset.order_by(
+        "-is_active",
+        "-assigned_date",
+        "-id",
+    )
+
+    # =========================================================
+    # PAGINATION
+    # =========================================================
+
+    paginator = Paginator(
+        assignments_queryset,
+        10,
+    )
+
+    page_number = request.GET.get("page", 1)
+
+    page_obj = paginator.get_page(page_number)
+
+    # =========================================================
+    # PAGE RANGE
+    # =========================================================
+
+    page_range = paginator.get_elided_page_range(
+        number=page_obj.number,
+        on_each_side=2,
+        on_ends=1,
     )
 
     return render(
@@ -270,22 +316,17 @@ def software_license_assignment_list(
         "software_licenses/assignments.html",
         {
             "license": license_obj,
-            "assignments": assignments,
+            "assignments": page_obj,
+            "page_obj": page_obj,
+            "paginator": paginator,
+            "page_range": page_range,
+            "search_query": search_query,
         },
     )
 
 
 @login_required
-def software_license_assign(
-    request,
-    license_id,
-):
-    """
-    Assign a software license to an active employee.
-
-    Assignment is POST-only.
-    """
-
+def software_license_assign(request, license_id):
     require_software_license_admin(request.user)
 
     license_obj = get_object_or_404(
@@ -294,6 +335,7 @@ def software_license_assign(
     )
 
     if request.method == "POST":
+
         form = SoftwareLicenseAssignmentForm(
             request.POST,
             license_obj=license_obj,
@@ -302,8 +344,9 @@ def software_license_assign(
         if form.is_valid():
 
             with transaction.atomic():
+
                 assignment = form.save(
-                    commit=False,
+                    commit=False
                 )
 
                 assignment.license = license_obj
@@ -314,11 +357,8 @@ def software_license_assign(
 
             messages.success(
                 request,
-                (
-                    f"Software license "
-                    f"'{license_obj.software_name}' "
-                    "was assigned successfully."
-                ),
+                f"Software license '{license_obj.software_name}' "
+                f"was assigned successfully.",
             )
 
             return redirect(
@@ -327,8 +367,9 @@ def software_license_assign(
             )
 
     else:
+
         form = SoftwareLicenseAssignmentForm(
-            license_obj=license_obj,
+            license_obj=license_obj
         )
 
     return render(
@@ -344,16 +385,7 @@ def software_license_assign(
 
 
 @login_required
-def software_license_return(
-    request,
-    assignment_id,
-):
-    """
-    Return an active software license assignment.
-
-    This operation is POST-only.
-    """
-
+def software_license_return(request, assignment_id):
     require_software_license_admin(request.user)
 
     if request.method != "POST":
@@ -371,6 +403,7 @@ def software_license_return(
     )
 
     if not assignment.is_active:
+
         messages.info(
             request,
             "This software license assignment has already been returned.",
@@ -393,11 +426,8 @@ def software_license_return(
 
     messages.success(
         request,
-        (
-            f"Software license assigned to "
-            f"'{employee_name}' "
-            "was returned successfully."
-        ),
+        f"Software license assigned to '{employee_name}' "
+        f"was returned successfully.",
     )
 
     return redirect(
