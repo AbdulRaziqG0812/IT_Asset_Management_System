@@ -11,6 +11,7 @@ from assets.models import Asset
 from assignments.models import Assignment
 from asset_requests.models import AssetRequest
 from maintenance.models import MaintenanceRequest
+from notifications.models import Notification
 from software_licenses.models import SoftwareLicense
 from vendors.models import Purchase
 
@@ -322,6 +323,33 @@ def _serialize_recent_maintenance(request):
     }
 
 
+def _serialize_hr_employee(employee):
+    user = employee.user
+
+    return {
+        "id": employee.id,
+        "employee_id": employee.employee_id,
+        "name": (
+            user.get_full_name()
+            or user.username
+        ),
+        "email": user.email,
+        "job_title": employee.job_title,
+        "department": (
+            employee.department.name
+            if employee.department
+            else None
+        ),
+        "employment_status": employee.employment_status,
+        "asset_return_status": employee.asset_return_status,
+        "date_of_joining": (
+            employee.date_of_joining.isoformat()
+            if employee.date_of_joining
+            else None
+        ),
+    }
+
+
 def _build_asset_statistics(asset_queryset):
     return {
         "total": asset_queryset.count(),
@@ -540,6 +568,146 @@ def _build_common_dashboard(user):
     }
 
 
+def _build_hr_dashboard(user):
+    """
+    HR Manager-specific dashboard.
+
+    HR receives employee and HR workflow information only.
+    IT asset-management metrics such as maintenance, software
+    licenses and purchases are intentionally excluded.
+    """
+
+    employees = (
+        EmployeeProfile.objects
+        .select_related("user", "department")
+        .all()
+    )
+
+    total_employees = employees.count()
+
+    active_employees = employees.filter(
+        employment_status=EmployeeProfile.EmploymentStatus.ACTIVE
+    ).count()
+
+    resignation_pending = employees.filter(
+        employment_status=(
+            EmployeeProfile.EmploymentStatus.RESIGNATION_PENDING
+        )
+    ).count()
+
+    exited_employees = employees.filter(
+        employment_status=EmployeeProfile.EmploymentStatus.EXITED
+    ).count()
+
+    pending_asset_returns = employees.filter(
+        asset_return_status=(
+            EmployeeProfile.AssetReturnStatus.PENDING
+        )
+    ).count()
+
+    completed_asset_returns = employees.filter(
+        asset_return_status=(
+            EmployeeProfile.AssetReturnStatus.COMPLETED
+        )
+    ).count()
+
+    not_required_asset_returns = employees.filter(
+        asset_return_status=(
+            EmployeeProfile.AssetReturnStatus.NOT_REQUIRED
+        )
+    ).count()
+
+    department_counts = {}
+
+    department_rows = (
+        employees
+        .values("department__name")
+        .annotate(total=Count("id"))
+        .order_by("-total", "department__name")
+    )
+
+    for item in department_rows:
+        department_name = (
+            item["department__name"]
+            or "No Department"
+        )
+
+        department_counts[department_name] = item["total"]
+
+    status_counts = {
+        "Active": active_employees,
+        "Resignation Pending": resignation_pending,
+        "Exited": exited_employees,
+    }
+
+    asset_return_counts = {
+        "Not Required": not_required_asset_returns,
+        "Pending": pending_asset_returns,
+        "Completed": completed_asset_returns,
+    }
+
+    recent_employees = [
+        _serialize_hr_employee(employee)
+        for employee in employees.order_by("-created_at")[:8]
+    ]
+
+    employees_awaiting_return = [
+        _serialize_hr_employee(employee)
+        for employee in employees.filter(
+            asset_return_status=(
+                EmployeeProfile.AssetReturnStatus.PENDING
+            )
+        ).order_by(
+            "resignation_date",
+            "created_at",
+        )[:10]
+    ]
+
+    notifications = (
+        Notification.objects
+        .filter(recipient=user)
+        .order_by("-created_at")[:8]
+    )
+
+    recent_notifications = [
+        {
+            "id": notification.id,
+            "title": notification.title,
+            "message": notification.message,
+            "severity": notification.severity,
+            "is_read": notification.is_read,
+            "created_at": (
+                notification.created_at.isoformat()
+                if notification.created_at
+                else None
+            ),
+        }
+        for notification in notifications
+    ]
+
+    unread_notifications = Notification.objects.filter(
+        recipient=user,
+        is_read=False,
+    ).count()
+
+    return {
+        "total_employees": total_employees,
+        "active_employees": active_employees,
+        "resignation_pending": resignation_pending,
+        "exited_employees": exited_employees,
+        "pending_asset_returns": pending_asset_returns,
+        "completed_asset_returns": completed_asset_returns,
+        "not_required_asset_returns": not_required_asset_returns,
+        "employee_department_wise": department_counts,
+        "employee_status_wise": status_counts,
+        "asset_return_status_wise": asset_return_counts,
+        "recent_employees": recent_employees,
+        "employees_awaiting_asset_return": employees_awaiting_return,
+        "recent_notifications": recent_notifications,
+        "unread_notifications": unread_notifications,
+    }
+
+
 def _build_employee_dashboard(user):
     """
     Employee-specific dashboard data.
@@ -615,12 +783,21 @@ def _build_employee_dashboard(user):
 
 def _get_dashboard_data(user):
     """
-    Build the complete dashboard data while preserving
-    all existing RBAC and privacy restrictions.
+    Build dashboard data according to the authenticated user's role.
     """
+
+    if user.role == User.Role.HR_MANAGER:
+        return {
+            "role": user.role,
+            "role_display": user.get_role_display(),
+            "dashboard_type": "HR_MANAGER",
+            "data": _build_hr_dashboard(user),
+        }
+
     dashboard_data = {
         "role": user.role,
         "role_display": user.get_role_display(),
+        "dashboard_type": "COMMON",
         "data": _build_common_dashboard(user),
     }
 
@@ -661,6 +838,12 @@ def dashboard_home(request):
 
     if "application/json" in accept_header:
         return JsonResponse(dashboard_data)
+
+    if user.role == User.Role.HR_MANAGER:
+        return render(
+            request,
+            "dashboard/hr_manager_dashboard.html",
+        )
 
     return render(
         request,

@@ -1,0 +1,3302 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Employee Details | ITARMS
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <style>
+
+        /* =========================================================
+           EMPLOYEE DETAIL PAGE
+           Shared sidebar styling:
+           super_admin_dashboard.css
+           ========================================================= */
+
+        .hr-page {
+            min-height: calc(100vh - var(--topbar-height));
+            padding: 28px;
+        }
+
+        /* ---------------------------------------------------------
+           Header
+           --------------------------------------------------------- */
+
+        .detail-header {
+            position: relative;
+            overflow: hidden;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+
+            padding: 28px 30px;
+            margin-bottom: 22px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff,
+                    #f5f8fc
+                );
+
+            border: 1px solid rgba(15, 23, 42, 0.07);
+            border-radius: 18px;
+
+            box-shadow:
+                0 16px 35px rgba(15, 23, 42, 0.08),
+                0 4px 10px rgba(15, 23, 42, 0.04);
+        }
+
+        .detail-header::before {
+            content: "";
+
+            position: absolute;
+            width: 260px;
+            height: 260px;
+
+            top: -130px;
+            right: -90px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(37, 99, 235, 0.13),
+                    rgba(37, 99, 235, 0)
+                );
+
+            pointer-events: none;
+        }
+
+        .employee-header-info {
+            position: relative;
+            z-index: 1;
+
+            display: flex;
+            align-items: center;
+            gap: 18px;
+
+            min-width: 0;
+        }
+
+        .employee-large-avatar {
+            width: 68px;
+            height: 68px;
+
+            flex: 0 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: #2563eb;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #eff6ff,
+                    #dbeafe
+                );
+
+            border: 1px solid #bfdbfe;
+            border-radius: 18px;
+
+            font-size: 28px;
+
+            box-shadow:
+                0 10px 22px rgba(37, 99, 235, 0.12);
+        }
+
+        .employee-header-text {
+            min-width: 0;
+        }
+
+        .employee-header-text h1 {
+            margin: 0;
+
+            color: #0f172a;
+
+            font-size: 27px;
+            font-weight: 800;
+            line-height: 1.2;
+
+            overflow-wrap: anywhere;
+        }
+
+        .employee-header-text p {
+            margin: 6px 0 0;
+
+            color: #64748b;
+
+            font-size: 13px;
+
+            overflow-wrap: anywhere;
+        }
+
+        .employee-header-text strong {
+            color: #334155;
+        }
+
+        .header-actions {
+            position: relative;
+            z-index: 1;
+
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .header-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            min-height: 40px;
+            padding: 0 15px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.18s ease;
+        }
+
+        .header-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .button-back {
+            color: #475569;
+
+            background: #ffffff;
+
+            border: 1px solid #dbe3ee;
+        }
+
+        .button-back:hover {
+            background: #f8fafc;
+
+            box-shadow:
+                0 5px 12px rgba(15, 23, 42, 0.07);
+        }
+
+        .button-edit {
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #1d4ed8
+                );
+
+            border: 1px solid #1d4ed8;
+
+            box-shadow:
+                0 7px 15px rgba(37, 99, 235, 0.20);
+        }
+
+        .button-edit:hover {
+            box-shadow:
+                0 10px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        /* ---------------------------------------------------------
+           Messages
+           --------------------------------------------------------- */
+
+        .messages-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            margin-bottom: 20px;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+
+            padding: 13px 15px;
+
+            border-radius: 12px;
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message-success {
+            color: #166534;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message-error {
+            color: #991b1b;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+
+        .message-warning {
+            color: #92400e;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+        }
+
+        .message-info {
+            color: #1e40af;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* ---------------------------------------------------------
+           Main Grid
+           --------------------------------------------------------- */
+
+        .detail-grid {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.45fr)
+                minmax(300px, 0.75fr);
+
+            gap: 22px;
+
+            align-items: start;
+        }
+
+        .content-column {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        /* ---------------------------------------------------------
+           Cards
+           --------------------------------------------------------- */
+
+        .detail-card {
+            overflow: hidden;
+
+            background: #ffffff;
+
+            border: 1px solid rgba(15, 23, 42, 0.07);
+            border-radius: 17px;
+
+            box-shadow:
+                0 14px 30px rgba(15, 23, 42, 0.06),
+                0 3px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 18px 21px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #ffffff,
+                    #fbfcfe
+                );
+
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .card-header-icon {
+            width: 39px;
+            height: 39px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex: 0 0 auto;
+
+            color: #2563eb;
+            background: #eff6ff;
+
+            border-radius: 10px;
+
+            font-size: 17px;
+        }
+
+        .card-header h2 {
+            margin: 0;
+
+            color: #0f172a;
+
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .card-header p {
+            margin: 3px 0 0;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+        .card-body {
+            padding: 21px;
+        }
+
+        /* ---------------------------------------------------------
+           Information Grid
+           --------------------------------------------------------- */
+
+        .information-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px 22px;
+        }
+
+        .information-item {
+            min-width: 0;
+        }
+
+        .information-label {
+            margin-bottom: 5px;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .information-value {
+            color: #334155;
+
+            font-size: 13px;
+            font-weight: 650;
+
+            line-height: 1.55;
+
+            overflow-wrap: anywhere;
+        }
+
+        .information-value.empty {
+            color: #a1adbd;
+            font-weight: 500;
+        }
+
+        /* ---------------------------------------------------------
+           Status
+           --------------------------------------------------------- */
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
+            padding: 7px 11px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .status-badge i {
+            font-size: 9px;
+        }
+
+        .status-active {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .status-pending {
+            color: #92400e;
+            background: #fef3c7;
+        }
+
+        .status-exited {
+            color: #475569;
+            background: #e2e8f0;
+        }
+
+        .status-completed {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .status-not-required {
+            color: #475569;
+            background: #f1f5f9;
+        }
+
+        /* ---------------------------------------------------------
+           Address
+           --------------------------------------------------------- */
+
+        .address-box {
+            padding: 14px 15px;
+
+            color: #475569;
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+            border-radius: 11px;
+
+            font-size: 13px;
+            line-height: 1.65;
+
+            overflow-wrap: anywhere;
+        }
+
+        /* ---------------------------------------------------------
+           Asset List
+           --------------------------------------------------------- */
+
+        .asset-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .asset-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+
+            padding: 15px 0;
+
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .asset-item:first-child {
+            padding-top: 0;
+        }
+
+        .asset-item:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .asset-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            min-width: 0;
+        }
+
+        .asset-icon {
+            width: 39px;
+            height: 39px;
+
+            flex: 0 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: #475569;
+            background: #f1f5f9;
+
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .asset-name {
+            color: #0f172a;
+
+            font-size: 13px;
+            font-weight: 750;
+
+            overflow-wrap: anywhere;
+        }
+
+        .asset-meta {
+            margin-top: 3px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+
+            overflow-wrap: anywhere;
+        }
+
+        .asset-status {
+            color: #166534;
+            background: #dcfce7;
+
+            padding: 6px 9px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+        .empty-assets {
+            padding: 25px;
+
+            color: #94a3b8;
+
+            background: #f8fafc;
+
+            border: 1px dashed #dbe3ee;
+            border-radius: 12px;
+
+            text-align: center;
+
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .empty-assets i {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #cbd5e1;
+
+            font-size: 25px;
+        }
+
+        /* ---------------------------------------------------------
+           Workflow
+           --------------------------------------------------------- */
+
+        .workflow-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .workflow-form {
+            width: 100%;
+        }
+
+        .workflow-button {
+            width: 100%;
+
+            min-height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding: 0 14px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.18s ease;
+        }
+
+        .workflow-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .workflow-edit {
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #1d4ed8
+                );
+
+            border: 1px solid #1d4ed8;
+
+            box-shadow:
+                0 7px 15px rgba(37, 99, 235, 0.18);
+        }
+
+        .workflow-resignation {
+            color: #92400e;
+
+            background: #fffbeb;
+
+            border: 1px solid #fde68a;
+        }
+
+        .workflow-resignation:hover {
+            background: #fef3c7;
+        }
+
+        .workflow-exit {
+            color: #991b1b;
+
+            background: #fef2f2;
+
+            border: 1px solid #fecaca;
+        }
+
+        .workflow-exit:hover {
+            background: #fee2e2;
+        }
+
+        .workflow-note {
+            margin-top: 12px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+            line-height: 1.55;
+        }
+
+        /* ---------------------------------------------------------
+           Workflow Modal
+           --------------------------------------------------------- */
+
+        .workflow-modal {
+            position: fixed;
+            inset: 0;
+
+            z-index: 9999;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(15, 23, 42, 0.52);
+
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .workflow-modal.active {
+            display: flex;
+        }
+
+        .workflow-modal-box {
+            width: min(100%, 500px);
+            max-height: calc(100vh - 40px);
+
+            overflow-y: auto;
+
+            background: #ffffff;
+
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 18px;
+
+            box-shadow:
+                0 30px 70px rgba(15, 23, 42, 0.22);
+
+            animation: modalOpen 0.18s ease-out;
+        }
+
+        @keyframes modalOpen {
+
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+
+        .workflow-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+
+            padding: 18px 20px;
+
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .workflow-modal-title {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            min-width: 0;
+        }
+
+        .workflow-modal-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex: 0 0 auto;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+        }
+
+        .workflow-modal-icon.resignation-icon {
+            color: #92400e;
+            background: #fef3c7;
+        }
+
+        .workflow-modal-icon.exit-icon {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .workflow-modal-title h3 {
+            margin: 0;
+
+            color: #0f172a;
+
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .workflow-modal-title p {
+            margin: 3px 0 0;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+        .workflow-modal-close {
+            width: 34px;
+            height: 34px;
+
+            flex: 0 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: #64748b;
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+            transition:
+                background 0.18s ease,
+                color 0.18s ease;
+        }
+
+        .workflow-modal-close:hover {
+            color: #0f172a;
+            background: #f1f5f9;
+        }
+
+        .workflow-modal-body {
+            padding: 20px;
+        }
+
+        .workflow-modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .workflow-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .workflow-label {
+            color: #475569;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .workflow-input,
+        .workflow-textarea {
+            width: 100%;
+
+            color: #334155;
+            background: #ffffff;
+
+            border: 1px solid #dbe3ee;
+            border-radius: 10px;
+
+            outline: none;
+
+            font-size: 12px;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .workflow-input {
+            height: 42px;
+            padding: 0 11px;
+        }
+
+        .workflow-textarea {
+            min-height: 90px;
+            padding: 10px 11px;
+
+            resize: vertical;
+
+            line-height: 1.5;
+        }
+
+        .workflow-input:focus,
+        .workflow-textarea:focus {
+            border-color: #60a5fa;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        .workflow-help {
+            color: #94a3b8;
+
+            font-size: 10px;
+            line-height: 1.45;
+        }
+
+        .workflow-modal-actions {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 10px;
+
+            margin-top: 2px;
+        }
+
+        .modal-cancel-button,
+        .modal-submit-button {
+            min-height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding: 0 14px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.18s ease;
+        }
+
+        .modal-cancel-button {
+            color: #475569;
+            background: #ffffff;
+
+            border: 1px solid #dbe3ee;
+        }
+
+        .modal-cancel-button:hover {
+            background: #f8fafc;
+
+            transform: translateY(-1px);
+        }
+
+        .modal-resignation-submit {
+            color: #92400e;
+            background: #fef3c7;
+
+            border: 1px solid #fde68a;
+        }
+
+        .modal-resignation-submit:hover {
+            background: #fde68a;
+
+            transform: translateY(-1px);
+        }
+
+        .modal-exit-submit {
+            color: #ffffff;
+            background:
+                linear-gradient(
+                    135deg,
+                    #dc2626,
+                    #b91c1c
+                );
+
+            border: 1px solid #b91c1c;
+
+            box-shadow:
+                0 7px 15px rgba(185, 28, 28, 0.15);
+        }
+
+        .modal-exit-submit:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 20px rgba(185, 28, 28, 0.20);
+        }
+
+        /* ---------------------------------------------------------
+           Asset Return
+           --------------------------------------------------------- */
+
+        .return-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-label {
+            color: #475569;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-select {
+            width: 100%;
+            height: 42px;
+
+            padding: 0 12px;
+
+            color: #334155;
+            background: #ffffff;
+
+            border: 1px solid #dbe3ee;
+            border-radius: 10px;
+
+            outline: none;
+
+            font-size: 12px;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .form-select:focus {
+            border-color: #60a5fa;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        .form-select option:disabled {
+            color: #94a3b8;
+        }
+
+        .return-submit {
+            min-height: 40px;
+
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #334155,
+                    #1e293b
+                );
+
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .return-submit:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 7px 15px rgba(15, 23, 42, 0.15);
+        }
+
+        .return-submit:disabled {
+            opacity: 0.55;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+            box-shadow: none;
+        }
+
+        .return-info {
+            padding: 12px 13px;
+
+            color: #64748b;
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+
+            font-size: 11px;
+            line-height: 1.55;
+        }
+
+        .return-info i {
+            margin-right: 5px;
+        }
+
+        .return-warning {
+            color: #92400e;
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+        .return-success {
+            color: #166534;
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        /* ---------------------------------------------------------
+           Footer
+           --------------------------------------------------------- */
+
+        .detail-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+
+            margin-top: 22px;
+            padding: 15px 20px;
+
+            color: #64748b;
+
+            background: #ffffff;
+
+            border: 1px solid rgba(15, 23, 42, 0.07);
+            border-radius: 14px;
+
+            box-shadow:
+                0 8px 20px rgba(15, 23, 42, 0.04);
+
+            font-size: 12px;
+        }
+
+        .detail-footer strong {
+            color: #334155;
+            font-weight: 800;
+        }
+
+        .detail-footer-right {
+            color: #94a3b8;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        /* ---------------------------------------------------------
+           Responsive
+           --------------------------------------------------------- */
+
+        @media (max-width: 1050px) {
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 800px) {
+
+            .detail-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .header-button {
+                flex: 1;
+            }
+
+            .information-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .hr-page {
+                padding: 14px;
+            }
+
+            .detail-header {
+                padding: 21px;
+
+                border-radius: 15px;
+            }
+
+            .employee-header-info {
+                align-items: flex-start;
+            }
+
+            .employee-large-avatar {
+                width: 55px;
+                height: 55px;
+
+                border-radius: 15px;
+
+                font-size: 22px;
+            }
+
+            .employee-header-text h1 {
+                font-size: 22px;
+            }
+
+            .employee-header-text p {
+                font-size: 12px;
+                line-height: 1.6;
+            }
+
+            .header-actions {
+                flex-direction: column;
+            }
+
+            .header-button {
+                width: 100%;
+            }
+
+            .card-header,
+            .card-body {
+                padding: 17px;
+            }
+
+            .asset-item {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .asset-status {
+                margin-left: 51px;
+            }
+
+            .detail-footer {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+
+                padding: 14px 16px;
+            }
+
+            .workflow-modal {
+                padding: 12px;
+            }
+
+            .workflow-modal-box {
+                max-height: calc(100vh - 24px);
+                border-radius: 15px;
+            }
+
+            .workflow-modal-header,
+            .workflow-modal-body {
+                padding: 16px;
+            }
+
+            .workflow-modal-actions {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="admin-sidebar" id="adminSidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <i class="bi bi-cpu-fill"></i>
+            </div>
+
+            <div>
+
+                <div class="brand-title">
+                    ITARMS
+                </div>
+
+                <div class="brand-subtitle">
+
+                    {% if request.user.role == "SUPER_ADMIN" %}
+                        Super Admin Panel
+                    {% elif request.user.role == "IT_ADMIN" %}
+                        IT Admin Panel
+                    {% elif request.user.role == "HR_MANAGER" %}
+                        HR Manager Panel
+                    {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+                        Department Manager Panel
+                    {% else %}
+                        Employee Panel
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-user">
+
+            <div class="user-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="user-details">
+
+                <div class="user-name">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </div>
+
+                <div class="user-role">
+
+                    {% if request.user.role == "SUPER_ADMIN" %}
+                        Super Admin
+                    {% elif request.user.role == "IT_ADMIN" %}
+                        IT Administrator
+                    {% elif request.user.role == "HR_MANAGER" %}
+                        HR Manager
+                    {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+                        Department Manager
+                    {% else %}
+                        Employee
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            {% if request.user.role == "SUPER_ADMIN" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a
+                    href="{% url 'super_admin_dashboard' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    Management
+                </div>
+
+                <a href="{% url 'user_management' %}" class="sidebar-link">
+                    <i class="bi bi-people-fill"></i>
+                    <span>User Management</span>
+                </a>
+
+                <a href="{% url 'asset_list' %}" class="sidebar-link">
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+                <a href="{% url 'admin_assignment_list' %}" class="sidebar-link">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+                <a href="{% url 'admin_asset_requests' %}" class="sidebar-link">
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+                <a href="{% url 'admin_asset_incident_list' %}" class="sidebar-link">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+                <a href="{% url 'maintenance_list' %}" class="sidebar-link">
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance / Repair</span>
+                </a>
+
+                <a href="{% url 'software_license_list' %}" class="sidebar-link">
+                    <i class="bi bi-key-fill"></i>
+                    <span>Software Licenses</span>
+                </a>
+
+                <a href="{% url 'super_admin_department_list' %}" class="sidebar-link">
+                    <i class="bi bi-diagram-3-fill"></i>
+                    <span>Departments</span>
+                </a>
+
+                <a href="{% url 'vendors:vendor_list' %}" class="sidebar-link">
+                    <i class="bi bi-building"></i>
+                    <span>Vendors / Purchases</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a href="{% url 'reports:home' %}" class="sidebar-link">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Reports &amp; Analytics</span>
+                </a>
+
+                <a href="{% url 'notifications:list' %}" class="sidebar-link">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+                <a href="{% url 'reports:audit_log_report' %}" class="sidebar-link">
+                    <i class="bi bi-shield-check"></i>
+                    <span>Audit Logs</span>
+                </a>
+
+
+            {% elif request.user.role == "IT_ADMIN" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a href="{% url 'dashboard:home' %}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    IT Management
+                </div>
+
+                <a href="{% url 'asset_list' %}" class="sidebar-link">
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+                <a href="{% url 'admin_assignment_list' %}" class="sidebar-link">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+                <a href="{% url 'admin_asset_requests' %}" class="sidebar-link">
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+                <a href="{% url 'admin_asset_incident_list' %}" class="sidebar-link">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+                <a href="{% url 'maintenance_list' %}" class="sidebar-link">
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance / Repair</span>
+                </a>
+
+                <a href="{% url 'software_license_list' %}" class="sidebar-link">
+                    <i class="bi bi-key-fill"></i>
+                    <span>Software Licenses</span>
+                </a>
+
+                <a href="{% url 'vendors:vendor_list' %}" class="sidebar-link">
+                    <i class="bi bi-building"></i>
+                    <span>Vendors / Purchases</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a href="{% url 'reports:home' %}" class="sidebar-link">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Reports &amp; Analytics</span>
+                </a>
+
+                <a href="{% url 'notifications:list' %}" class="sidebar-link">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+
+            {% elif request.user.role == "HR_MANAGER" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a href="{% url 'dashboard:home' %}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    HR Management
+                </div>
+
+                <a
+                    href="{% url 'hr_employee_management' %}"
+                    class="sidebar-link active"
+                >
+                    <i class="bi bi-people-fill"></i>
+                    <span>Employee Management</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    Reports
+                </div>
+
+                <a href="{% url 'reports:employee_report' %}" class="sidebar-link">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>Employee Reports</span>
+                </a>
+
+                <a href="{% url 'reports:department_report' %}" class="sidebar-link">
+                    <i class="bi bi-diagram-3-fill"></i>
+                    <span>Department Reports</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a href="{% url 'notifications:list' %}" class="sidebar-link">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+
+            {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a href="{% url 'dashboard:home' %}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    Department
+                </div>
+
+                <a href="{% url 'dashboard:home' %}" class="sidebar-link">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Department Overview</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a href="{% url 'notifications:list' %}" class="sidebar-link">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+
+            {% elif request.user.role == "EMPLOYEE" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a href="{% url 'dashboard:home' %}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'employee_assigned_assets' %}" class="sidebar-link">
+                    <i class="bi bi-pc-display"></i>
+                    <span>My Assets</span>
+                </a>
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a href="{% url 'notifications:list' %}" class="sidebar-link">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main class="admin-main">
+
+        <header class="topbar">
+
+            <button
+                type="button"
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                aria-label="Open navigation menu"
+            >
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="topbar-title">
+                Employee Details
+            </div>
+
+        </header>
+
+
+        <section class="hr-page">
+
+
+            <!-- =================================================
+                 Messages
+                 ================================================= -->
+
+            {% if messages %}
+
+                <div class="messages-container">
+
+                    {% for message in messages %}
+
+                        <div
+                            class="
+                                message
+                                {% if message.tags == 'success' %}
+                                    message-success
+                                {% elif message.tags == 'error' %}
+                                    message-error
+                                {% elif message.tags == 'warning' %}
+                                    message-warning
+                                {% else %}
+                                    message-info
+                                {% endif %}
+                            "
+                        >
+
+                            {% if message.tags == "success" %}
+                                <i class="bi bi-check-circle-fill"></i>
+                            {% elif message.tags == "error" %}
+                                <i class="bi bi-x-circle-fill"></i>
+                            {% elif message.tags == "warning" %}
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                            {% else %}
+                                <i class="bi bi-info-circle-fill"></i>
+                            {% endif %}
+
+                            <span>
+                                {{ message }}
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 Employee Header
+                 ================================================= -->
+
+            <div class="detail-header">
+
+                <div class="employee-header-info">
+
+                    <div class="employee-large-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+
+                    <div class="employee-header-text">
+
+                        <h1>
+
+                            {% if employee.user.get_full_name %}
+                                {{ employee.user.get_full_name }}
+                            {% else %}
+                                {{ employee.user.username }}
+                            {% endif %}
+
+                        </h1>
+
+                        <p>
+
+                            Employee ID:
+                            <strong>
+                                {{ employee.employee_id }}
+                            </strong>
+
+                            &nbsp;•&nbsp;
+
+                            {{ employee.user.email }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="header-actions">
+
+                    <a
+                        href="{% url 'hr_employee_management' %}"
+                        class="header-button button-back"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                        Back
+                    </a>
+
+                    <a
+                        href="{% url 'hr_employee_edit' employee.id %}"
+                        class="header-button button-edit"
+                    >
+                        <i class="bi bi-pencil-fill"></i>
+                        Edit Employee
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 Main Grid
+                 ================================================= -->
+
+            <div class="detail-grid">
+
+
+                <!-- =================================================
+                     LEFT COLUMN
+                     ================================================= -->
+
+                <div class="content-column">
+
+
+                    <!-- Employee Information -->
+
+                    <div class="detail-card">
+
+                        <div class="card-header">
+
+                            <div class="card-header-icon">
+                                <i class="bi bi-person-vcard-fill"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Employee Information
+                                </h2>
+
+                                <p>
+                                    Personal and employment details
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                            <div class="information-grid">
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Employee ID
+                                    </div>
+
+                                    <div class="information-value">
+                                        {{ employee.employee_id }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Username
+                                    </div>
+
+                                    <div class="information-value">
+                                        {{ employee.user.username }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Full Name
+                                    </div>
+
+                                    <div class="information-value">
+
+                                        {% if employee.user.get_full_name %}
+                                            {{ employee.user.get_full_name }}
+                                        {% else %}
+                                            {{ employee.user.username }}
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Email
+                                    </div>
+
+                                    <div class="information-value">
+                                        {{ employee.user.email }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Department
+                                    </div>
+
+                                    <div class="information-value">
+
+                                        {% if employee.department %}
+
+                                            {{ employee.department.name }}
+
+                                        {% else %}
+
+                                            <span class="empty">
+                                                Not assigned
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Job Title
+                                    </div>
+
+                                    <div class="information-value">
+
+                                        {% if employee.job_title %}
+
+                                            {{ employee.job_title }}
+
+                                        {% else %}
+
+                                            <span class="empty">
+                                                Not specified
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Phone
+                                    </div>
+
+                                    <div class="information-value">
+
+                                        {% if employee.phone %}
+
+                                            {{ employee.phone }}
+
+                                        {% else %}
+
+                                            <span class="empty">
+                                                Not provided
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Joining Date
+                                    </div>
+
+                                    <div class="information-value">
+
+                                        {% if employee.date_of_joining %}
+
+                                            {{ employee.date_of_joining|date:"d M Y" }}
+
+                                        {% else %}
+
+                                            <span class="empty">
+                                                Not provided
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Employment Status
+                                    </div>
+
+                                    <div class="information-value">
+
+                                        {% if employee.employment_status == "ACTIVE" %}
+
+                                            <span class="status-badge status-active">
+                                                <i class="bi bi-circle-fill"></i>
+                                                Active
+                                            </span>
+
+                                        {% elif employee.employment_status == "RESIGNATION_PENDING" %}
+
+                                            <span class="status-badge status-pending">
+                                                <i class="bi bi-clock-fill"></i>
+                                                Resignation Pending
+                                            </span>
+
+                                        {% elif employee.employment_status == "EXITED" %}
+
+                                            <span class="status-badge status-exited">
+                                                <i class="bi bi-dash-circle-fill"></i>
+                                                Exited
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status-badge status-exited">
+                                                {{ employee.get_employment_status_display }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="information-item">
+
+                                    <div class="information-label">
+                                        Account Status
+                                    </div>
+
+                                    <div class="information-value">
+
+                                        {% if employee.user.is_active %}
+
+                                            <span class="status-badge status-active">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                Active
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status-badge status-exited">
+                                                <i class="bi bi-slash-circle-fill"></i>
+                                                Inactive
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Address -->
+
+                    <div class="detail-card">
+
+                        <div class="card-header">
+
+                            <div class="card-header-icon">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Address
+                                </h2>
+
+                                <p>
+                                    Employee contact address
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                            <div class="address-box">
+
+                                {% if employee.address %}
+
+                                    {{ employee.address|linebreaksbr }}
+
+                                {% else %}
+
+                                    No address has been provided for this employee.
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Resignation / Exit Information -->
+
+                    {% if employee.resignation_date or employee.exit_date or employee.exit_reason or employee.exit_notes %}
+
+                        <div class="detail-card">
+
+                            <div class="card-header">
+
+                                <div class="card-header-icon">
+                                    <i class="bi bi-person-x-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <h2>
+                                        Employment Transition
+                                    </h2>
+
+                                    <p>
+                                        Resignation and exit information
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+                                <div class="information-grid">
+
+
+                                    {% if employee.resignation_date %}
+
+                                        <div class="information-item">
+
+                                            <div class="information-label">
+                                                Resignation Date
+                                            </div>
+
+                                            <div class="information-value">
+                                                {{ employee.resignation_date|date:"d M Y" }}
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    {% if employee.exit_date %}
+
+                                        <div class="information-item">
+
+                                            <div class="information-label">
+                                                Exit Date
+                                            </div>
+
+                                            <div class="information-value">
+                                                {{ employee.exit_date|date:"d M Y" }}
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    {% if employee.exit_reason %}
+
+                                        <div class="information-item">
+
+                                            <div class="information-label">
+                                                Exit Reason
+                                            </div>
+
+                                            <div class="information-value">
+                                                {{ employee.exit_reason }}
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    {% if employee.exit_notes %}
+
+                                        <div
+                                            class="information-item"
+                                            style="grid-column: 1 / -1;"
+                                        >
+
+                                            <div class="information-label">
+                                                Exit Notes
+                                            </div>
+
+                                            <div class="address-box">
+                                                {{ employee.exit_notes|linebreaksbr }}
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Assigned Assets -->
+
+                    <div class="detail-card">
+
+                        <div class="card-header">
+
+                            <div class="card-header-icon">
+                                <i class="bi bi-pc-display"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Currently Assigned Assets
+                                </h2>
+
+                                <p>
+                                    Assets currently assigned to this employee
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                            {% if active_assignments %}
+
+                                <div class="asset-list">
+
+                                    {% for assignment in active_assignments %}
+
+                                        <div class="asset-item">
+
+                                            <div class="asset-info">
+
+                                                <div class="asset-icon">
+                                                    <i class="bi bi-laptop"></i>
+                                                </div>
+
+                                                <div>
+
+                                                    <div class="asset-name">
+
+                                                        {% if assignment.asset.name %}
+
+                                                            {{ assignment.asset.name }}
+
+                                                        {% else %}
+
+                                                            {{ assignment.asset.asset_tag }}
+
+                                                        {% endif %}
+
+                                                    </div>
+
+                                                    <div class="asset-meta">
+
+                                                        Asset Tag:
+                                                        {{ assignment.asset.asset_tag }}
+
+                                                        {% if assignment.assigned_date %}
+
+                                                            &nbsp;•&nbsp;
+
+                                                            Assigned:
+                                                            {{ assignment.assigned_date|date:"d M Y" }}
+
+                                                        {% endif %}
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <span class="asset-status">
+                                                Active Assignment
+                                            </span>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="empty-assets">
+
+                                    <i class="bi bi-pc-display-horizontal"></i>
+
+                                    No active assets are currently assigned
+                                    to this employee.
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     RIGHT COLUMN
+                     ================================================= -->
+
+                <div class="content-column">
+
+
+                    <!-- Current Status -->
+
+                    <div class="detail-card">
+
+                        <div class="card-header">
+
+                            <div class="card-header-icon">
+                                <i class="bi bi-activity"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Current Status
+                                </h2>
+
+                                <p>
+                                    Employment and asset return state
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    Employment
+                                </div>
+
+                                <div class="information-value">
+
+                                    {% if employee.employment_status == "ACTIVE" %}
+
+                                        <span class="status-badge status-active">
+                                            <i class="bi bi-circle-fill"></i>
+                                            Active
+                                        </span>
+
+                                    {% elif employee.employment_status == "RESIGNATION_PENDING" %}
+
+                                        <span class="status-badge status-pending">
+                                            <i class="bi bi-clock-fill"></i>
+                                            Resignation Pending
+                                        </span>
+
+                                    {% elif employee.employment_status == "EXITED" %}
+
+                                        <span class="status-badge status-exited">
+                                            <i class="bi bi-dash-circle-fill"></i>
+                                            Exited
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="information-item"
+                                style="margin-top: 18px;"
+                            >
+
+                                <div class="information-label">
+                                    Asset Return
+                                </div>
+
+                                <div class="information-value">
+
+                                    {% if employee.asset_return_status == "COMPLETED" %}
+
+                                        <span class="status-badge status-completed">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            Completed
+                                        </span>
+
+                                    {% elif employee.asset_return_status == "PENDING" %}
+
+                                        <span class="status-badge status-pending">
+                                            <i class="bi bi-clock-fill"></i>
+                                            Pending
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status-badge status-not-required">
+                                            <i class="bi bi-dash-circle-fill"></i>
+                                            Not Required
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- HR Workflow -->
+
+                    <div class="detail-card">
+
+                        <div class="card-header">
+
+                            <div class="card-header-icon">
+                                <i class="bi bi-diagram-3-fill"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    HR Actions
+                                </h2>
+
+                                <p>
+                                    Employee lifecycle management
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                            <div class="workflow-actions">
+
+
+                                <a
+                                    href="{% url 'hr_employee_edit' employee.id %}"
+                                    class="workflow-button workflow-edit"
+                                >
+                                    <i class="bi bi-pencil-fill"></i>
+                                    Edit Employee
+                                </a>
+
+
+                                {% if employee.employment_status == "ACTIVE" %}
+
+                                    <button
+                                        type="button"
+                                        class="workflow-button workflow-resignation"
+                                        id="openResignationModal"
+                                    >
+                                        <i class="bi bi-person-dash-fill"></i>
+                                        Start Resignation
+                                    </button>
+
+                                {% endif %}
+
+
+                                {% if employee.employment_status == "RESIGNATION_PENDING" %}
+
+                                    <button
+                                        type="button"
+                                        class="workflow-button workflow-exit"
+                                        id="openExitModal"
+                                    >
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Complete Employee Exit
+                                    </button>
+
+                                {% endif %}
+
+
+                                {% if employee.employment_status == "EXITED" %}
+
+                                    <div class="workflow-note">
+                                        This employee has completed the
+                                        employment exit process. No further
+                                        resignation or exit action is available.
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="workflow-note">
+
+                                Employee exit is controlled by the backend.
+                                Active asset assignments must be cleared
+                                before the employee can be marked as exited.
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Asset Return -->
+
+                    <div class="detail-card">
+
+                        <div class="card-header">
+
+                            <div class="card-header-icon">
+                                <i class="bi bi-arrow-return-left"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Asset Return Status
+                                </h2>
+
+                                <p>
+                                    Update employee asset return state
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                            {% if employee.employment_status == "ACTIVE" %}
+
+                                <div class="return-info return-warning">
+
+                                    <i class="bi bi-info-circle-fill"></i>
+
+                                    Asset return status can be managed when
+                                    the employee enters the resignation or
+                                    exit workflow.
+
+                                </div>
+
+                            {% else %}
+
+                                <form
+                                    method="post"
+                                    action="{% url 'hr_employee_asset_return_status' employee.id %}"
+                                    class="return-form"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <label
+                                        for="assetReturnStatus"
+                                        class="form-label"
+                                    >
+                                        Return Status
+                                    </label>
+
+                                    <select
+                                        name="asset_return_status"
+                                        id="assetReturnStatus"
+                                        class="form-select"
+                                        required
+                                    >
+
+                                        <option
+                                            value="NOT_REQUIRED"
+                                            {% if employee.asset_return_status == "NOT_REQUIRED" %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            Not Required
+                                        </option>
+
+                                        <option
+                                            value="PENDING"
+                                            {% if employee.asset_return_status == "PENDING" %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            Pending
+                                        </option>
+
+                                        <option
+                                            value="COMPLETED"
+                                            {% if employee.asset_return_status == "COMPLETED" %}
+                                                selected
+                                            {% endif %}
+                                            {% if active_assignments %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                            Completed
+                                            {% if active_assignments %}
+                                                — Active Assets Still Assigned
+                                            {% endif %}
+                                        </option>
+
+                                    </select>
+
+
+                                    {% if active_assignments %}
+
+                                        <div class="return-info return-warning">
+
+                                            <i class="bi bi-exclamation-triangle-fill"></i>
+
+                                            The employee still has active asset
+                                            assignments. The return status cannot
+                                            be marked as Completed until those
+                                            assets are cleared.
+
+                                        </div>
+
+                                    {% else %}
+
+                                        <div class="return-info return-success">
+
+                                            <i class="bi bi-check-circle-fill"></i>
+
+                                            No active asset assignments are
+                                            currently linked to this employee.
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <button
+                                        type="submit"
+                                        class="return-submit"
+                                        id="updateReturnButton"
+                                    >
+                                        <i class="bi bi-check2-circle"></i>
+                                        Update Return Status
+                                    </button>
+
+                                </form>
+
+
+                                <div class="workflow-note">
+
+                                    The backend prevents the status from being
+                                    marked Completed while active asset
+                                    assignments still exist.
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 Footer
+                 ================================================= -->
+
+            <div class="detail-footer">
+
+                <div>
+
+                    Employee record:
+                    <strong>
+                        {{ employee.employee_id }}
+                    </strong>
+
+                </div>
+
+                <div class="detail-footer-right">
+                    ITARMS • HR Employee Management
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================================
+         RESIGNATION MODAL
+         ========================================================= -->
+
+    {% if employee.employment_status == "ACTIVE" %}
+
+        <div
+            class="workflow-modal"
+            id="resignationModal"
+            aria-hidden="true"
+        >
+
+            <div class="workflow-modal-box">
+
+                <div class="workflow-modal-header">
+
+                    <div class="workflow-modal-title">
+
+                        <div class="workflow-modal-icon resignation-icon">
+                            <i class="bi bi-person-dash-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Start Employee Resignation
+                            </h3>
+
+                            <p>
+                                Record resignation information for this employee.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="workflow-modal-close"
+                        data-close-modal="resignationModal"
+                        aria-label="Close resignation form"
+                    >
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+
+                </div>
+
+
+                <div class="workflow-modal-body">
+
+                    <form
+                        method="post"
+                        action="{% url 'hr_employee_resignation' employee.id %}"
+                        class="workflow-modal-form"
+                    >
+
+                        {% csrf_token %}
+
+
+                        <div class="workflow-field">
+
+                            <label
+                                for="resignationDate"
+                                class="workflow-label"
+                            >
+                                Resignation Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="resignation_date"
+                                id="resignationDate"
+                                class="workflow-input"
+                                value="{% now 'Y-m-d' %}"
+                                max="{% now 'Y-m-d' %}"
+                                required
+                            >
+
+                            <div class="workflow-help">
+                                Select the employee's resignation date.
+                                The date cannot be in the future.
+                            </div>
+
+                        </div>
+
+
+                        <div class="workflow-field">
+
+                            <label
+                                for="exitReason"
+                                class="workflow-label"
+                            >
+                                Reason
+                            </label>
+
+                            <textarea
+                                name="exit_reason"
+                                id="exitReason"
+                                class="workflow-textarea"
+                                rows="4"
+                                placeholder="Enter the reason for resignation..."
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="workflow-field">
+
+                            <label
+                                for="exitNotes"
+                                class="workflow-label"
+                            >
+                                Notes
+                            </label>
+
+                            <textarea
+                                name="exit_notes"
+                                id="exitNotes"
+                                class="workflow-textarea"
+                                rows="4"
+                                placeholder="Add any additional resignation notes (optional)..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="workflow-modal-actions">
+
+                            <button
+                                type="button"
+                                class="modal-cancel-button"
+                                data-close-modal="resignationModal"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="modal-submit-button modal-resignation-submit"
+                            >
+                                <i class="bi bi-person-dash-fill"></i>
+                                Start Resignation
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =========================================================
+         EXIT MODAL
+         ========================================================= -->
+
+    {% if employee.employment_status == "RESIGNATION_PENDING" %}
+
+        <div
+            class="workflow-modal"
+            id="exitModal"
+            aria-hidden="true"
+        >
+
+            <div class="workflow-modal-box">
+
+                <div class="workflow-modal-header">
+
+                    <div class="workflow-modal-title">
+
+                        <div class="workflow-modal-icon exit-icon">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Complete Employee Exit
+                            </h3>
+
+                            <p>
+                                Record the final exit date for this employee.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="workflow-modal-close"
+                        data-close-modal="exitModal"
+                        aria-label="Close exit form"
+                    >
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+
+                </div>
+
+
+                <div class="workflow-modal-body">
+
+                    <form
+                        method="post"
+                        action="{% url 'hr_employee_exit' employee.id %}"
+                        class="workflow-modal-form"
+                    >
+
+                        {% csrf_token %}
+
+
+                        <div class="workflow-field">
+
+                            <label
+                                for="exitDate"
+                                class="workflow-label"
+                            >
+                                Exit Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="exit_date"
+                                id="exitDate"
+                                class="workflow-input"
+                                value="{% now 'Y-m-d' %}"
+                                {% if employee.resignation_date %}
+                                    min="{{ employee.resignation_date|date:'Y-m-d' }}"
+                                {% endif %}
+                                required
+                            >
+
+                            <div class="workflow-help">
+                                Exit date cannot be earlier than the employee's
+                                resignation date.
+                            </div>
+
+                        </div>
+
+
+                        {% if active_assignments %}
+
+                            <div class="return-info return-warning">
+
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                                This employee still has active asset assignments.
+                                The backend will not allow the employee to be
+                                marked as exited until those assignments are cleared.
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="return-info return-success">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                No active asset assignments are currently linked
+                                to this employee.
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="workflow-modal-actions">
+
+                            <button
+                                type="button"
+                                class="modal-cancel-button"
+                                data-close-modal="exitModal"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="modal-submit-button modal-exit-submit"
+                                {% if active_assignments %}
+                                    disabled
+                                    title="Clear active asset assignments before completing employee exit."
+                                {% endif %}
+                            >
+                                <i class="bi bi-box-arrow-right"></i>
+                                Complete Employee Exit
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =========================================================
+         Mobile Sidebar Overlay
+         ========================================================= -->
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- =========================================================
+         JavaScript
+         ========================================================= -->
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            /* -----------------------------------------------------
+               Sidebar
+               ----------------------------------------------------- */
+
+            const sidebar =
+                document.getElementById("adminSidebar");
+
+            const mobileButton =
+                document.getElementById("mobileMenuButton");
+
+            const overlay =
+                document.getElementById("sidebarOverlay");
+
+
+            function openSidebar() {
+
+                if (sidebar) {
+                    sidebar.classList.add("mobile-open");
+                }
+
+                if (overlay) {
+                    overlay.classList.add("active");
+                }
+
+            }
+
+
+            function closeSidebar() {
+
+                if (sidebar) {
+                    sidebar.classList.remove("mobile-open");
+                }
+
+                if (overlay) {
+                    overlay.classList.remove("active");
+                }
+
+            }
+
+
+            if (mobileButton) {
+
+                mobileButton.addEventListener(
+                    "click",
+                    openSidebar
+                );
+
+            }
+
+
+            if (overlay) {
+
+                overlay.addEventListener(
+                    "click",
+                    closeSidebar
+                );
+
+            }
+
+
+            window.addEventListener("resize", function () {
+
+                if (window.innerWidth > 1000) {
+                    closeSidebar();
+                }
+
+            });
+
+
+            /* -----------------------------------------------------
+               Workflow Modals
+               ----------------------------------------------------- */
+
+            const resignationModal =
+                document.getElementById("resignationModal");
+
+            const exitModal =
+                document.getElementById("exitModal");
+
+            const openResignationButton =
+                document.getElementById("openResignationModal");
+
+            const openExitButton =
+                document.getElementById("openExitModal");
+
+
+            function openModal(modal) {
+
+                if (!modal) {
+                    return;
+                }
+
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+
+                document.body.style.overflow = "hidden";
+
+            }
+
+
+            function closeModal(modal) {
+
+                if (!modal) {
+                    return;
+                }
+
+                modal.classList.remove("active");
+                modal.setAttribute("aria-hidden", "true");
+
+                if (
+                    !document.querySelector(
+                        ".workflow-modal.active"
+                    )
+                ) {
+                    document.body.style.overflow = "";
+                }
+
+            }
+
+
+            if (openResignationButton) {
+
+                openResignationButton.addEventListener(
+                    "click",
+                    function () {
+                        openModal(resignationModal);
+                    }
+                );
+
+            }
+
+
+            if (openExitButton) {
+
+                openExitButton.addEventListener(
+                    "click",
+                    function () {
+                        openModal(exitModal);
+                    }
+                );
+
+            }
+
+
+            document
+                .querySelectorAll("[data-close-modal]")
+                .forEach(function (button) {
+
+                    button.addEventListener(
+                        "click",
+                        function () {
+
+                            const modalId =
+                                button.getAttribute(
+                                    "data-close-modal"
+                                );
+
+                            const modal =
+                                document.getElementById(modalId);
+
+                            closeModal(modal);
+
+                        }
+                    );
+
+                });
+
+
+            [resignationModal, exitModal]
+                .forEach(function (modal) {
+
+                    if (!modal) {
+                        return;
+                    }
+
+                    modal.addEventListener(
+                        "click",
+                        function (event) {
+
+                            if (event.target === modal) {
+                                closeModal(modal);
+                            }
+
+                        }
+                    );
+
+                });
+
+
+            document.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (event.key !== "Escape") {
+                        return;
+                    }
+
+                    closeModal(resignationModal);
+                    closeModal(exitModal);
+
+                }
+            );
+
+
+            /* -----------------------------------------------------
+               Asset Return Validation
+               ----------------------------------------------------- */
+
+            const returnForm =
+                document.querySelector(".return-form");
+
+            const returnSelect =
+                document.getElementById("assetReturnStatus");
+
+            const returnButton =
+                document.getElementById("updateReturnButton");
+
+
+            if (
+                returnForm &&
+                returnSelect &&
+                returnButton
+            ) {
+
+                returnForm.addEventListener(
+                    "submit",
+                    function (event) {
+
+                        if (
+                            returnSelect.value === "COMPLETED" &&
+                            returnSelect
+                                .querySelector(
+                                    'option[value="COMPLETED"]'
+                                )
+                                .disabled
+                        ) {
+
+                            event.preventDefault();
+
+                            returnSelect.focus();
+
+                            return;
+
+                        }
+
+                    }
+                );
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

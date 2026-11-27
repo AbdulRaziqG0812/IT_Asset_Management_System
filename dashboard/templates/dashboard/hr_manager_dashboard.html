@@ -1,0 +1,2466 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>HR Manager Dashboard | ITARMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/super_admin_dashboard.css' %}"
+    >
+
+    <style>
+
+        /* =========================================================
+           HR DASHBOARD PAGE
+        ========================================================= */
+
+        .dashboard-content {
+            padding: 28px;
+        }
+
+        /* Keep the main dashboard content clear of the fixed sidebar. */
+        .dashboard-main {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+            min-width: 0;
+        }
+
+        @media (max-width: 991.98px) {
+            .dashboard-main {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
+        .welcome-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 24px 26px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+        }
+
+        .welcome-card h2 {
+            margin: 0 0 7px;
+            color: #172033;
+            font-size: 1.55rem;
+            font-weight: 700;
+        }
+
+        .welcome-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.94rem;
+            line-height: 1.6;
+        }
+
+        .welcome-user {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        /* =========================================================
+           STAT CARDS
+        ========================================================= */
+
+        .stat-card {
+            height: 100%;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.045);
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+            border-color: #dbe3ef;
+        }
+
+        .stat-card-inner {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-icon.blue {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .stat-icon.green {
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        .stat-icon.orange {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .stat-icon.red {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .stat-icon.purple {
+            background: #f5f3ff;
+            color: #7c3aed;
+        }
+
+        .stat-label {
+            margin-bottom: 4px;
+            color: #64748b;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            color: #172033;
+            font-size: 1.55rem;
+            line-height: 1.1;
+            font-weight: 750;
+        }
+
+        /* =========================================================
+           SECTION
+        ========================================================= */
+
+        .dashboard-section {
+            margin-top: 26px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            margin: 0;
+            color: #172033;
+            font-size: 1.08rem;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 0.84rem;
+        }
+
+        .section-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #2563eb;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .section-action:hover {
+            color: #1d4ed8;
+        }
+
+        /* =========================================================
+           CHART CARDS
+        ========================================================= */
+
+        .chart-card {
+            height: 100%;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.045);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        .chart-wrapper.small {
+            height: 275px;
+        }
+
+        /* =========================================================
+           TABLE CARDS
+        ========================================================= */
+
+        .table-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.045);
+        }
+
+        .table-card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #edf0f4;
+        }
+
+        .table-card-header h3 {
+            margin: 0;
+            color: #172033;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .table-card-header p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .dashboard-table {
+            width: 100%;
+            min-width: 720px;
+            margin: 0;
+            border-collapse: collapse;
+        }
+
+        .dashboard-table th {
+            padding: 13px 18px;
+            background: #f8fafc;
+            color: #64748b;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .dashboard-table td {
+            padding: 14px 18px;
+            color: #334155;
+            border-bottom: 1px solid #eef2f7;
+            font-size: 0.82rem;
+            vertical-align: middle;
+        }
+
+        .dashboard-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .dashboard-table tbody tr:hover {
+            background: #fafcff;
+        }
+
+        .employee-name {
+            color: #172033;
+            font-weight: 650;
+        }
+
+        .employee-id {
+            color: #64748b;
+            font-size: 0.74rem;
+            margin-top: 2px;
+        }
+
+        /* =========================================================
+           BADGES
+        ========================================================= */
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 0.69rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .status-pending {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .status-exited {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .status-completed {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .status-not-required {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        /* =========================================================
+           NOTIFICATIONS
+        ========================================================= */
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notification-item {
+            display: flex;
+            gap: 13px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #eef2f7;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background: #fafcff;
+        }
+
+        .notification-item.unread {
+            background: #f8fbff;
+        }
+
+        .notification-icon {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 1rem;
+        }
+
+        .notification-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .notification-title {
+            margin: 0 0 4px;
+            color: #172033;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .notification-message {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.77rem;
+            line-height: 1.5;
+        }
+
+        .notification-date {
+            margin-top: 6px;
+            color: #94a3b8;
+            font-size: 0.7rem;
+        }
+
+        .unread-dot {
+            width: 7px;
+            height: 7px;
+            min-width: 7px;
+            margin-top: 7px;
+            border-radius: 50%;
+            background: #2563eb;
+        }
+
+        /* =========================================================
+           QUICK ACTIONS
+        ========================================================= */
+
+        .quick-action-card {
+            height: 100%;
+            padding: 18px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-2px);
+            border-color: #bfdbfe;
+            box-shadow: 0 7px 20px rgba(15, 23, 42, 0.07);
+        }
+
+        .quick-action-icon {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 11px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-action-title {
+            color: #172033;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .quick-action-text {
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 0.72rem;
+        }
+
+        /* =========================================================
+           EMPTY STATE / LOADING / ERROR
+        ========================================================= */
+
+        .dashboard-state {
+            padding: 35px 20px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .dashboard-state i {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            color: #94a3b8;
+        }
+
+        .dashboard-error {
+            margin-bottom: 20px;
+            padding: 14px 16px;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            background: #fef2f2;
+            color: #b91c1c;
+            font-size: 0.84rem;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 991.98px) {
+            .dashboard-content {
+                padding: 22px;
+            }
+
+            .chart-wrapper {
+                height: 280px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .dashboard-content {
+                padding: 17px;
+            }
+
+            .welcome-card {
+                padding: 20px;
+            }
+
+            .welcome-card h2 {
+                font-size: 1.3rem;
+            }
+
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .chart-wrapper,
+            .chart-wrapper.small {
+                height: 250px;
+            }
+
+            .stat-card {
+                padding: 17px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .dashboard-content {
+                padding: 14px;
+            }
+
+            .welcome-card {
+                padding: 18px;
+                border-radius: 13px;
+            }
+
+            .stat-value {
+                font-size: 1.35rem;
+            }
+
+            .chart-card,
+            .table-card {
+                border-radius: 12px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="admin-sidebar" id="adminSidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <i class="bi bi-cpu-fill"></i>
+            </div>
+
+            <div>
+                <div class="brand-title">
+                    ITARMS
+                </div>
+
+                <div class="brand-subtitle">
+                    {% if request.user.role == "SUPER_ADMIN" %}
+                        Super Admin Panel
+                    {% elif request.user.role == "IT_ADMIN" %}
+                        IT Admin Panel
+                    {% elif request.user.role == "HR_MANAGER" %}
+                        HR Manager Panel
+                    {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+                        Department Manager Panel
+                    {% else %}
+                        Employee Panel
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-user">
+
+            <div class="user-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="user-details">
+
+                <div class="user-name">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </div>
+
+                <div class="user-role">
+
+                    {% if request.user.role == "SUPER_ADMIN" %}
+                        Super Admin
+                    {% elif request.user.role == "IT_ADMIN" %}
+                        IT Administrator
+                    {% elif request.user.role == "HR_MANAGER" %}
+                        HR Manager
+                    {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+                        Department Manager
+                    {% else %}
+                        Employee
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVIGATION
+             ===================================================== -->
+
+        <nav class="sidebar-nav">
+
+            {% if request.user.role == "SUPER_ADMIN" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a
+                    href="{% url 'super_admin_dashboard' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    Management
+                </div>
+
+                <a
+                    href="{% url 'user_management' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-people-fill"></i>
+                    <span>User Management</span>
+                </a>
+
+                <a
+                    href="{% url 'asset_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+                <a
+                    href="{% url 'admin_assignment_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+                <a
+                    href="{% url 'admin_asset_requests' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+                <a
+                    href="{% url 'admin_asset_incident_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+                <a
+                    href="{% url 'maintenance_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance / Repair</span>
+                </a>
+
+                <a
+                    href="{% url 'software_license_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-key-fill"></i>
+                    <span>Software Licenses</span>
+                </a>
+
+                <a
+                    href="{% url 'super_admin_department_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-diagram-3-fill"></i>
+                    <span>Departments</span>
+                </a>
+
+                <a
+                    href="{% url 'vendors:vendor_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-building"></i>
+                    <span>Vendors / Purchases</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a
+                    href="{% url 'reports:home' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Reports &amp; Analytics</span>
+                </a>
+
+                <a
+                    href="{% url 'notifications:list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+                <a
+                    href="{% url 'reports:audit_log_report' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-shield-check"></i>
+                    <span>Audit Logs</span>
+                </a>
+
+
+            {% elif request.user.role == "IT_ADMIN" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a
+                    href="{% url 'dashboard:home' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    IT Management
+                </div>
+
+                <a
+                    href="{% url 'asset_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-pc-display"></i>
+                    <span>IT Assets</span>
+                </a>
+
+                <a
+                    href="{% url 'admin_assignment_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Asset Assignments</span>
+                </a>
+
+                <a
+                    href="{% url 'admin_asset_requests' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asset Requests</span>
+                </a>
+
+                <a
+                    href="{% url 'admin_asset_incident_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Damaged / Lost</span>
+                </a>
+
+                <a
+                    href="{% url 'maintenance_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Maintenance / Repair</span>
+                </a>
+
+                <a
+                    href="{% url 'software_license_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-key-fill"></i>
+                    <span>Software Licenses</span>
+                </a>
+
+                <a
+                    href="{% url 'vendors:vendor_list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-building"></i>
+                    <span>Vendors / Purchases</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a
+                    href="{% url 'reports:home' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Reports &amp; Analytics</span>
+                </a>
+
+                <a
+                    href="{% url 'notifications:list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+
+            {% elif request.user.role == "HR_MANAGER" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a
+                    href="{% url 'dashboard:home' %}"
+                    class="sidebar-link active"
+                >
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    HR Management
+                </div>
+
+                <a
+                    href="{% url 'hr_employee_management' %}"
+                    class="sidebar-link "
+                >
+                    <i class="bi bi-people-fill"></i>
+                    <span>Employee Management</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    Reports
+                </div>
+
+                <a
+                    href="{% url 'reports:employee_report' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>Employee Reports</span>
+                </a>
+
+                <a
+                    href="{% url 'reports:department_report' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-diagram-3-fill"></i>
+                    <span>Department Reports</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a
+                    href="{% url 'notifications:list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+
+            {% elif request.user.role == "DEPARTMENT_MANAGER" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a
+                    href="{% url 'dashboard:home' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    Department
+                </div>
+
+                <a
+                    href="{% url 'dashboard:home' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-people-fill"></i>
+                    <span>Department Overview</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a
+                    href="{% url 'notifications:list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+
+            {% elif request.user.role == "EMPLOYEE" %}
+
+                <div class="sidebar-section-title">
+                    Main
+                </div>
+
+                <a
+                    href="{% url 'dashboard:home' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a
+                    href="{% url 'employee_assigned_assets' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-pc-display"></i>
+                    <span>My Assets</span>
+                </a>
+
+
+                <div class="sidebar-section-title">
+                    System
+                </div>
+
+                <a
+                    href="{% url 'notifications:list' %}"
+                    class="sidebar-link"
+                >
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+
+        <!-- =====================================================
+             SIDEBAR BOTTOM
+             ===================================================== -->
+
+        <div class="sidebar-bottom">
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
+
+        <main class="dashboard-main">
+
+            <!-- MOBILE TOP BAR -->
+
+            <div class="dashboard-mobile-header">
+
+                <button
+                    type="button"
+                    class="btn btn-light"
+                    id="sidebarToggle"
+                    aria-label="Open navigation"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div>
+                    <strong>HR Manager Dashboard</strong>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-content">
+
+                <!-- ERROR -->
+
+                <div
+                    id="dashboardError"
+                    class="dashboard-error d-none"
+                ></div>
+
+
+                <!-- WELCOME -->
+
+                <section class="welcome-card">
+
+                    <h2>
+                        Welcome,
+                        <span class="welcome-user">
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </span>
+                    </h2>
+
+                    <p>
+                        Manage employee information, monitor employment
+                        status, track asset-return workflows, and review
+                        HR-related notifications from one place.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     STATISTICS
+                ================================================== -->
+
+                <section>
+
+                    <div class="row g-3">
+
+                        <div class="col-xl col-lg-4 col-md-6">
+
+                            <div class="stat-card">
+
+                                <div class="stat-card-inner">
+
+                                    <div class="stat-icon blue">
+                                        <i class="bi bi-people-fill"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="stat-label">
+                                            Total Employees
+                                        </div>
+
+                                        <div
+                                            class="stat-value"
+                                            id="totalEmployees"
+                                        >
+                                            —
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-xl col-lg-4 col-md-6">
+
+                            <div class="stat-card">
+
+                                <div class="stat-card-inner">
+
+                                    <div class="stat-icon green">
+                                        <i class="bi bi-person-check-fill"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="stat-label">
+                                            Active Employees
+                                        </div>
+
+                                        <div
+                                            class="stat-value"
+                                            id="activeEmployees"
+                                        >
+                                            —
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-xl col-lg-4 col-md-6">
+
+                            <div class="stat-card">
+
+                                <div class="stat-card-inner">
+
+                                    <div class="stat-icon orange">
+                                        <i class="bi bi-person-exclamation"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="stat-label">
+                                            Resignation Pending
+                                        </div>
+
+                                        <div
+                                            class="stat-value"
+                                            id="resignationPending"
+                                        >
+                                            —
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-xl col-lg-4 col-md-6">
+
+                            <div class="stat-card">
+
+                                <div class="stat-card-inner">
+
+                                    <div class="stat-icon purple">
+                                        <i class="bi bi-person-dash-fill"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="stat-label">
+                                            Exited Employees
+                                        </div>
+
+                                        <div
+                                            class="stat-value"
+                                            id="exitedEmployees"
+                                        >
+                                            —
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-xl col-lg-4 col-md-6">
+
+                            <div class="stat-card">
+
+                                <div class="stat-card-inner">
+
+                                    <div class="stat-icon red">
+                                        <i class="bi bi-box-arrow-in-down"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="stat-label">
+                                            Pending Asset Returns
+                                        </div>
+
+                                        <div
+                                            class="stat-value"
+                                            id="pendingAssetReturns"
+                                        >
+                                            —
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     CHARTS
+                ================================================== -->
+
+                <section class="dashboard-section">
+
+                    <div class="section-header">
+
+                        <div>
+                            <h3 class="section-title">
+                                HR Overview
+                            </h3>
+
+                            <p class="section-subtitle">
+                                Employee distribution and asset-return workflow status.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-xl-5 col-lg-6">
+
+                            <div class="chart-card">
+
+                                <div class="section-header">
+
+                                    <div>
+                                        <h3 class="section-title">
+                                            Employees by Department
+                                        </h3>
+
+                                        <p class="section-subtitle">
+                                            Current employee distribution.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <div class="chart-wrapper">
+                                    <canvas id="departmentChart"></canvas>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-xl-3 col-lg-6">
+
+                            <div class="chart-card">
+
+                                <div class="section-header">
+
+                                    <div>
+                                        <h3 class="section-title">
+                                            Employee Status
+                                        </h3>
+
+                                        <p class="section-subtitle">
+                                            Employment status overview.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <div class="chart-wrapper small">
+                                    <canvas id="employeeStatusChart"></canvas>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-xl-4 col-lg-12">
+
+                            <div class="chart-card">
+
+                                <div class="section-header">
+
+                                    <div>
+                                        <h3 class="section-title">
+                                            Asset Return Status
+                                        </h3>
+
+                                        <p class="section-subtitle">
+                                            Employee asset-return workflow.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <div class="chart-wrapper">
+                                    <canvas id="assetReturnChart"></canvas>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     QUICK ACTIONS
+                ================================================== -->
+
+                <section class="dashboard-section">
+
+                    <div class="section-header">
+
+                        <div>
+                            <h3 class="section-title">
+                                Quick Actions
+                            </h3>
+
+                            <p class="section-subtitle">
+                                Frequently used HR management areas.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-xl-4 col-md-6">
+
+                            <a
+                                href="{% url 'hr_employee_management' %}"
+                                class="quick-action-card"
+                            >
+
+                                <div class="quick-action-icon">
+                                    <i class="bi bi-people-fill"></i>
+                                </div>
+
+                                <div>
+                                    <div class="quick-action-title">
+                                        Employee Management
+                                    </div>
+
+                                    <div class="quick-action-text">
+                                        View and manage employee records.
+                                    </div>
+                                </div>
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="col-xl-4 col-md-6">
+
+                            <a
+                                href="{% url 'reports:employee_report' %}"
+                                class="quick-action-card"
+                            >
+
+                                <div class="quick-action-icon">
+                                    <i class="bi bi-person-lines-fill"></i>
+                                </div>
+
+                                <div>
+                                    <div class="quick-action-title">
+                                        Employee Reports
+                                    </div>
+
+                                    <div class="quick-action-text">
+                                        Review employee-related reports.
+                                    </div>
+                                </div>
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="col-xl-4 col-md-6">
+
+                            <a
+                                href="{% url 'reports:department_report' %}"
+                                class="quick-action-card"
+                            >
+
+                                <div class="quick-action-icon">
+                                    <i class="bi bi-diagram-3-fill"></i>
+                                </div>
+
+                                <div>
+                                    <div class="quick-action-title">
+                                        Department Reports
+                                    </div>
+
+                                    <div class="quick-action-text">
+                                        Review department-level information.
+                                    </div>
+                                </div>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     RECENT EMPLOYEES
+                ================================================== -->
+
+                <section class="dashboard-section">
+
+                    <div class="section-header">
+
+                        <div>
+                            <h3 class="section-title">
+                                Recent Employees
+                            </h3>
+
+                            <p class="section-subtitle">
+                                Recently created employee profiles.
+                            </p>
+                        </div>
+
+                        <a
+                            href="{% url 'hr_employee_management' %}"
+                            class="section-action"
+                        >
+                            View All
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div class="table-card">
+
+                        <div
+                            id="recentEmployeesContainer"
+                            class="table-responsive"
+                        >
+
+                            <div class="dashboard-state">
+                                <i class="bi bi-hourglass-split"></i>
+                                Loading employee records...
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     EMPLOYEES AWAITING ASSET RETURN
+                ================================================== -->
+
+                <section class="dashboard-section">
+
+                    <div class="section-header">
+
+                        <div>
+                            <h3 class="section-title">
+                                Employees Awaiting Asset Return
+                            </h3>
+
+                            <p class="section-subtitle">
+                                Employees whose asset-return workflow is still pending.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-card">
+
+                        <div
+                            id="awaitingReturnContainer"
+                            class="table-responsive"
+                        >
+
+                            <div class="dashboard-state">
+                                <i class="bi bi-hourglass-split"></i>
+                                Loading asset-return records...
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     NOTIFICATIONS
+                ================================================== -->
+
+                <section class="dashboard-section">
+
+                    <div class="section-header">
+
+                        <div>
+                            <h3 class="section-title">
+                                Recent Notifications
+                            </h3>
+
+                            <p class="section-subtitle">
+                                Latest HR notifications for your account.
+                            </p>
+                        </div>
+
+                        <a
+                            href="{% url 'notifications:list' %}"
+                            class="section-action"
+                        >
+                            View All
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div class="table-card">
+
+                        <div
+                            id="notificationsContainer"
+                            class="notification-list"
+                        >
+
+                            <div class="dashboard-state">
+                                <i class="bi bi-hourglass-split"></i>
+                                Loading notifications...
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script>
+
+        /* =========================================================
+           GLOBALS
+        ========================================================= */
+
+        let departmentChart = null;
+        let employeeStatusChart = null;
+        let assetReturnChart = null;
+
+
+        /* =========================================================
+           HELPERS
+        ========================================================= */
+
+        function escapeHtml(value) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+                return "";
+            }
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        function formatLabel(value) {
+
+            if (
+                value === null ||
+                value === undefined ||
+                value === ""
+            ) {
+                return "—";
+            }
+
+            return String(value)
+                .replace(/_/g, " ")
+                .replace(/\b\w/g, function (letter) {
+                    return letter.toUpperCase();
+                });
+        }
+
+
+        function formatDate(value) {
+
+            if (!value) {
+                return "—";
+            }
+
+            const date = new Date(value);
+
+            if (Number.isNaN(date.getTime())) {
+                return "—";
+            }
+
+            return date.toLocaleDateString(
+                undefined,
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                }
+            );
+        }
+
+
+        function formatDateTime(value) {
+
+            if (!value) {
+                return "—";
+            }
+
+            const date = new Date(value);
+
+            if (Number.isNaN(date.getTime())) {
+                return "—";
+            }
+
+            return date.toLocaleString(
+                undefined,
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }
+            );
+        }
+
+
+        function showDashboardError(message) {
+
+            const errorBox =
+                document.getElementById("dashboardError");
+
+            errorBox.textContent = message;
+            errorBox.classList.remove("d-none");
+        }
+
+
+        function hideDashboardError() {
+
+            const errorBox =
+                document.getElementById("dashboardError");
+
+            errorBox.classList.add("d-none");
+            errorBox.textContent = "";
+        }
+
+
+        function getStatusClass(status) {
+
+            const normalized =
+                String(status || "")
+                    .toUpperCase();
+
+            if (normalized === "ACTIVE") {
+                return "status-active";
+            }
+
+            if (
+                normalized === "PENDING" ||
+                normalized === "RESIGNATION_PENDING"
+            ) {
+                return "status-pending";
+            }
+
+            if (
+                normalized === "COMPLETED"
+            ) {
+                return "status-completed";
+            }
+
+            if (
+                normalized === "NOT_REQUIRED"
+            ) {
+                return "status-not-required";
+            }
+
+            if (
+                normalized === "EXITED"
+            ) {
+                return "status-exited";
+            }
+
+            return "status-not-required";
+        }
+
+
+        function statusBadge(status) {
+
+            return `
+                <span class="status-badge ${getStatusClass(status)}">
+                    ${escapeHtml(formatLabel(status))}
+                </span>
+            `;
+        }
+
+
+        /* =========================================================
+           CHART HELPERS
+        ========================================================= */
+
+        function destroyChart(chart) {
+
+            if (chart) {
+                chart.destroy();
+            }
+
+        }
+
+
+        function renderDepartmentChart(data) {
+
+            const labels =
+                Object.keys(data || {});
+
+            const values =
+                Object.values(data || {});
+
+            const canvas =
+                document.getElementById("departmentChart");
+
+            if (!canvas) {
+                return;
+            }
+
+            destroyChart(departmentChart);
+
+            departmentChart = new Chart(
+                canvas,
+                {
+                    type: "bar",
+
+                    data: {
+                        labels: labels.map(formatLabel),
+
+                        datasets: [
+                            {
+                                label: "Employees",
+                                data: values,
+                                borderWidth: 1,
+                                borderRadius: 6,
+                            },
+                        ],
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                        },
+
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0,
+                                },
+                            },
+
+                            x: {
+                                grid: {
+                                    display: false,
+                                },
+                            },
+                        },
+                    },
+                }
+            );
+        }
+
+
+        function renderEmployeeStatusChart(data) {
+
+            const labels =
+                Object.keys(data || {});
+
+            const values =
+                Object.values(data || {});
+
+            const canvas =
+                document.getElementById("employeeStatusChart");
+
+            if (!canvas) {
+                return;
+            }
+
+            destroyChart(employeeStatusChart);
+
+            employeeStatusChart = new Chart(
+                canvas,
+                {
+                    type: "doughnut",
+
+                    data: {
+                        labels: labels.map(formatLabel),
+
+                        datasets: [
+                            {
+                                data: values,
+                                borderWidth: 2,
+                            },
+                        ],
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        cutout: "64%",
+
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 12,
+                                    font: {
+                                        size: 11,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                }
+            );
+        }
+
+
+        function renderAssetReturnChart(data) {
+
+            const labels =
+                Object.keys(data || {});
+
+            const values =
+                Object.values(data || {});
+
+            const canvas =
+                document.getElementById("assetReturnChart");
+
+            if (!canvas) {
+                return;
+            }
+
+            destroyChart(assetReturnChart);
+
+            assetReturnChart = new Chart(
+                canvas,
+                {
+                    type: "bar",
+
+                    data: {
+                        labels: labels.map(formatLabel),
+
+                        datasets: [
+                            {
+                                label: "Employees",
+                                data: values,
+                                borderWidth: 1,
+                                borderRadius: 6,
+                            },
+                        ],
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                        },
+
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0,
+                                },
+                            },
+
+                            x: {
+                                grid: {
+                                    display: false,
+                                },
+                            },
+                        },
+                    },
+                }
+            );
+        }
+
+
+        /* =========================================================
+           RECENT EMPLOYEES
+        ========================================================= */
+
+        function renderRecentEmployees(employees) {
+
+            const container =
+                document.getElementById(
+                    "recentEmployeesContainer"
+                );
+
+            if (
+                !employees ||
+                employees.length === 0
+            ) {
+
+                container.innerHTML = `
+                    <div class="dashboard-state">
+                        <i class="bi bi-people"></i>
+                        No employee records available.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            let rows = "";
+
+            employees.forEach(function (employee) {
+
+                rows += `
+                    <tr>
+
+                        <td>
+                            <div class="employee-name">
+                                ${escapeHtml(employee.name)}
+                            </div>
+
+                            <div class="employee-id">
+                                ${escapeHtml(employee.employee_id)}
+                            </div>
+                        </td>
+
+                        <td>
+                            ${escapeHtml(employee.email || "—")}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(employee.job_title || "—")}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(employee.department || "No Department")}
+                        </td>
+
+                        <td>
+                            ${statusBadge(employee.employment_status)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(formatDate(employee.date_of_joining))}
+                        </td>
+
+                    </tr>
+                `;
+
+            });
+
+
+            container.innerHTML = `
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Employee</th>
+                            <th>Email</th>
+                            <th>Job Title</th>
+                            <th>Department</th>
+                            <th>Employment Status</th>
+                            <th>Joining Date</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        ${rows}
+                    </tbody>
+
+                </table>
+            `;
+        }
+
+
+        /* =========================================================
+           AWAITING ASSET RETURN
+        ========================================================= */
+
+        function renderAwaitingReturns(employees) {
+
+            const container =
+                document.getElementById(
+                    "awaitingReturnContainer"
+                );
+
+            if (
+                !employees ||
+                employees.length === 0
+            ) {
+
+                container.innerHTML = `
+                    <div class="dashboard-state">
+                        <i class="bi bi-check-circle"></i>
+                        No employees are currently awaiting asset return.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            let rows = "";
+
+            employees.forEach(function (employee) {
+
+                rows += `
+                    <tr>
+
+                        <td>
+                            <div class="employee-name">
+                                ${escapeHtml(employee.name)}
+                            </div>
+
+                            <div class="employee-id">
+                                ${escapeHtml(employee.employee_id)}
+                            </div>
+                        </td>
+
+                        <td>
+                            ${escapeHtml(employee.department || "No Department")}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(employee.job_title || "—")}
+                        </td>
+
+                        <td>
+                            ${statusBadge(employee.employment_status)}
+                        </td>
+
+                        <td>
+                            ${statusBadge(employee.asset_return_status)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(formatDate(employee.date_of_joining))}
+                        </td>
+
+                    </tr>
+                `;
+
+            });
+
+
+            container.innerHTML = `
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Employee</th>
+                            <th>Department</th>
+                            <th>Job Title</th>
+                            <th>Employment Status</th>
+                            <th>Asset Return</th>
+                            <th>Joining Date</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        ${rows}
+                    </tbody>
+
+                </table>
+            `;
+        }
+
+
+        /* =========================================================
+           NOTIFICATIONS
+        ========================================================= */
+
+        function renderNotifications(notifications) {
+
+            const container =
+                document.getElementById(
+                    "notificationsContainer"
+                );
+
+            if (
+                !notifications ||
+                notifications.length === 0
+            ) {
+
+                container.innerHTML = `
+                    <div class="dashboard-state">
+                        <i class="bi bi-bell"></i>
+                        No notifications available.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            let html = "";
+
+            notifications.forEach(function (notification) {
+
+                html += `
+                    <a
+                        href="{% url 'notifications:list' %}"
+                        class="notification-item ${
+                            notification.is_read
+                                ? ""
+                                : "unread"
+                        }"
+                    >
+
+                        <div class="notification-icon">
+                            <i class="bi bi-bell-fill"></i>
+                        </div>
+
+                        <div class="notification-content">
+
+                            <div class="notification-title">
+                                ${escapeHtml(notification.title)}
+                            </div>
+
+                            <p class="notification-message">
+                                ${escapeHtml(notification.message)}
+                            </p>
+
+                            <div class="notification-date">
+                                ${escapeHtml(
+                                    formatDateTime(
+                                        notification.created_at
+                                    )
+                                )}
+                            </div>
+
+                        </div>
+
+                        ${
+                            notification.is_read
+                                ? ""
+                                : '<span class="unread-dot"></span>'
+                        }
+
+                    </a>
+                `;
+
+            });
+
+
+            container.innerHTML = html;
+        }
+
+
+        /* =========================================================
+           RENDER DASHBOARD
+        ========================================================= */
+
+        function renderDashboard(data) {
+
+            document.getElementById(
+                "totalEmployees"
+            ).textContent =
+                data.total_employees ?? 0;
+
+            document.getElementById(
+                "activeEmployees"
+            ).textContent =
+                data.active_employees ?? 0;
+
+            document.getElementById(
+                "resignationPending"
+            ).textContent =
+                data.resignation_pending ?? 0;
+
+            document.getElementById(
+                "exitedEmployees"
+            ).textContent =
+                data.exited_employees ?? 0;
+
+            document.getElementById(
+                "pendingAssetReturns"
+            ).textContent =
+                data.pending_asset_returns ?? 0;
+
+
+            renderDepartmentChart(
+                data.employee_department_wise
+            );
+
+            renderEmployeeStatusChart(
+                data.employee_status_wise
+            );
+
+            renderAssetReturnChart(
+                data.asset_return_status_wise
+            );
+
+
+            renderRecentEmployees(
+                data.recent_employees
+            );
+
+            renderAwaitingReturns(
+                data.employees_awaiting_asset_return
+            );
+
+            renderNotifications(
+                data.recent_notifications
+            );
+        }
+
+
+        /* =========================================================
+           LOAD DASHBOARD DATA
+        ========================================================= */
+
+        async function loadDashboard() {
+
+            hideDashboardError();
+
+            try {
+
+                const response =
+                    await fetch(
+                        "{% url 'dashboard:home' %}",
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Accept": "application/json",
+                            },
+
+                            credentials: "same-origin",
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    let message =
+                        "Unable to load dashboard data.";
+
+                    try {
+
+                        const errorData =
+                            await response.json();
+
+                        if (errorData.detail) {
+                            message =
+                                errorData.detail;
+                        }
+
+                    } catch (error) {
+                        // Keep default message.
+                    }
+
+                    throw new Error(message);
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    result.dashboard_type !==
+                    "HR_MANAGER"
+                ) {
+                    throw new Error(
+                        "Invalid dashboard response."
+                    );
+                }
+
+
+                renderDashboard(
+                    result.data || {}
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "HR dashboard error:",
+                    error
+                );
+
+                showDashboardError(
+                    error.message ||
+                    "Unable to load dashboard data. Please try again."
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           MOBILE SIDEBAR
+        ========================================================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const sidebar =
+                    document.getElementById(
+                        "adminSidebar"
+                    );
+
+                const sidebarToggle =
+                    document.getElementById(
+                        "sidebarToggle"
+                    );
+
+
+                if (
+                    sidebar &&
+                    sidebarToggle
+                ) {
+
+                    sidebarToggle.addEventListener(
+                        "click",
+                        function () {
+
+                            sidebar.classList.toggle(
+                                "show"
+                            );
+
+                        }
+                    );
+
+
+                    document.addEventListener(
+                        "click",
+                        function (event) {
+
+                            if (
+                                window.innerWidth <= 991 &&
+                                sidebar.classList.contains("show") &&
+                                !sidebar.contains(event.target) &&
+                                !sidebarToggle.contains(event.target)
+                            ) {
+
+                                sidebar.classList.remove(
+                                    "show"
+                                );
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                loadDashboard();
+
+            }
+        );
+
+    </script>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+</body>
+
+</html>

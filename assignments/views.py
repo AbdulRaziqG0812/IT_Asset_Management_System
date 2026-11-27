@@ -77,6 +77,84 @@ def _notify_employee(
     )
 
 
+def _notify_hr_employee_ready_for_exit(
+    *,
+    employee,
+):
+    """
+    Notify all active HR Managers when an employee who is currently
+    in resignation pending status has no remaining active asset
+    assignments.
+
+    This notification is generated only after the actual asset
+    assignment return process leaves the employee with zero active
+    assignments.
+    """
+
+    if employee is None or employee.user_id is None:
+        return
+
+    if (
+        employee.employment_status
+        != EmployeeProfile.EmploymentStatus.RESIGNATION_PENDING
+    ):
+        return
+
+    has_active_assignments = (
+        Assignment.objects
+        .filter(
+            employee=employee,
+            is_active=True,
+        )
+        .exists()
+    )
+
+    if has_active_assignments:
+        return
+
+    recipients = (
+        User.objects
+        .filter(
+            is_active=True,
+            role=User.Role.HR_MANAGER,
+        )
+        .order_by("id")
+    )
+
+    notifications = []
+
+    employee_name = (
+        employee.user.get_full_name().strip()
+        or employee.user.username
+    )
+
+    for recipient in recipients:
+        notifications.append(
+            Notification(
+                recipient=recipient,
+                notification_type=(
+                    Notification.NotificationType.EMPLOYEE_EVENT
+                ),
+                severity=Notification.Severity.SUCCESS,
+                title="Employee Ready for Exit",
+                message=(
+                    f"All active asset assignments for employee "
+                    f"'{employee_name}' ({employee.employee_id}) "
+                    f"have been returned. The employee is now ready "
+                    f"for the HR exit completion process."
+                ),
+                url=f"/users/hr/employees/{employee.id}/",
+                reference_type="EmployeeProfile",
+                reference_id=str(employee.id),
+            )
+        )
+
+    if notifications:
+        Notification.objects.bulk_create(
+            notifications
+        )
+
+
 @login_required
 def admin_assignment_list(request):
     """
@@ -241,6 +319,12 @@ def admin_assignment_create(request):
 def admin_assignment_return(request, assignment_id):
     """
     Super Admin and IT Admin can return an actively assigned asset.
+
+    After the actual assignment is returned:
+    - The employee receives the normal Asset Returned notification.
+    - If the employee is in resignation pending status and no active
+      assignments remain, all active HR Managers receive an
+      Employee Ready for Exit notification.
     """
     if not _is_assignment_manager(request.user):
         raise PermissionDenied(
@@ -276,6 +360,7 @@ def admin_assignment_return(request, assignment_id):
                         .select_related(
                             "asset",
                             "employee__user",
+                            "employee__department",
                         )
                         .get(pk=assignment_id)
                     )
@@ -333,6 +418,10 @@ def admin_assignment_return(request, assignment_id):
                             f"{asset.asset_name}' has been marked "
                             f"as returned."
                         ),
+                    )
+
+                    _notify_hr_employee_ready_for_exit(
+                        employee=locked_assignment.employee,
                     )
 
             except ValueError:

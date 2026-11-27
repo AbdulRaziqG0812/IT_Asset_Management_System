@@ -14,6 +14,7 @@ from audit_logs.models import AuditLog
 from audit_logs.services import create_audit_log
 from notifications.models import Notification
 
+from .forms import EmployeeEditForm
 from .models import EmployeeProfile, User
 
 from assets.models import Asset
@@ -536,20 +537,12 @@ def delete_user(request, user_id):
         id=user_id,
     )
 
-    # ------------------------------------------------------------
-    # Prevent self deletion
-    # ------------------------------------------------------------
-
     if user.id == request.user.id:
         messages.error(
             request,
             "You cannot delete your own account.",
         )
         return redirect("user_management")
-
-    # ------------------------------------------------------------
-    # Prevent deletion of the last active Super Admin
-    # ------------------------------------------------------------
 
     if (
         user.role == User.Role.SUPER_ADMIN
@@ -584,10 +577,6 @@ def delete_user(request, user_id):
     user_role = user.get_role_display()
     user_id_value = user.id
 
-    # ------------------------------------------------------------
-    # Attempt permanent deletion
-    # ------------------------------------------------------------
-
     try:
         with transaction.atomic():
 
@@ -608,10 +597,6 @@ def delete_user(request, user_id):
             user.delete()
 
     except ProtectedError as error:
-
-        # --------------------------------------------------------
-        # Identify the protected record types
-        # --------------------------------------------------------
 
         protected_types = {}
 
@@ -688,23 +673,144 @@ def delete_user(request, user_id):
 # ============================================================================
 
 
+# ============================================================================
+# HR - EMPLOYEE MANAGEMENT
+# ============================================================================
+
+
 @login_required
 @user_passes_test(is_hr_or_super_admin)
 def employee_management(request):
-    employees = (
+    """
+    Display employee records for HR and Super Admin.
+
+    Supports:
+    - Server-side employee search
+    - Department filtering
+    - Employment status filtering
+    - Pagination
+
+    Only active departments are available as department filters.
+    """
+
+    from django.core.paginator import Paginator
+    from departments.models import Department
+
+    search_query = request.GET.get(
+        "search",
+        "",
+    ).strip()
+
+    department_id = request.GET.get(
+        "department",
+        "",
+    ).strip()
+
+    employment_status = request.GET.get(
+        "status",
+        "",
+    ).strip()
+
+    employees_queryset = (
         EmployeeProfile.objects
         .select_related(
             "user",
             "department",
         )
-        .order_by("employee_id")
+        .order_by(
+            "employee_id"
+        )
+    )
+
+    # ------------------------------------------------------------------------
+    # Search
+    # ------------------------------------------------------------------------
+
+    if search_query:
+        from django.db.models import Q
+
+        employees_queryset = employees_queryset.filter(
+            Q(employee_id__icontains=search_query)
+            | Q(user__username__icontains=search_query)
+            | Q(user__first_name__icontains=search_query)
+            | Q(user__last_name__icontains=search_query)
+            | Q(user__email__icontains=search_query)
+            | Q(phone__icontains=search_query)
+            | Q(job_title__icontains=search_query)
+            | Q(department__name__icontains=search_query)
+        ).distinct()
+
+    # ------------------------------------------------------------------------
+    # Department Filter
+    # ------------------------------------------------------------------------
+
+    if department_id:
+        if department_id.isdigit():
+            employees_queryset = employees_queryset.filter(
+                department_id=int(department_id)
+            )
+
+    # ------------------------------------------------------------------------
+    # Employment Status Filter
+    # ------------------------------------------------------------------------
+
+    allowed_statuses = {
+        choice[0]
+        for choice in EmployeeProfile.EmploymentStatus.choices
+    }
+
+    if employment_status in allowed_statuses:
+        employees_queryset = employees_queryset.filter(
+            employment_status=employment_status
+        )
+    else:
+        employment_status = ""
+
+    # ------------------------------------------------------------------------
+    # Counts
+    # ------------------------------------------------------------------------
+
+    total_employee_count = EmployeeProfile.objects.count()
+
+    filtered_employee_count = employees_queryset.count()
+
+    # ------------------------------------------------------------------------
+    # Pagination
+    # ------------------------------------------------------------------------
+
+    paginator = Paginator(
+        employees_queryset,
+        10,
+    )
+
+    page_number = request.GET.get(
+        "page",
+        "1",
+    )
+
+    page_obj = paginator.get_page(
+        page_number
+    )
+
+    departments = (
+        Department.objects
+        .filter(is_active=True)
+        .order_by("name")
     )
 
     return render(
         request,
         "accounts/hr_employee_management.html",
         {
-            "employees": employees,
+            "employees": page_obj.object_list,
+            "page_obj": page_obj,
+            "paginator": paginator,
+            "departments": departments,
+            "search_query": search_query,
+            "selected_department": department_id,
+            "selected_status": employment_status,
+            "total_employee_count": total_employee_count,
+            "filtered_employee_count": filtered_employee_count,
         },
     )
 
@@ -737,6 +843,20 @@ def employee_detail(request, employee_id):
 @login_required
 @user_passes_test(is_hr_or_super_admin)
 def edit_employee(request, employee_id):
+    """
+    Edit employee information managed by HR.
+
+    Editable fields:
+    - Department
+    - Phone
+    - Job Title
+    - Joining Date
+    - Address
+
+    Account credentials, employee ID and employment workflow fields
+    are intentionally not editable from this screen.
+    """
+
     employee = get_object_or_404(
         EmployeeProfile.objects.select_related(
             "user",
@@ -745,117 +865,64 @@ def edit_employee(request, employee_id):
         id=employee_id,
     )
 
-    if request.method == "POST":
-        department_id = request.POST.get(
-            "department",
-            "",
-        ).strip()
-
-        phone = request.POST.get(
-            "phone",
-            "",
-        ).strip()
-
-        job_title = request.POST.get(
-            "job_title",
-            "",
-        ).strip()
-
-        date_of_joining = request.POST.get(
-            "date_of_joining",
-            "",
-        ).strip()
-
-        address = request.POST.get(
-            "address",
-            "",
-        ).strip()
-
-        if department_id:
-            from departments.models import Department
-
-            department = get_object_or_404(
-                Department,
-                id=department_id,
-                is_active=True,
-            )
-        else:
-            department = None
-
-        old_values = {
-            "department": (
-                employee.department.name
-                if employee.department
-                else ""
-            ),
-            "phone": employee.phone,
-            "job_title": employee.job_title,
-            "date_of_joining": employee.date_of_joining,
-            "address": employee.address,
-        }
-
-        employee.department = department
-        employee.phone = phone
-        employee.job_title = job_title
-
-        if date_of_joining:
-            try:
-                employee.date_of_joining = date.fromisoformat(
-                    date_of_joining
-                )
-            except ValueError:
-                return render(
-                    request,
-                    "accounts/hr_employee_edit.html",
-                    {
-                        "employee": employee,
-                        "error": (
-                            "Invalid joining date. "
-                            "Please use YYYY-MM-DD format."
-                        ),
-                    },
-                )
-        else:
-            employee.date_of_joining = None
-
-        employee.address = address
-
-        with transaction.atomic():
-            employee.save()
-
-            create_audit_log(
-                user=request.user,
-                action=AuditLog.Action.UPDATE,
-                module="HR Employee Management",
-                object_type="EmployeeProfile",
-                object_id=employee.id,
-                description=(
-                    f"Employee '{employee.employee_id}' "
-                    f"information was updated. "
-                    f"Previous values: {old_values}"
-                ),
-                ip_address=get_client_ip(request),
-            )
-
-        return redirect(
-            "hr_employee_detail",
-            employee_id=employee.id,
-        )
-
-    from departments.models import Department
-
-    departments = (
-        Department.objects
-        .filter(is_active=True)
-        .order_by("name")
+    form = EmployeeEditForm(
+        request.POST or None,
+        instance=employee,
     )
+
+    if request.method == "POST":
+
+        if form.is_valid():
+
+            old_values = {
+                "department": (
+                    employee.department.name
+                    if employee.department
+                    else ""
+                ),
+                "phone": employee.phone,
+                "job_title": employee.job_title,
+                "date_of_joining": employee.date_of_joining,
+                "address": employee.address,
+            }
+
+            with transaction.atomic():
+
+                employee = form.save()
+
+                create_audit_log(
+                    user=request.user,
+                    action=AuditLog.Action.UPDATE,
+                    module="HR Employee Management",
+                    object_type="EmployeeProfile",
+                    object_id=employee.id,
+                    description=(
+                        f"Employee '{employee.employee_id}' "
+                        f"information was updated. "
+                        f"Previous values: {old_values}"
+                    ),
+                    ip_address=get_client_ip(request),
+                )
+
+            messages.success(
+                request,
+                (
+                    f"Employee '{employee.employee_id}' "
+                    "information was updated successfully."
+                ),
+            )
+
+            return redirect(
+                "hr_employee_detail",
+                employee_id=employee.id,
+            )
 
     return render(
         request,
         "accounts/hr_employee_edit.html",
         {
             "employee": employee,
-            "departments": departments,
+            "form": form,
         },
     )
 
@@ -1254,7 +1321,7 @@ def get_role_redirect(user):
         return "dashboard:home"
 
     if user.role == User.Role.HR_MANAGER:
-        return "hr_employee_management"
+        return "dashboard:home"
 
     if user.role == User.Role.DEPARTMENT_MANAGER:
         return "department_manager_dashboard"
