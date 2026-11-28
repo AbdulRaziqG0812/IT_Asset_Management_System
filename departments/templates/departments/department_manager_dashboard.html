@@ -16,17 +16,29 @@
 
     {% load static %}
 
-    <!-- Existing Department Manager styling — kept unchanged -->
     <link
         rel="stylesheet"
         href="{% static 'departments/department_manager.css' %}"
     >
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     <style>
 
         /* =========================================================
-           ADVANCED DASHBOARD CONTENT
-           Sidebar styling remains controlled by department_manager.css
+           DEPARTMENT MANAGER DASHBOARD
+           Page-specific styling only.
+           Sidebar remains controlled by department_manager.css.
+        ========================================================== */
+
+        .content {
+            color: #0f172a;
+        }
+
+        /* =========================================================
+           HEADER
         ========================================================== */
 
         .dashboard-header {
@@ -42,7 +54,8 @@
             font-size: 28px;
             font-weight: 750;
             line-height: 1.2;
-            letter-spacing: -0.4px;
+            letter-spacing: -.4px;
+            color: #0f172a;
         }
 
         .dashboard-heading p {
@@ -80,7 +93,7 @@
             border-color: #94a3b8;
             color: #0f172a;
             transform: translateY(-1px);
-            box-shadow: 0 5px 14px rgba(15, 23, 42, .07);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, .07);
         }
 
         .dashboard-action.primary {
@@ -95,277 +108,9 @@
             color: #ffffff;
         }
 
-        /* =========================================================
-           WELCOME ENHANCEMENT
-        ========================================================== */
-
-        .welcome-panel {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .welcome-panel::after {
-            content: "";
-            position: absolute;
-            width: 190px;
-            height: 190px;
-            border-radius: 50%;
-            right: -70px;
-            top: -80px;
-            background: rgba(255,255,255,.08);
-            pointer-events: none;
-        }
-
-        .welcome-content,
-        .department-chip {
-            position: relative;
-            z-index: 1;
-        }
-
-        .chip-code {
-            margin-top: 5px;
-            font-size: 12px;
-            opacity: .82;
-        }
 
         /* =========================================================
-           QUICK OVERVIEW
-        ========================================================== */
-
-        .overview-strip {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 14px;
-            margin: 0 0 24px;
-        }
-
-        .overview-item {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-            padding: 16px;
-            background: #ffffff;
-            border: 1px solid #e5eaf1;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(15, 23, 42, .035);
-        }
-
-        .overview-icon {
-            width: 42px;
-            height: 42px;
-            flex: 0 0 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            background: #f1f5f9;
-            font-size: 19px;
-        }
-
-        .overview-label {
-            color: #64748b;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .45px;
-        }
-
-        .overview-value {
-            margin-top: 3px;
-            color: #0f172a;
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        /* =========================================================
-           STAT CARDS
-        ========================================================== */
-
-        .stats-grid {
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            position: relative;
-            overflow: hidden;
-            transition:
-                transform .2s ease,
-                box-shadow .2s ease,
-                border-color .2s ease;
-        }
-
-        .stat-card::after {
-            content: "";
-            position: absolute;
-            right: -28px;
-            bottom: -42px;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: rgba(15, 23, 42, .025);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(15, 23, 42, .08);
-            border-color: #d8e0eb;
-        }
-
-        .stat-icon {
-            transition: transform .2s ease;
-        }
-
-        .stat-card:hover .stat-icon {
-            transform: scale(1.08);
-        }
-
-        /* =========================================================
-           WORKSPACE
-        ========================================================== */
-
-        .workspace {
-            scroll-margin-top: 20px;
-        }
-
-        .workspace + .workspace {
-            margin-top: 24px;
-        }
-
-        .workspace-header {
-            gap: 18px;
-        }
-
-        .workspace-title {
-            letter-spacing: -.2px;
-        }
-
-        .workspace-subtitle {
-            max-width: 680px;
-        }
-
-        .view-button {
-            white-space: nowrap;
-        }
-
-        /* =========================================================
-           TOOLBAR
-        ========================================================== */
-
-        .toolbar {
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            min-width: 260px;
-            flex: 1;
-        }
-
-        .search-input {
-            transition:
-                border-color .2s ease,
-                box-shadow .2s ease;
-        }
-
-        .search-input:focus,
-        .filter-select:focus {
-            outline: none;
-            border-color: #94a3b8;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, .08);
-        }
-
-        .filter-select {
-            cursor: pointer;
-        }
-
-        .record-count {
-            font-weight: 650;
-        }
-
-        /* =========================================================
-           TABLE ENHANCEMENT
-        ========================================================== */
-
-        .table-wrapper {
-            border-radius: 12px;
-        }
-
-        .data-table tbody tr {
-            transition: background .16s ease;
-        }
-
-        .data-table tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        .data-table td {
-            vertical-align: middle;
-        }
-
-        .primary-cell {
-            font-weight: 650;
-        }
-
-        .id-cell {
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .date-cell {
-            white-space: nowrap;
-        }
-
-        /* =========================================================
-           EMPTY / NO RESULT STATES
-        ========================================================== */
-
-        .empty-state {
-            min-height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 28px;
-            color: #64748b;
-        }
-
-        .no-results {
-            transition: opacity .2s ease;
-        }
-
-        .no-results:not(.show) {
-            display: none;
-        }
-
-        /* =========================================================
-           PAGINATION
-        ========================================================== */
-
-        .pagination-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .page-button {
-            min-width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            transition: all .18s ease;
-        }
-
-        .page-button:hover:not(:disabled) {
-            transform: translateY(-1px);
-        }
-
-        .page-button:disabled {
-            cursor: not-allowed;
-            opacity: .45;
-        }
-
-        /* =========================================================
-           MOBILE MENU BUTTON
+           MOBILE MENU
         ========================================================== */
 
         .mobile-menu-button {
@@ -382,17 +127,832 @@
             font-size: 20px;
         }
 
+
+        /* =========================================================
+           WELCOME PANEL
+        ========================================================== */
+
+        .welcome-panel {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            margin-bottom: 22px;
+            padding: 28px 30px;
+            border: 1px solid #dbe4ef;
+            border-radius: 16px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a 0%,
+                    #172554 52%,
+                    #1e3a8a 100%
+                );
+            box-shadow: 0 12px 30px rgba(15, 23, 42, .12);
+        }
+
+        .welcome-panel::before {
+            content: "";
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            right: 100px;
+            top: -180px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.055);
+            pointer-events: none;
+        }
+
+        .welcome-panel::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            right: -60px;
+            bottom: -100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.06);
+            pointer-events: none;
+        }
+
+        .welcome-content,
+        .department-chip {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-content {
+            max-width: 760px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,.78);
+            font-size: 11px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+        }
+
+        .eyebrow-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #60a5fa;
+            box-shadow: 0 0 0 4px rgba(96,165,250,.13);
+        }
+
+        .welcome-title {
+            margin: 0 0 9px;
+            color: #ffffff;
+            font-size: 25px;
+            font-weight: 750;
+            line-height: 1.25;
+        }
+
+        .welcome-description {
+            max-width: 720px;
+            margin: 0;
+            color: rgba(255,255,255,.76);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .department-chip {
+            min-width: 210px;
+            padding: 16px 18px;
+            border: 1px solid rgba(255,255,255,.13);
+            border-radius: 12px;
+            background: rgba(255,255,255,.08);
+            backdrop-filter: blur(8px);
+        }
+
+        .chip-label {
+            color: rgba(255,255,255,.58);
+            font-size: 10px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+        }
+
+        .chip-name {
+            margin-top: 5px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .chip-code {
+            margin-top: 5px;
+            color: rgba(255,255,255,.65);
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           QUICK OVERVIEW
+        ========================================================== */
+
+        .overview-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .overview-item {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 16px;
+            border: 1px solid #e3e9f1;
+            border-radius: 13px;
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(15,23,42,.035);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .overview-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(15,23,42,.07);
+        }
+
+        .overview-icon {
+            width: 43px;
+            height: 43px;
+            flex: 0 0 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: #f1f5f9;
+            font-size: 19px;
+        }
+
+        .overview-label {
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: .55px;
+        }
+
+        .overview-value {
+            margin-top: 4px;
+            color: #0f172a;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           STATISTICS
+        ========================================================== */
+
+        .stats-grid {
+            display: grid !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 19px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 5px 17px rgba(15,23,42,.045);
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                border-color .2s ease;
+        }
+
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            right: -30px;
+            bottom: -45px;
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            background: rgba(15,23,42,.025);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: #d2dbe7;
+            box-shadow: 0 13px 28px rgba(15,23,42,.08);
+        }
+
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .stat-icon {
+            position: relative;
+            z-index: 1;
+            width: 39px;
+            height: 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 17px;
+            transition: transform .2s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.08);
+        }
+
+        .icon-primary {
+            background: #eff6ff;
+        }
+
+        .icon-success {
+            background: #ecfdf5;
+        }
+
+        .icon-warning {
+            background: #fffbeb;
+        }
+
+        .icon-info {
+            background: #f0f9ff;
+        }
+
+        .stat-number {
+            position: relative;
+            z-index: 1;
+            margin-top: 13px;
+            font-size: 29px;
+            line-height: 1;
+            font-weight: 750;
+            letter-spacing: -.5px;
+        }
+
+        .number-primary {
+            color: #1d4ed8;
+        }
+
+        .number-success {
+            color: #047857;
+        }
+
+        .number-warning {
+            color: #b45309;
+        }
+
+        .number-info {
+            color: #0369a1;
+        }
+
+
+        /* =========================================================
+           ANALYTICS
+        ========================================================== */
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1.35fr .85fr;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .chart-card {
+            min-width: 0;
+            padding: 21px;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            background: #ffffff;
+            box-shadow: 0 5px 17px rgba(15,23,42,.045);
+        }
+
+        .chart-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .chart-card-label {
+            margin-bottom: 4px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: .65px;
+        }
+
+        .chart-card-title {
+            margin: 0;
+            color: #0f172a;
+            font-size: 16px;
+            font-weight: 750;
+        }
+
+        .chart-card-description {
+            margin: 5px 0 0;
+            color: #94a3b8;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .chart-badge {
+            flex: 0 0 auto;
+            padding: 6px 9px;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 255px;
+            width: 100%;
+        }
+
+        .chart-container canvas {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .chart-empty {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 20px;
+        }
+
+
+        /* =========================================================
+           WORKSPACES
+        ========================================================== */
+
+        .workspace {
+            margin-bottom: 24px;
+            padding: 21px;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            background: #ffffff;
+            box-shadow: 0 5px 17px rgba(15,23,42,.045);
+            scroll-margin-top: 20px;
+        }
+
+        .workspace + .workspace {
+            margin-top: 0;
+        }
+
+        .workspace-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .workspace-title-wrap {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .section-icon {
+            width: 39px;
+            height: 39px;
+            flex: 0 0 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #f1f5f9;
+            font-size: 17px;
+        }
+
+        .workspace-title {
+            margin: 0;
+            color: #0f172a;
+            font-size: 17px;
+            font-weight: 750;
+        }
+
+        .workspace-subtitle {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .view-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            padding: 0 12px;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #334155;
+            text-decoration: none;
+            white-space: nowrap;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all .18s ease;
+        }
+
+        .view-button:hover {
+            border-color: #94a3b8;
+            color: #0f172a;
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================================================
+           TOOLBAR
+        ========================================================== */
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 260px;
+            flex: 1;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            min-height: 38px;
+            padding: 0 12px 0 34px;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 12px;
+            box-sizing: border-box;
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: #94a3b8;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.08);
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-select {
+            min-height: 38px;
+            padding: 0 30px 0 11px;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #334155;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .record-count {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+
+        /* =========================================================
+           TABLE
+        ========================================================== */
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #e7ecf2;
+            border-radius: 11px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        .data-table thead th {
+            padding: 12px 13px;
+            border-bottom: 1px solid #e5eaf1;
+            background: #f8fafc;
+            color: #64748b;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: .45px;
+            white-space: nowrap;
+        }
+
+        .data-table tbody td {
+            padding: 13px;
+            border-bottom: 1px solid #eef2f6;
+            color: #475569;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr {
+            transition: background .16s ease;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .primary-cell {
+            color: #0f172a !important;
+            font-weight: 650;
+        }
+
+        .id-cell {
+            color: #334155 !important;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .date-cell {
+            white-space: nowrap;
+        }
+
+
+        /* =========================================================
+           BADGES
+        ========================================================== */
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 24px;
+            padding: 0 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .badge-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .badge-success {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .badge-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .badge-danger {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .badge-warning {
+            background: #fffbeb;
+            color: #b45309;
+        }
+
+        .badge-primary {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+
+        /* =========================================================
+           EMPTY STATES
+        ========================================================== */
+
+        .empty-state {
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+            border: 1px dashed #dbe3ef;
+            border-radius: 11px;
+            background: #f8fafc;
+            color: #64748b;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .no-results {
+            display: none;
+            padding: 18px 10px 5px;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        .no-results-inner {
+            padding: 24px;
+            border: 1px dashed #dbe3ef;
+            border-radius: 11px;
+            background: #f8fafc;
+            text-align: center;
+        }
+
+        .no-results-icon {
+            margin-bottom: 7px;
+            font-size: 22px;
+        }
+
+        .no-results-title {
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .no-results-text {
+            margin-top: 4px;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           PAGINATION
+        ========================================================== */
+
+        .pagination-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-info {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .page-button {
+            min-width: 34px;
+            height: 34px;
+            padding: 0 8px;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #475569;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 650;
+            transition: all .18s ease;
+        }
+
+        .page-button:hover:not(:disabled) {
+            border-color: #94a3b8;
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+        .page-button.active {
+            border-color: #0f172a;
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+        .page-button:disabled {
+            cursor: not-allowed;
+            opacity: .45;
+        }
+
+        .page-ellipsis {
+            padding: 0 3px;
+            color: #94a3b8;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================== */
+
+        .footer {
+            margin-top: 8px;
+            padding: 8px 2px 22px;
+            color: #94a3b8;
+            text-align: center;
+            font-size: 11px;
+        }
+
+
         /* =========================================================
            RESPONSIVE
         ========================================================== */
 
-        @media (max-width: 1050px) {
+        @media (max-width: 1150px) {
 
-            .overview-strip {
+            .stats-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
         }
+
+
+        @media (max-width: 950px) {
+
+            .overview-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-panel {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .department-chip {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+        }
+
 
         @media (max-width: 850px) {
 
@@ -406,10 +966,6 @@
 
             .dashboard-actions {
                 display: none;
-            }
-
-            .overview-strip {
-                grid-template-columns: 1fr;
             }
 
             .workspace-header {
@@ -427,6 +983,7 @@
 
         }
 
+
         @media (max-width: 640px) {
 
             .dashboard-heading h1 {
@@ -438,11 +995,11 @@
             }
 
             .welcome-panel {
-                padding: 20px;
+                padding: 21px;
             }
 
-            .department-chip {
-                margin-top: 16px;
+            .welcome-title {
+                font-size: 21px;
             }
 
             .workspace {
@@ -467,12 +1024,30 @@
                 flex: 1;
             }
 
+            .chart-card {
+                padding: 17px;
+            }
+
+            .chart-container {
+                height: 225px;
+            }
+
             .table-wrapper {
                 overflow-x: auto;
             }
 
             .data-table {
                 min-width: 760px;
+            }
+
+            .pagination-bar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .pagination {
+                width: 100%;
+                justify-content: flex-end;
             }
 
         }
@@ -486,9 +1061,9 @@
 
 <div class="app">
 
+
     <!-- =========================================================
          SIDEBAR
-         Existing Department Manager sidebar — unchanged
     ========================================================== -->
 
     <aside class="sidebar" id="sidebar">
@@ -498,7 +1073,9 @@
             class="sidebar-brand"
         >
 
-            <span class="brand-mark">IT</span>
+            <span class="brand-mark">
+                IT
+            </span>
 
             <span class="brand-text">
 
@@ -637,7 +1214,7 @@
 
 
             <!-- =================================================
-                 TOP HEADER
+                 HEADER
             ================================================== -->
 
             <header class="dashboard-header">
@@ -907,6 +1484,98 @@
                     </div>
 
                 </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 ANALYTICS
+            ================================================== -->
+
+            <section class="analytics-grid">
+
+
+                <!-- Resource Distribution -->
+
+                <div class="chart-card">
+
+                    <div class="chart-card-header">
+
+                        <div>
+
+                            <div class="chart-card-label">
+                                Department Analytics
+                            </div>
+
+                            <h2 class="chart-card-title">
+                                Resource Distribution
+                            </h2>
+
+                            <p class="chart-card-description">
+                                Current employees, department assets
+                                and active allocations.
+                            </p>
+
+                        </div>
+
+                        <span class="chart-badge">
+                            Overview
+                        </span>
+
+                    </div>
+
+
+                    <div class="chart-container">
+
+                        <canvas
+                            id="resourceDistributionChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Operational Overview -->
+
+                <div class="chart-card">
+
+                    <div class="chart-card-header">
+
+                        <div>
+
+                            <div class="chart-card-label">
+                                Operations
+                            </div>
+
+                            <h2 class="chart-card-title">
+                                Operational Overview
+                            </h2>
+
+                            <p class="chart-card-description">
+                                Pending requests compared with
+                                active asset allocations.
+                            </p>
+
+                        </div>
+
+                        <span class="chart-badge">
+                            Current
+                        </span>
+
+                    </div>
+
+
+                    <div class="chart-container">
+
+                        <canvas
+                            id="operationsChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
 
             </section>
 
@@ -1703,6 +2372,207 @@
 
 
     /* =========================================================
+       CHARTS
+    ========================================================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            if (typeof Chart === "undefined") {
+
+                console.error(
+                    "ITARMS: Chart.js could not be loaded."
+                );
+
+                return;
+
+            }
+
+
+            const employeeCount =
+                Number("{{ employee_count|default:0 }}") || 0;
+
+            const assetCount =
+                Number("{{ asset_count|default:0 }}") || 0;
+
+            const pendingRequestCount =
+                Number("{{ pending_request_count|default:0 }}") || 0;
+
+            const activeAssignmentCount =
+                Number("{{ active_assignment_count|default:0 }}") || 0;
+
+
+            /* -----------------------------------------------------
+               Resource Distribution
+            ------------------------------------------------------ */
+
+            const resourceCanvas =
+                document.getElementById(
+                    "resourceDistributionChart"
+                );
+
+
+            if (resourceCanvas) {
+
+                new Chart(
+                    resourceCanvas,
+                    {
+                        type: "bar",
+
+                        data: {
+
+                            labels: [
+                                "Employees",
+                                "Assets",
+                                "Active Allocations"
+                            ],
+
+                            datasets: [
+                                {
+                                    label: "Current Count",
+
+                                    data: [
+                                        employeeCount,
+                                        assetCount,
+                                        activeAssignmentCount
+                                    ],
+
+                                    borderWidth: 1,
+
+                                    borderRadius: 7,
+
+                                    maxBarThickness: 48
+                                }
+                            ]
+
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            plugins: {
+
+                                legend: {
+                                    display: false
+                                }
+
+                            },
+
+                            scales: {
+
+                                y: {
+
+                                    beginAtZero: true,
+
+                                    ticks: {
+                                        precision: 0
+                                    },
+
+                                    grid: {
+                                        drawBorder: false
+                                    }
+
+                                },
+
+                                x: {
+
+                                    grid: {
+                                        display: false
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            /* -----------------------------------------------------
+               Operations Overview
+            ------------------------------------------------------ */
+
+            const operationsCanvas =
+                document.getElementById(
+                    "operationsChart"
+                );
+
+
+            if (operationsCanvas) {
+
+                new Chart(
+                    operationsCanvas,
+                    {
+                        type: "doughnut",
+
+                        data: {
+
+                            labels: [
+                                "Pending Requests",
+                                "Active Allocations"
+                            ],
+
+                            datasets: [
+                                {
+                                    data: [
+                                        pendingRequestCount,
+                                        activeAssignmentCount
+                                    ],
+
+                                    borderWidth: 2,
+
+                                    hoverOffset: 5
+                                }
+                            ]
+
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            cutout: "68%",
+
+                            plugins: {
+
+                                legend: {
+
+                                    position: "bottom",
+
+                                    labels: {
+                                        boxWidth: 11,
+                                        padding: 14,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
        GENERIC PAGINATION
     ========================================================== */
 
@@ -1735,20 +2605,31 @@
                 document.createElement("button");
 
             button.type = "button";
-            button.className = "page-button";
-            button.textContent = text;
-            button.disabled = disabled;
+
+            button.className =
+                "page-button";
+
+            button.textContent =
+                text;
+
+            button.disabled =
+                disabled;
+
 
             if (active) {
                 button.classList.add("active");
             }
 
+
             if (!disabled) {
+
                 button.addEventListener(
                     "click",
                     callback
                 );
+
             }
+
 
             container.appendChild(button);
 
@@ -1760,7 +2641,11 @@
             currentPage === 1,
             false,
             function () {
-                onPageChange(currentPage - 1);
+
+                onPageChange(
+                    currentPage - 1
+                );
+
             }
         );
 
@@ -1775,19 +2660,27 @@
                 i <= totalPages;
                 i++
             ) {
+
                 pages.push(i);
+
             }
 
         } else {
 
             pages.push(1);
 
+
             if (currentPage > 4) {
                 pages.push("...");
             }
 
+
             const start =
-                Math.max(2, currentPage - 1);
+                Math.max(
+                    2,
+                    currentPage - 1
+                );
+
 
             const end =
                 Math.min(
@@ -1795,17 +2688,22 @@
                     currentPage + 1
                 );
 
+
             for (
                 let i = start;
                 i <= end;
                 i++
             ) {
+
                 pages.push(i);
+
             }
+
 
             if (currentPage < totalPages - 3) {
                 pages.push("...");
             }
+
 
             pages.push(totalPages);
 
@@ -1822,11 +2720,15 @@
                 ellipsis.className =
                     "page-ellipsis";
 
-                ellipsis.textContent = "…";
+                ellipsis.textContent =
+                    "…";
 
-                container.appendChild(ellipsis);
+                container.appendChild(
+                    ellipsis
+                );
 
                 return;
+
             }
 
 
@@ -1835,7 +2737,9 @@
                 false,
                 page === currentPage,
                 function () {
+
                     onPageChange(page);
+
                 }
             );
 
@@ -1847,7 +2751,11 @@
             currentPage === totalPages,
             false,
             function () {
-                onPageChange(currentPage + 1);
+
+                onPageChange(
+                    currentPage + 1
+                );
+
             }
         );
 
@@ -1862,28 +2770,49 @@
 
         const rows =
             Array.from(
-                document.querySelectorAll(config.rowSelector)
+                document.querySelectorAll(
+                    config.rowSelector
+                )
             );
 
+
         const searchInput =
-            document.getElementById(config.searchId);
+            document.getElementById(
+                config.searchId
+            );
+
 
         const filterInput =
             config.filterId
-                ? document.getElementById(config.filterId)
+                ? document.getElementById(
+                    config.filterId
+                )
                 : null;
 
+
         const pagination =
-            document.getElementById(config.paginationId);
+            document.getElementById(
+                config.paginationId
+            );
+
 
         const paginationInfo =
-            document.getElementById(config.paginationInfoId);
+            document.getElementById(
+                config.paginationInfoId
+            );
+
 
         const countElement =
-            document.getElementById(config.countId);
+            document.getElementById(
+                config.countId
+            );
+
 
         const noResults =
-            document.getElementById(config.noResultsId);
+            document.getElementById(
+                config.noResultsId
+            );
+
 
         const pageSize = 5;
 
@@ -1894,8 +2823,11 @@
 
             const search =
                 searchInput
-                    ? searchInput.value.trim().toLowerCase()
+                    ? searchInput.value
+                        .trim()
+                        .toLowerCase()
                     : "";
+
 
             const filter =
                 filterInput
@@ -1903,44 +2835,59 @@
                     : "all";
 
 
-            return rows.filter(function (row) {
+            return rows.filter(
+                function (row) {
 
-                const rowText =
-                    (row.dataset.search || "")
-                        .toLowerCase();
-
-                const matchesSearch =
-                    !search ||
-                    rowText.includes(search);
-
-
-                let matchesFilter = true;
+                    const rowText =
+                        (
+                            row.dataset.search ||
+                            ""
+                        ).toLowerCase();
 
 
-                if (config.filterType === "status") {
+                    const matchesSearch =
+                        !search ||
+                        rowText.includes(
+                            search
+                        );
 
-                    matchesFilter =
-                        filter === "all" ||
-                        row.dataset.status === filter;
+
+                    let matchesFilter = true;
+
+
+                    if (
+                        config.filterType ===
+                        "status"
+                    ) {
+
+                        matchesFilter =
+                            filter === "all" ||
+                            row.dataset.status ===
+                                filter;
+
+                    }
+
+
+                    if (
+                        config.filterType ===
+                        "priority"
+                    ) {
+
+                        matchesFilter =
+                            filter === "all" ||
+                            row.dataset.priority ===
+                                filter;
+
+                    }
+
+
+                    return (
+                        matchesSearch &&
+                        matchesFilter
+                    );
 
                 }
-
-
-                if (config.filterType === "priority") {
-
-                    matchesFilter =
-                        filter === "all" ||
-                        row.dataset.priority === filter;
-
-                }
-
-
-                return (
-                    matchesSearch &&
-                    matchesFilter
-                );
-
-            });
+            );
 
         }
 
@@ -1949,6 +2896,7 @@
 
             const filteredRows =
                 getFilteredRows();
+
 
             const totalPages =
                 Math.max(
@@ -1960,32 +2908,47 @@
                 );
 
 
-            if (currentPage > totalPages) {
-                currentPage = totalPages;
+            if (
+                currentPage >
+                totalPages
+            ) {
+
+                currentPage =
+                    totalPages;
+
             }
 
 
-            rows.forEach(function (row) {
+            rows.forEach(
+                function (row) {
 
-                row.style.display = "none";
+                    row.style.display =
+                        "none";
 
-            });
+                }
+            );
 
 
             const start =
-                (currentPage - 1) * pageSize;
+                (currentPage - 1) *
+                pageSize;
+
 
             const end =
-                start + pageSize;
+                start +
+                pageSize;
 
 
             filteredRows
                 .slice(start, end)
-                .forEach(function (row) {
+                .forEach(
+                    function (row) {
 
-                    row.style.display = "";
+                        row.style.display =
+                            "";
 
-                });
+                    }
+                );
 
 
             if (countElement) {
@@ -2043,21 +3006,26 @@
                 totalPages,
                 function (page) {
 
-                    currentPage = page;
+                    currentPage =
+                        page;
 
                     render();
+
 
                     const section =
                         document.getElementById(
                             config.sectionId
                         );
 
+
                     if (section) {
 
-                        section.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start"
-                        });
+                        section.scrollIntoView(
+                            {
+                                behavior: "smooth",
+                                block: "start"
+                            }
+                        );
 
                     }
 
@@ -2110,15 +3078,20 @@
 
     initializeTable({
 
-        rowSelector: ".employee-row",
+        rowSelector:
+            ".employee-row",
 
-        searchId: "employeeSearch",
+        searchId:
+            "employeeSearch",
 
-        filterId: "employeeStatusFilter",
+        filterId:
+            "employeeStatusFilter",
 
-        filterType: "status",
+        filterType:
+            "status",
 
-        paginationId: "employeePagination",
+        paginationId:
+            "employeePagination",
 
         paginationInfoId:
             "employeePaginationInfo",
@@ -2141,15 +3114,20 @@
 
     initializeTable({
 
-        rowSelector: ".request-row",
+        rowSelector:
+            ".request-row",
 
-        searchId: "requestSearch",
+        searchId:
+            "requestSearch",
 
-        filterId: "requestPriorityFilter",
+        filterId:
+            "requestPriorityFilter",
 
-        filterType: "priority",
+        filterType:
+            "priority",
 
-        paginationId: "requestPagination",
+        paginationId:
+            "requestPagination",
 
         paginationInfoId:
             "requestPaginationInfo",
@@ -2172,11 +3150,14 @@
 
     initializeTable({
 
-        rowSelector: ".allocation-row",
+        rowSelector:
+            ".allocation-row",
 
-        searchId: "allocationSearch",
+        searchId:
+            "allocationSearch",
 
-        paginationId: "allocationPagination",
+        paginationId:
+            "allocationPagination",
 
         paginationInfoId:
             "allocationPaginationInfo",

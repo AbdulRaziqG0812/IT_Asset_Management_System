@@ -21,6 +21,830 @@
         href="{% static 'css/employee_portal.css' %}"
     >
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <style>
+
+        /* =========================================================
+           EMPLOYEE DASHBOARD PAGE
+        ========================================================= */
+
+        .main-content .dashboard-intro {
+            margin-bottom: 24px;
+        }
+
+
+        /* =========================================================
+           DASHBOARD WARNING
+        ========================================================= */
+
+        .main-content .dashboard-warning {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            margin-bottom: 24px;
+            padding: 15px 18px;
+            border: 1px solid #fedf89;
+            border-radius: 12px;
+            background: #fffaeb;
+            color: #7a4b00;
+        }
+
+        .main-content .dashboard-warning-icon {
+            flex: 0 0 auto;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #fef0c7;
+            font-weight: 800;
+        }
+
+        .main-content .dashboard-warning strong {
+            display: block;
+            margin-bottom: 3px;
+            color: #694100;
+        }
+
+        .main-content .dashboard-warning p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           STATISTICS
+        ========================================================= */
+
+        .main-content .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .main-content .stat-card {
+            position: relative;
+            overflow: hidden;
+            min-width: 0;
+            padding: 19px;
+            border: 1px solid #e4e7ec;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 3px 12px rgba(16, 24, 40, 0.05);
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .main-content .stat-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 55px;
+            height: 55px;
+            border-radius: 0 0 0 100%;
+            background: #f2f4f7;
+            opacity: 0.75;
+            pointer-events: none;
+        }
+
+        .main-content .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: #d0d5dd;
+            box-shadow: 0 8px 22px rgba(16, 24, 40, 0.08);
+        }
+
+        .main-content .stat-icon {
+            position: relative;
+            z-index: 1;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 13px;
+            border-radius: 10px;
+            background: #f2f4f7;
+            color: #344054;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .main-content .stat-label {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 5px;
+            color: #667085;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .main-content .stat-value {
+            position: relative;
+            z-index: 1;
+            color: #101828;
+            font-size: 27px;
+            font-weight: 750;
+            line-height: 1.1;
+        }
+
+        .main-content .stat-description {
+            position: relative;
+            z-index: 1;
+            margin-top: 7px;
+            color: #98a2b3;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+
+        /* =========================================================
+           CHARTS
+        ========================================================= */
+
+        .main-content .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .main-content .chart-card {
+            min-width: 0;
+            padding: 20px;
+            border: 1px solid #e4e7ec;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 3px 12px rgba(16, 24, 40, 0.05);
+        }
+
+        .main-content .chart-card-header {
+            margin-bottom: 16px;
+        }
+
+        .main-content .chart-card-label {
+            margin-bottom: 5px;
+            color: #98a2b3;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .main-content .chart-card-title {
+            margin: 0;
+            color: #101828;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .main-content .chart-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+        }
+
+        .main-content .chart-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+
+        /* =========================================================
+           PROFILE
+        ========================================================= */
+
+        .main-content > .content-wrapper > .panel {
+            margin-bottom: 28px;
+            padding: 22px;
+            border: 1px solid #e4e7ec;
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: 0 3px 12px rgba(16, 24, 40, 0.05);
+        }
+
+        .main-content .panel-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 19px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eaecf0;
+        }
+
+        .main-content .panel-label {
+            margin-bottom: 5px;
+            color: #98a2b3;
+            font-size: 10px;
+            font-weight: 750;
+            line-height: 1.3;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .main-content .panel-heading {
+            margin: 0;
+            color: #101828;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .main-content .profile-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            flex: 0 0 auto;
+            padding: 6px 11px;
+            border: 1px solid #abefc6;
+            border-radius: 999px;
+            background: #ecfdf3;
+            color: #027a48;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        .main-content .profile-status-dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+            background: #12b76a;
+        }
+
+        .main-content .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .main-content .profile-detail {
+            min-width: 0;
+            padding: 15px;
+            border: 1px solid #eaecf0;
+            border-radius: 11px;
+            background: #f9fafb;
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .main-content .profile-detail:hover {
+            border-color: #d0d5dd;
+            background: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .main-content .profile-detail-label {
+            margin-bottom: 6px;
+            color: #667085;
+            font-size: 10px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .main-content .profile-detail-value {
+            min-height: 21px;
+            color: #101828;
+            font-size: 14px;
+            font-weight: 650;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+
+        /* =========================================================
+           EMPLOYEE SERVICES
+        ========================================================= */
+
+        .main-content .dashboard-section {
+            width: 100%;
+            margin: 0 0 28px;
+        }
+
+        .main-content .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 17px;
+        }
+
+        .main-content .section-heading .panel-heading {
+            margin: 0;
+        }
+
+        .main-content .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            width: 100%;
+        }
+
+
+        /* =========================================================
+           SERVICE CARDS
+        ========================================================= */
+
+        .main-content .service-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 245px;
+            padding: 20px;
+            border: 1px solid #e4e7ec;
+            border-radius: 15px;
+            background: #ffffff;
+            box-shadow: 0 3px 12px rgba(16, 24, 40, 0.05);
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .main-content .service-card:hover {
+            transform: translateY(-3px);
+            border-color: #d0d5dd;
+            box-shadow: 0 10px 24px rgba(16, 24, 40, 0.08);
+        }
+
+        .main-content .service-icon {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            border: 1px solid #eaecf0;
+            border-radius: 11px;
+            background: #f2f4f7;
+            color: #344054;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .main-content .service-card h3 {
+            margin: 0 0 7px;
+            color: #101828;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .main-content .service-card p {
+            margin: 0;
+            color: #667085;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           SERVICE ACTIONS
+        ========================================================= */
+
+        .main-content .service-actions,
+        .main-content .service-card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-top: auto;
+            padding-top: 18px;
+        }
+
+
+        /* =========================================================
+           SERVICE BUTTONS
+        ========================================================= */
+
+        .main-content .primary-button,
+        .main-content .secondary-button,
+        .main-content .disabled-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            padding: 8px 13px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+            text-align: center;
+            text-decoration: none;
+            white-space: normal;
+            box-sizing: border-box;
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .main-content .primary-button {
+            border: 1px solid #1d4ed8;
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .main-content .primary-button:hover {
+            border-color: #1e40af;
+            background: #1d4ed8;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.18);
+        }
+
+        .main-content .secondary-button {
+            border: 1px solid #d0d5dd;
+            background: #ffffff;
+            color: #344054;
+        }
+
+        .main-content .secondary-button:hover {
+            border-color: #98a2b3;
+            background: #f9fafb;
+            color: #101828;
+            transform: translateY(-1px);
+        }
+
+        .main-content .disabled-button {
+            border: 1px solid #eaecf0;
+            background: #f9fafb;
+            color: #98a2b3;
+            cursor: not-allowed;
+        }
+
+
+        /* =========================================================
+           SERVICE STATUS NOTE
+        ========================================================= */
+
+        .main-content .service-status-note {
+            margin-top: 12px;
+            padding: 9px 11px;
+            border: 1px solid #fedf89;
+            border-radius: 8px;
+            background: #fffaeb;
+            color: #7a4b00;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .main-content .dashboard-empty {
+            padding: 30px 20px;
+            border: 1px dashed #d0d5dd;
+            border-radius: 12px;
+            background: #fcfcfd;
+            color: #667085;
+            text-align: center;
+        }
+
+        .main-content .dashboard-empty-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            background: #f2f4f7;
+            color: #667085;
+            font-weight: 700;
+        }
+
+        .main-content .dashboard-empty strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #344054;
+            font-size: 14px;
+        }
+
+        .main-content .dashboard-empty span {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           ASSIGNMENT HISTORY
+        ========================================================= */
+
+        .main-content .history-panel {
+            margin-top: 28px;
+            overflow: hidden;
+            border: 1px solid #e4e7ec;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 3px 12px rgba(16, 24, 40, 0.05);
+        }
+
+        .main-content .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 20px 22px;
+            border-bottom: 1px solid #eaecf0;
+        }
+
+        .main-content .history-header h2 {
+            margin: 0;
+            color: #101828;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .main-content .history-header p {
+            margin: 5px 0 0;
+            color: #667085;
+            font-size: 12px;
+        }
+
+        .main-content .history-count {
+            flex: 0 0 auto;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #f2f4f7;
+            color: #344054;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .main-content .history-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .main-content .history-table {
+            width: 100%;
+            min-width: 680px;
+            border-collapse: collapse;
+        }
+
+        .main-content .history-table th {
+            padding: 12px 18px;
+            background: #f9fafb;
+            color: #667085;
+            font-size: 11px;
+            font-weight: 700;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .main-content .history-table td {
+            padding: 14px 18px;
+            border-top: 1px solid #f0f2f5;
+            color: #344054;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .main-content .history-table tbody tr:hover {
+            background: #fcfcfd;
+        }
+
+        .main-content .asset-name {
+            color: #101828;
+            font-weight: 700;
+        }
+
+        .main-content .asset-id {
+            margin-top: 3px;
+            color: #98a2b3;
+            font-size: 11px;
+        }
+
+        .main-content .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: #ecfdf3;
+            color: #027a48;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .main-content .status-badge.returned {
+            background: #f2f4f7;
+            color: #475467;
+        }
+
+
+        /* =========================================================
+           ACTIVITY
+        ========================================================= */
+
+        .main-content .activity-panel {
+            margin-top: 28px;
+            padding: 20px 22px;
+            border: 1px solid #e4e7ec;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 3px 12px rgba(16, 24, 40, 0.05);
+        }
+
+        .main-content .activity-header {
+            margin-bottom: 16px;
+        }
+
+        .main-content .activity-header h2 {
+            margin: 0;
+            color: #101828;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .main-content .activity-header p {
+            margin: 5px 0 0;
+            color: #667085;
+            font-size: 12px;
+        }
+
+        .main-content .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .main-content .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px;
+            border: 1px solid #eaecf0;
+            border-radius: 10px;
+            background: #fcfcfd;
+        }
+
+        .main-content .activity-icon {
+            flex: 0 0 auto;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            background: #f2f4f7;
+            color: #344054;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .main-content .activity-content {
+            min-width: 0;
+        }
+
+        .main-content .activity-title {
+            color: #101828;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .main-content .activity-message {
+            margin-top: 3px;
+            color: #667085;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .main-content .activity-time {
+            margin-top: 5px;
+            color: #98a2b3;
+            font-size: 10px;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1250px) {
+
+            .main-content .stats-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .main-content .charts-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .main-content .profile-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 900px) {
+
+            .main-content .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .main-content .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 640px) {
+
+            .main-content .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content .panel-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .main-content .history-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .main-content .service-actions,
+            .main-content .service-card-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .main-content .service-actions a,
+            .main-content .service-card-actions a,
+            .main-content .service-actions .disabled-button,
+            .main-content .service-card-actions .disabled-button {
+                width: 100%;
+            }
+
+        }
+
+
+        @media (max-width: 420px) {
+
+            .main-content .chart-card {
+                padding: 16px;
+            }
+
+            .main-content .chart-container {
+                height: 205px;
+            }
+
+            .main-content .panel {
+                padding: 17px;
+            }
+
+            .main-content .service-card {
+                min-height: auto;
+                padding: 17px;
+            }
+
+            .main-content .profile-detail {
+                padding: 13px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
@@ -29,9 +853,9 @@
 <div class="app-layout">
 
 
-    <!-- =========================
+    <!-- =========================================================
          SIDEBAR
-    ========================== -->
+    ========================================================== -->
 
     <aside class="sidebar">
 
@@ -99,10 +923,6 @@
             </a>
 
 
-            <!-- =========================
-                 DAMAGED / LOST ASSETS
-            ========================== -->
-
             <a
                 href="{% url 'employee_asset_incident_list' %}"
                 class="nav-link"
@@ -138,18 +958,18 @@
     </aside>
 
 
-    <!-- =========================
+    <!-- =========================================================
          MAIN CONTENT
-    ========================== -->
+    ========================================================== -->
 
     <main class="main-content">
 
         <div class="content-wrapper">
 
 
-            <!-- =========================
+            <!-- =====================================================
                  TOP BAR
-            ========================== -->
+            ====================================================== -->
 
             <header class="topbar">
 
@@ -167,11 +987,11 @@
             </header>
 
 
-            <!-- =========================
+            <!-- =====================================================
                  PAGE HEADER
-            ========================== -->
+            ====================================================== -->
 
-            <div class="page-header">
+            <div class="page-header dashboard-intro">
 
                 <div>
 
@@ -188,7 +1008,8 @@
                     </h1>
 
                     <p>
-                        Manage your IT assets, requests and maintenance activities.
+                        Manage your assigned IT assets, requests,
+                        maintenance activities and account information.
                     </p>
 
                 </div>
@@ -196,9 +1017,232 @@
             </div>
 
 
-            <!-- =========================
+            <!-- =====================================================
+                 STATUS WARNING
+            ====================================================== -->
+
+            {% if dashboard_warning %}
+
+                <div class="dashboard-warning">
+
+                    <div class="dashboard-warning-icon">
+                        !
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Action Availability
+                        </strong>
+
+                        <p>
+                            {{ dashboard_warning }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =====================================================
+                 STATISTICS
+            ====================================================== -->
+
+            <section class="stats-grid">
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ▣
+                    </div>
+
+                    <div class="stat-label">
+                        Assigned Assets
+                    </div>
+
+                    <div class="stat-value">
+                        {{ active_asset_count }}
+                    </div>
+
+                    <div class="stat-description">
+                        Assets currently assigned to you
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ▤
+                    </div>
+
+                    <div class="stat-label">
+                        Asset Requests
+                    </div>
+
+                    <div class="stat-value">
+                        {{ total_asset_requests }}
+                    </div>
+
+                    <div class="stat-description">
+                        Total requests submitted
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        !
+                    </div>
+
+                    <div class="stat-label">
+                        Pending Requests
+                    </div>
+
+                    <div class="stat-value">
+                        {{ pending_asset_requests }}
+                    </div>
+
+                    <div class="stat-description">
+                        Requests awaiting processing
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ⚙
+                    </div>
+
+                    <div class="stat-label">
+                        Maintenance
+                    </div>
+
+                    <div class="stat-value">
+                        {{ total_maintenance_requests }}
+                    </div>
+
+                    <div class="stat-description">
+                        Maintenance requests submitted
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ◷
+                    </div>
+
+                    <div class="stat-label">
+                        Assignment History
+                    </div>
+
+                    <div class="stat-value">
+                        {{ total_assignments }}
+                    </div>
+
+                    <div class="stat-description">
+                        Current and previous assignments
+                    </div>
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =====================================================
+                 CHARTS
+            ====================================================== -->
+
+            <section class="charts-grid">
+
+
+                <div class="chart-card">
+
+                    <div class="chart-card-header">
+
+                        <div class="chart-card-label">
+                            Asset Overview
+                        </div>
+
+                        <h2 class="chart-card-title">
+                            My Asset Status
+                        </h2>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas id="assetStatusChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <div class="chart-card-header">
+
+                        <div class="chart-card-label">
+                            Request Overview
+                        </div>
+
+                        <h2 class="chart-card-title">
+                            Asset Request Status
+                        </h2>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas id="requestStatusChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <div class="chart-card-header">
+
+                        <div class="chart-card-label">
+                            Maintenance Overview
+                        </div>
+
+                        <h2 class="chart-card-title">
+                            Maintenance Status
+                        </h2>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas id="maintenanceStatusChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =====================================================
                  PROFILE
-            ========================== -->
+            ====================================================== -->
 
             <section class="panel">
 
@@ -216,46 +1260,78 @@
 
                     </div>
 
+
+                    {% if profile %}
+
+                        <span class="profile-status">
+
+                            <span class="profile-status-dot"></span>
+
+                            {{ profile.get_employment_status_display }}
+
+                        </span>
+
+                    {% endif %}
+
                 </div>
 
 
                 {% if profile %}
 
-                    <div class="detail-row">
+                    <div class="profile-grid">
 
-                        <div class="detail-box">
+                        <div class="profile-detail">
 
-                            <div class="detail-label">
+                            <div class="profile-detail-label">
                                 Employee ID
                             </div>
 
-                            <div class="detail-value">
+                            <div class="profile-detail-value">
                                 {{ profile.employee_id }}
                             </div>
 
                         </div>
 
 
-                        <div class="detail-box">
+                        <div class="profile-detail">
 
-                            <div class="detail-label">
+                            <div class="profile-detail-label">
                                 Job Title
                             </div>
 
-                            <div class="detail-value">
+                            <div class="profile-detail-value">
                                 {{ profile.job_title|default:"—" }}
                             </div>
 
                         </div>
 
 
-                        <div class="detail-box">
+                        <div class="profile-detail">
 
-                            <div class="detail-label">
+                            <div class="profile-detail-label">
+                                Department
+                            </div>
+
+                            <div class="profile-detail-value">
+
+                                {% if profile.department %}
+                                    {{ profile.department.name }}
+                                {% else %}
+                                    —
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-detail">
+
+                            <div class="profile-detail-label">
                                 Phone
                             </div>
 
-                            <div class="detail-value">
+                            <div class="profile-detail-value">
                                 {{ profile.phone|default:"—" }}
                             </div>
 
@@ -265,23 +1341,19 @@
 
                 {% else %}
 
-                    <div class="empty-state">
+                    <div class="dashboard-empty">
 
-                        <div class="empty-content">
-
-                            <div class="empty-icon">
-                                !
-                            </div>
-
-                            <h3>
-                                Profile Information Unavailable
-                            </h3>
-
-                            <p>
-                                Employee profile information is not available.
-                            </p>
-
+                        <div class="dashboard-empty-icon">
+                            !
                         </div>
+
+                        <strong>
+                            Profile Information Unavailable
+                        </strong>
+
+                        <span>
+                            Employee profile information is not available.
+                        </span>
 
                     </div>
 
@@ -290,9 +1362,9 @@
             </section>
 
 
-            <!-- =========================
-                 DASHBOARD SERVICES
-            ========================== -->
+            <!-- =====================================================
+                 EMPLOYEE SERVICES
+            ====================================================== -->
 
             <section class="dashboard-section">
 
@@ -316,9 +1388,7 @@
                 <div class="dashboard-grid">
 
 
-                    <!-- =========================
-                         ASSIGNED ASSETS
-                    ========================== -->
+                    <!-- ASSIGNED ASSETS -->
 
                     <div class="service-card">
 
@@ -344,9 +1414,7 @@
                     </div>
 
 
-                    <!-- =========================
-                         ASSET REQUESTS
-                    ========================== -->
+                    <!-- ASSET REQUESTS -->
 
                     <div class="service-card">
 
@@ -371,21 +1439,51 @@
                                 View Requests
                             </a>
 
-                            <a
-                                href="{% url 'create_asset_request' %}"
-                                class="secondary-button"
-                            >
-                                Request Asset
-                            </a>
+
+                            {% if can_create_asset_request %}
+
+                                <a
+                                    href="{% url 'create_asset_request' %}"
+                                    class="secondary-button"
+                                >
+                                    Request Asset
+                                </a>
+
+                            {% else %}
+
+                                <span class="disabled-button">
+                                    Request Unavailable
+                                </span>
+
+                            {% endif %}
 
                         </div>
+
+
+                        {% if not can_create_asset_request %}
+
+                            <div class="service-status-note">
+
+                                {% if not is_employee_active %}
+
+                                    New asset requests require
+                                    Active employment status.
+
+                                {% elif not has_department %}
+
+                                    A department must be assigned to your
+                                    employee profile before requesting an asset.
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
 
                     </div>
 
 
-                    <!-- =========================
-                         MAINTENANCE
-                    ========================== -->
+                    <!-- MAINTENANCE -->
 
                     <div class="service-card">
 
@@ -398,7 +1496,8 @@
                         </h3>
 
                         <p>
-                            Report damaged assets and request maintenance.
+                            Report issues and request maintenance for
+                            your assigned IT assets.
                         </p>
 
                         <div class="service-actions">
@@ -410,21 +1509,42 @@
                                 View Requests
                             </a>
 
-                            <a
-                                href="{% url 'create_maintenance_request' %}"
-                                class="secondary-button"
-                            >
-                                Request Maintenance
-                            </a>
+
+                            {% if can_create_maintenance_request %}
+
+                                <a
+                                    href="{% url 'create_maintenance_request' %}"
+                                    class="secondary-button"
+                                >
+                                    Request Maintenance
+                                </a>
+
+                            {% else %}
+
+                                <span class="disabled-button">
+                                    Request Unavailable
+                                </span>
+
+                            {% endif %}
 
                         </div>
+
+
+                        {% if not can_create_maintenance_request %}
+
+                            <div class="service-status-note">
+
+                                New maintenance requests require
+                                Active employment status.
+
+                            </div>
+
+                        {% endif %}
 
                     </div>
 
 
-                    <!-- =========================
-                        DAMAGED / LOST
-                    ========================== -->
+                    <!-- DAMAGED / LOST -->
 
                     <div class="service-card">
 
@@ -446,14 +1566,14 @@
                                 href="{% url 'employee_asset_incident_list' %}"
                                 class="primary-button"
                             >
-                                Report Damaged / Lost
+                                View Reports
                             </a>
 
                             <a
                                 href="{% url 'employee_asset_incident_create' %}"
                                 class="secondary-button"
                             >
-                                Request Damaged / Lost
+                                Report Asset Issue
                             </a>
 
                         </div>
@@ -461,9 +1581,7 @@
                     </div>
 
 
-                    <!-- =========================
-                         ASSIGNMENT HISTORY
-                    ========================== -->
+                    <!-- ASSIGNMENT HISTORY -->
 
                     <div class="service-card">
 
@@ -476,11 +1594,12 @@
                         </h3>
 
                         <p>
-                            View your previous asset assignment history.
+                            Review your current and previous IT asset
+                            assignments.
                         </p>
 
-                        <span class="disabled-button">
-                            Coming Soon
+                        <span class="primary-button">
+                            View History Below
                         </span>
 
                     </div>
@@ -491,12 +1610,262 @@
             </section>
 
 
+            <!-- =====================================================
+                 ASSIGNMENT HISTORY
+            ====================================================== -->
+
+            <section class="history-panel">
+
+                <div class="history-header">
+
+                    <div>
+
+                        <h2>
+                            Assignment History
+                        </h2>
+
+                        <p>
+                            Your current and previously returned IT asset assignments.
+                        </p>
+
+                    </div>
+
+                    <div class="history-count">
+                        {{ total_assignments }} Record{{ total_assignments|pluralize }}
+                    </div>
+
+                </div>
+
+
+                {% if recent_assignment_history %}
+
+                    <div class="history-table-wrapper">
+
+                        <table class="history-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Asset</th>
+                                    <th>Assigned Date</th>
+                                    <th>Return Date</th>
+                                    <th>Status</th>
+                                    <th>Assignment Notes</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for assignment in recent_assignment_history %}
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="asset-name">
+                                                {{ assignment.asset.asset_id }}
+                                            </div>
+
+                                            <div class="asset-id">
+                                                {{ assignment.asset.name|default:"IT Asset" }}
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+                                            {{ assignment.assigned_date|date:"M d, Y" }}
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if assignment.return_date %}
+                                                {{ assignment.return_date|date:"M d, Y" }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if assignment.is_active %}
+
+                                                <span class="status-badge">
+                                                    Currently Assigned
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="status-badge returned">
+                                                    Returned
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if assignment.assignment_notes %}
+                                                {{ assignment.assignment_notes|truncatechars:70 }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="dashboard-empty">
+
+                        <div class="dashboard-empty-icon">
+                            ◷
+                        </div>
+
+                        <strong>
+                            No Assignment History
+                        </strong>
+
+                        <span>
+                            You do not have any current or previous asset assignments.
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- =====================================================
+                 RECENT ACTIVITY
+            ====================================================== -->
+
+            <section class="activity-panel">
+
+                <div class="activity-header">
+
+                    <h2>
+                        Recent Activity
+                    </h2>
+
+                    <p>
+                        Latest notifications related to your employee account.
+                    </p>
+
+                </div>
+
+
+                {% if recent_notifications %}
+
+                    <div class="activity-list">
+
+                        {% for notification in recent_notifications %}
+
+                            <div class="activity-item">
+
+                                <div class="activity-icon">
+
+                                    {% if notification.severity == "WARNING" %}
+                                        !
+                                    {% elif notification.severity == "DANGER" %}
+                                        !
+                                    {% elif notification.severity == "SUCCESS" %}
+                                        ✓
+                                    {% else %}
+                                        i
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="activity-content">
+
+                                    <div class="activity-title">
+
+                                        {{ notification.title }}
+
+                                        {% if not notification.is_read %}
+
+                                            <span
+                                                style="
+                                                    margin-left: 6px;
+                                                    color: #175cd3;
+                                                    font-size: 10px;
+                                                "
+                                            >
+                                                NEW
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="activity-message">
+                                        {{ notification.message }}
+                                    </div>
+
+
+                                    <div class="activity-time">
+                                        {{ notification.created_at|date:"M d, Y - h:i A" }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="dashboard-empty">
+
+                        <div class="dashboard-empty-icon">
+                            i
+                        </div>
+
+                        <strong>
+                            No Recent Activity
+                        </strong>
+
+                        <span>
+                            There are no recent notifications for your account.
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
         </div>
 
 
-        <!-- =========================
+        <!-- =========================================================
              FOOTER
-        ========================== -->
+        ========================================================== -->
 
         <footer class="footer">
 
@@ -511,6 +1880,369 @@
 
 </div>
 
+
+<!-- =============================================================
+     CHARTS
+============================================================== -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        /*
+         * Chart.js is loaded from CDN.
+         * If it is unavailable, the rest of the dashboard
+         * should still remain functional.
+         */
+
+        if (typeof Chart === "undefined") {
+            console.error("Chart.js could not be loaded.");
+            return;
+        }
+
+
+        /* =========================================================
+           SAFE JSON PARSER
+        ========================================================= */
+
+        function parseChartData(value) {
+
+            if (!value) {
+                return [];
+            }
+
+            try {
+
+                const parsed = JSON.parse(value);
+
+                if (Array.isArray(parsed)) {
+                    return parsed;
+                }
+
+                return [];
+
+            } catch (error) {
+
+                console.error(
+                    "Unable to parse chart data:",
+                    error
+                );
+
+                return [];
+
+            }
+
+        }
+
+
+        /* =========================================================
+           COMMON CHART SETTINGS
+        ========================================================= */
+
+        const chartFont = {
+            family: "Arial, sans-serif"
+        };
+
+
+        const commonLegendLabels = {
+            font: chartFont,
+            boxWidth: 10,
+            padding: 12
+        };
+
+
+        /* =========================================================
+           ASSET STATUS DATA
+        ========================================================= */
+
+        const assetStatusLabels = parseChartData(
+            '{{ asset_status_labels|default:"[]"|escapejs }}'
+        );
+
+        const assetStatusValues = parseChartData(
+            '{{ asset_status_values|default:"[]"|escapejs }}'
+        );
+
+
+        /* =========================================================
+           ASSET STATUS CHART
+        ========================================================= */
+
+        const assetStatusCanvas =
+            document.getElementById("assetStatusChart");
+
+
+        if (assetStatusCanvas) {
+
+            const assetStatusDataAvailable =
+                assetStatusLabels.length > 0 &&
+                assetStatusValues.length > 0;
+
+
+            if (assetStatusDataAvailable) {
+
+                new Chart(
+                    assetStatusCanvas,
+                    {
+                        type: "doughnut",
+
+                        data: {
+                            labels: assetStatusLabels,
+
+                            datasets: [
+                                {
+                                    data: assetStatusValues,
+                                    borderWidth: 2
+                                }
+                            ]
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            cutout: "68%",
+
+                            plugins: {
+
+                                legend: {
+                                    position: "bottom",
+
+                                    labels: commonLegendLabels
+                                }
+
+                            }
+                        }
+
+                    }
+                );
+
+            } else {
+
+                const parent =
+                    assetStatusCanvas.parentElement;
+
+                parent.innerHTML =
+                    '<div style="' +
+                    'height:100%;' +
+                    'display:flex;' +
+                    'align-items:center;' +
+                    'justify-content:center;' +
+                    'text-align:center;' +
+                    'color:#98a2b3;' +
+                    'font-size:12px;' +
+                    '">No asset status data available</div>';
+
+            }
+
+        }
+
+
+        /* =========================================================
+           ASSET REQUEST DATA
+        ========================================================= */
+
+        const requestStatusLabels = parseChartData(
+            '{{ request_status_labels|default:"[]"|escapejs }}'
+        );
+
+        const requestStatusValues = parseChartData(
+            '{{ request_status_values|default:"[]"|escapejs }}'
+        );
+
+
+        /* =========================================================
+           ASSET REQUEST CHART
+        ========================================================= */
+
+        const requestStatusCanvas =
+            document.getElementById("requestStatusChart");
+
+
+        if (requestStatusCanvas) {
+
+            const requestStatusDataAvailable =
+                requestStatusLabels.length > 0 &&
+                requestStatusValues.length > 0;
+
+
+            if (requestStatusDataAvailable) {
+
+                new Chart(
+                    requestStatusCanvas,
+                    {
+                        type: "bar",
+
+                        data: {
+                            labels: requestStatusLabels,
+
+                            datasets: [
+                                {
+                                    label: "Requests",
+                                    data: requestStatusValues,
+                                    borderRadius: 7,
+                                    borderWidth: 0
+                                }
+                            ]
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            scales: {
+
+                                y: {
+                                    beginAtZero: true,
+
+                                    ticks: {
+                                        precision: 0
+                                    },
+
+                                    grid: {
+                                        drawBorder: false
+                                    }
+                                },
+
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+
+                            },
+
+                            plugins: {
+
+                                legend: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+            } else {
+
+                const parent =
+                    requestStatusCanvas.parentElement;
+
+                parent.innerHTML =
+                    '<div style="' +
+                    'height:100%;' +
+                    'display:flex;' +
+                    'align-items:center;' +
+                    'justify-content:center;' +
+                    'text-align:center;' +
+                    'color:#98a2b3;' +
+                    'font-size:12px;' +
+                    '">No asset request data available</div>';
+
+            }
+
+        }
+
+
+        /* =========================================================
+           MAINTENANCE DATA
+        ========================================================= */
+
+        const maintenanceStatusLabels = parseChartData(
+            '{{ maintenance_status_labels|default:"[]"|escapejs }}'
+        );
+
+        const maintenanceStatusValues = parseChartData(
+            '{{ maintenance_status_values|default:"[]"|escapejs }}'
+        );
+
+
+        /* =========================================================
+           MAINTENANCE CHART
+        ========================================================= */
+
+        const maintenanceStatusCanvas =
+            document.getElementById("maintenanceStatusChart");
+
+
+        if (maintenanceStatusCanvas) {
+
+            const maintenanceDataAvailable =
+                maintenanceStatusLabels.length > 0 &&
+                maintenanceStatusValues.length > 0;
+
+
+            if (maintenanceDataAvailable) {
+
+                new Chart(
+                    maintenanceStatusCanvas,
+                    {
+                        type: "doughnut",
+
+                        data: {
+                            labels: maintenanceStatusLabels,
+
+                            datasets: [
+                                {
+                                    data: maintenanceStatusValues,
+                                    borderWidth: 2
+                                }
+                            ]
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            cutout: "68%",
+
+                            plugins: {
+
+                                legend: {
+                                    position: "bottom",
+
+                                    labels: commonLegendLabels
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+            } else {
+
+                const parent =
+                    maintenanceStatusCanvas.parentElement;
+
+                parent.innerHTML =
+                    '<div style="' +
+                    'height:100%;' +
+                    'display:flex;' +
+                    'align-items:center;' +
+                    'justify-content:center;' +
+                    'text-align:center;' +
+                    'color:#98a2b3;' +
+                    'font-size:12px;' +
+                    '">No maintenance data available</div>';
+
+            }
+
+        }
+
+    });
+
+</script>
+
 </body>
 
-</html> 
+</html>

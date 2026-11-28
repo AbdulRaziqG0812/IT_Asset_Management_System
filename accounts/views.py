@@ -1,11 +1,12 @@
 from datetime import date
+import json
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import ProtectedError
+from django.db.models import Count, ProtectedError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -45,9 +46,9 @@ def get_employee_active_assignments(employee):
     """
     Returns currently active asset assignments for an employee.
 
-    Import is kept inside the helper to avoid unnecessary model-loading
-    dependencies when this functionality is not being used.
+    Employees can only receive their own active assignments.
     """
+
     from assignments.models import Assignment
 
     return (
@@ -113,6 +114,16 @@ def notify_it_and_super_admins(
 
 @login_required
 def employee_dashboard(request):
+    """
+    Employee-only dashboard.
+
+    Security:
+    - Only EMPLOYEE role can access this dashboard.
+    - Only the authenticated employee's own profile and records are queried.
+    - Assignment history is restricted to the authenticated employee.
+    - Notifications are restricted to the authenticated user.
+    """
+
     if request.user.role != User.Role.EMPLOYEE:
         return redirect("login")
 
@@ -122,13 +133,311 @@ def employee_dashboard(request):
         None,
     )
 
+    if profile is None:
+        raise PermissionDenied(
+            "Your employee profile is not available."
+        )
+
+    # ------------------------------------------------------------------------
+    # Assignment data
+    # ------------------------------------------------------------------------
+
+    from assignments.models import Assignment
+
+    assignments = (
+        Assignment.objects
+        .select_related(
+            "asset",
+            "employee",
+        )
+        .filter(
+            employee=profile,
+        )
+        .order_by(
+            "-assigned_date",
+            "-id",
+        )
+    )
+
+    active_assignments = assignments.filter(
+        is_active=True,
+    )
+
+    total_assignments = assignments.count()
+    active_assignment_count = active_assignments.count()
+
+    returned_assignment_count = assignments.filter(
+        is_active=False,
+    ).count()
+
+    # ------------------------------------------------------------------------
+    # Asset data
+    # ------------------------------------------------------------------------
+
+    active_assets = (
+        Asset.objects
+        .filter(
+            assignments__employee=profile,
+            assignments__is_active=True,
+        )
+        .distinct()
+    )
+
+    active_asset_count = active_assets.count()
+
+    # Asset status breakdown for the employee's assigned assets.
+    asset_status_rows = (
+        active_assets
+        .values("status")
+        .annotate(total=Count("id"))
+        .order_by("status")
+    )
+
+    asset_status_labels = []
+    asset_status_values = []
+
+    for row in asset_status_rows:
+        status_value = row["status"]
+
+        try:
+            status_label = Asset.Status(status_value).label
+        except ValueError:
+            status_label = status_value.replace("_", " ").title()
+
+        asset_status_labels.append(status_label)
+        asset_status_values.append(row["total"])
+
+    # ------------------------------------------------------------------------
+    # Asset request data
+    # ------------------------------------------------------------------------
+
+    asset_requests = AssetRequest.objects.filter(
+        employee=profile,
+    )
+
+    total_asset_requests = asset_requests.count()
+
+    pending_asset_requests = asset_requests.filter(
+        status=AssetRequest.Status.PENDING,
+    ).count()
+
+    approved_asset_requests = asset_requests.filter(
+        status=AssetRequest.Status.APPROVED,
+    ).count()
+
+    rejected_asset_requests = asset_requests.filter(
+        status=AssetRequest.Status.REJECTED,
+    ).count()
+
+    # ------------------------------------------------------------------------
+    # Maintenance data
+    # ------------------------------------------------------------------------
+
+    from maintenance.models import MaintenanceRequest
+
+    maintenance_requests = MaintenanceRequest.objects.filter(
+        employee=profile,
+    )
+
+    total_maintenance_requests = maintenance_requests.count()
+
+    pending_maintenance_requests = maintenance_requests.filter(
+        status=MaintenanceRequest.Status.PENDING,
+    ).count()
+
+    completed_maintenance_requests = maintenance_requests.filter(
+        status=MaintenanceRequest.Status.COMPLETED,
+    ).count()
+
+    # ------------------------------------------------------------------------
+    # Request chart data
+    # ------------------------------------------------------------------------
+
+    request_status_rows = (
+        asset_requests
+        .values("status")
+        .annotate(total=Count("id"))
+        .order_by("status")
+    )
+
+    request_status_labels = []
+    request_status_values = []
+
+    for row in request_status_rows:
+        status_value = row["status"]
+
+        try:
+            status_label = AssetRequest.Status(status_value).label
+        except ValueError:
+            status_label = status_value.replace("_", " ").title()
+
+        request_status_labels.append(status_label)
+        request_status_values.append(row["total"])
+
+    # ------------------------------------------------------------------------
+    # Maintenance chart data
+    # ------------------------------------------------------------------------
+
+    maintenance_status_rows = (
+        maintenance_requests
+        .values("status")
+        .annotate(total=Count("id"))
+        .order_by("status")
+    )
+
+    maintenance_status_labels = []
+    maintenance_status_values = []
+
+    for row in maintenance_status_rows:
+        status_value = row["status"]
+
+        try:
+            status_label = MaintenanceRequest.Status(status_value).label
+        except ValueError:
+            status_label = status_value.replace("_", " ").title()
+
+        maintenance_status_labels.append(status_label)
+        maintenance_status_values.append(row["total"])
+
+    # ------------------------------------------------------------------------
+    # Recent assignment history
+    # ------------------------------------------------------------------------
+
+    recent_assignment_history = assignments[:8]
+
+    # ------------------------------------------------------------------------
+    # Recent notifications
+    # ------------------------------------------------------------------------
+
+    recent_notifications = (
+        Notification.objects
+        .filter(
+            recipient=request.user,
+        )
+        .order_by(
+            "-created_at",
+            "-id",
+        )[:6]
+    )
+
+    unread_notification_count = (
+        Notification.objects
+        .filter(
+            recipient=request.user,
+            is_read=False,
+        )
+        .count()
+    )
+
+    # ------------------------------------------------------------------------
+    # Employee action eligibility
+    # ------------------------------------------------------------------------
+
+    is_employee_active = (
+        profile.employment_status
+        == EmployeeProfile.EmploymentStatus.ACTIVE
+    )
+
+    has_department = profile.department is not None
+
+    can_create_asset_request = (
+        is_employee_active
+        and has_department
+    )
+
+    can_create_maintenance_request = is_employee_active
+
+    # ------------------------------------------------------------------------
+    # Dashboard warning
+    # ------------------------------------------------------------------------
+
+    dashboard_warning = ""
+
+    if not is_employee_active:
+        dashboard_warning = (
+            "Your employee account is not currently in Active employment "
+            "status. New asset and maintenance requests are unavailable."
+        )
+    elif not has_department:
+        dashboard_warning = (
+            "Your employee profile is not linked to a department. "
+            "New asset requests are unavailable until HR assigns your department."
+        )
+
     return render(
         request,
         "accounts/employee_dashboard.html",
         {
+            # ---------------------------------------------------------------
+            # Profile
+            # ---------------------------------------------------------------
             "profile": profile,
+
+            # ---------------------------------------------------------------
+            # Assignment statistics
+            # ---------------------------------------------------------------
+            "total_assignments": total_assignments,
+            "active_assignment_count": active_assignment_count,
+            "returned_assignment_count": returned_assignment_count,
+            "active_asset_count": active_asset_count,
+
+            # ---------------------------------------------------------------
+            # Asset request statistics
+            # ---------------------------------------------------------------
+            "total_asset_requests": total_asset_requests,
+            "pending_asset_requests": pending_asset_requests,
+            "approved_asset_requests": approved_asset_requests,
+            "rejected_asset_requests": rejected_asset_requests,
+
+            # ---------------------------------------------------------------
+            # Maintenance statistics
+            # ---------------------------------------------------------------
+            "total_maintenance_requests": total_maintenance_requests,
+            "pending_maintenance_requests": pending_maintenance_requests,
+            "completed_maintenance_requests": completed_maintenance_requests,
+
+            # ---------------------------------------------------------------
+            # Assignment history
+            # ---------------------------------------------------------------
+            "recent_assignment_history": recent_assignment_history,
+
+            # ---------------------------------------------------------------
+            # Notifications
+            # ---------------------------------------------------------------
+            "recent_notifications": recent_notifications,
+            "unread_notification_count": unread_notification_count,
+
+            # ---------------------------------------------------------------
+            # Action permissions
+            # ---------------------------------------------------------------
+            "is_employee_active": is_employee_active,
+            "has_department": has_department,
+            "can_create_asset_request": can_create_asset_request,
+            "can_create_maintenance_request": can_create_maintenance_request,
+            "dashboard_warning": dashboard_warning,
+
+            # ---------------------------------------------------------------
+            # Chart.js data
+            # ---------------------------------------------------------------
+            "asset_status_labels": json.dumps(asset_status_labels),
+            "asset_status_values": json.dumps(asset_status_values),
+
+            "request_status_labels": json.dumps(request_status_labels),
+            "request_status_values": json.dumps(request_status_values),
+
+            "maintenance_status_labels": json.dumps(
+                maintenance_status_labels
+            ),
+            "maintenance_status_values": json.dumps(
+                maintenance_status_values
+            ),
         },
     )
+
+
+# ============================================================================
+# SUPER ADMIN DASHBOARD
+# ============================================================================
 
 
 @login_required
@@ -673,11 +982,6 @@ def delete_user(request, user_id):
 # ============================================================================
 
 
-# ============================================================================
-# HR - EMPLOYEE MANAGEMENT
-# ============================================================================
-
-
 @login_required
 @user_passes_test(is_hr_or_super_admin)
 def employee_management(request):
@@ -722,10 +1026,6 @@ def employee_management(request):
         )
     )
 
-    # ------------------------------------------------------------------------
-    # Search
-    # ------------------------------------------------------------------------
-
     if search_query:
         from django.db.models import Q
 
@@ -740,19 +1040,11 @@ def employee_management(request):
             | Q(department__name__icontains=search_query)
         ).distinct()
 
-    # ------------------------------------------------------------------------
-    # Department Filter
-    # ------------------------------------------------------------------------
-
     if department_id:
         if department_id.isdigit():
             employees_queryset = employees_queryset.filter(
                 department_id=int(department_id)
             )
-
-    # ------------------------------------------------------------------------
-    # Employment Status Filter
-    # ------------------------------------------------------------------------
 
     allowed_statuses = {
         choice[0]
@@ -766,17 +1058,9 @@ def employee_management(request):
     else:
         employment_status = ""
 
-    # ------------------------------------------------------------------------
-    # Counts
-    # ------------------------------------------------------------------------
-
     total_employee_count = EmployeeProfile.objects.count()
 
     filtered_employee_count = employees_queryset.count()
-
-    # ------------------------------------------------------------------------
-    # Pagination
-    # ------------------------------------------------------------------------
 
     paginator = Paginator(
         employees_queryset,
@@ -1334,8 +1618,17 @@ def get_role_redirect(user):
 
 def login_view(request):
     """
-    Authenticate users and redirect every supported role to its
-    correct application landing page.
+    Authenticate users using their registered email address
+    and password.
+
+    Security:
+    - Email is used to identify the account.
+    - Password verification is still handled by Django's
+      standard authentication system.
+    - Django's password hashing is never bypassed.
+    - Inactive accounts cannot authenticate.
+    - Successful authentication is redirected according to role.
+    - Unsupported roles are rejected.
     """
 
     if request.user.is_authenticated:
@@ -1376,8 +1669,8 @@ def login_view(request):
 
     if request.method == "POST":
 
-        username = request.POST.get(
-            "username",
+        email = request.POST.get(
+            "email",
             "",
         ).strip()
 
@@ -1386,21 +1679,31 @@ def login_view(request):
             "",
         )
 
-        if not username or not password:
+        if not email or not password:
             return render(
                 request,
                 "accounts/login.html",
                 {
                     "error": (
-                        "Username and password are required."
+                        "Email address and password are required."
                     ),
+                    "email": email,
                 },
             )
 
-        user = authenticate(
-            request,
-            username=username,
-            password=password,
+        # --------------------------------------------------------------------
+        # Locate the account by its registered unique email.
+        #
+        # The database email field is unique, so at most one account
+        # can match this lookup.
+        # --------------------------------------------------------------------
+
+        user = (
+            User.objects
+            .filter(
+                email__iexact=email,
+            )
+            .first()
         )
 
         if user is None:
@@ -1408,11 +1711,45 @@ def login_view(request):
                 request,
                 "accounts/login.html",
                 {
-                    "error": "Invalid username or password.",
+                    "error": "Invalid email or password.",
+                    "email": email,
                 },
             )
 
-        if not user.is_active:
+        # --------------------------------------------------------------------
+        # Pass the actual Django username to authenticate().
+        #
+        # This keeps Django's standard password hashing and authentication
+        # backend intact without changing USERNAME_FIELD or database
+        # authentication structure.
+        # --------------------------------------------------------------------
+
+        authenticated_user = authenticate(
+            request,
+            username=user.username,
+            password=password,
+        )
+
+        if authenticated_user is None:
+            return render(
+                request,
+                "accounts/login.html",
+                {
+                    "error": "Invalid email or password.",
+                    "email": email,
+                },
+            )
+
+        # --------------------------------------------------------------------
+        # Explicit active-account check.
+        #
+        # Django's default ModelBackend normally rejects inactive users
+        # during authentication as well. This explicit check keeps the
+        # application rule clear and protects against authentication
+        # backend changes.
+        # --------------------------------------------------------------------
+
+        if not authenticated_user.is_active:
             return render(
                 request,
                 "accounts/login.html",
@@ -1421,10 +1758,13 @@ def login_view(request):
                         "Your account is inactive. "
                         "Please contact the administrator."
                     ),
+                    "email": email,
                 },
             )
 
-        redirect_name = get_role_redirect(user)
+        redirect_name = get_role_redirect(
+            authenticated_user
+        )
 
         if redirect_name is None:
             return render(
@@ -1435,12 +1775,13 @@ def login_view(request):
                         "Your account has an invalid or unsupported role. "
                         "Please contact the administrator."
                     ),
+                    "email": email,
                 },
             )
 
         login(
             request,
-            user,
+            authenticated_user,
         )
 
         return redirect(
